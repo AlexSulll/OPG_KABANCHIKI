@@ -40,39 +40,47 @@
     </message>
 </context>
 <context>
+    <name>MainPage</name>
+    <message>
+        <location filename="../qml/pages/MainPage.qml" line="78"/>
+        <source>Нет операций</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>SecondPage</name>
     <message>
-        <location filename="../qml/pages/SecondPage.qml" line="27"/>
+        <location filename="../qml/pages/SecondPage.qml" line="29"/>
         <source>Сумма операции</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SecondPage.qml" line="34"/>
+        <location filename="../qml/pages/SecondPage.qml" line="36"/>
         <source>Дата операции (дд.мм.гггг)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SecondPage.qml" line="41"/>
+        <location filename="../qml/pages/SecondPage.qml" line="43"/>
         <source>Тип операции</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SecondPage.qml" line="43"/>
+        <location filename="../qml/pages/SecondPage.qml" line="45"/>
         <source>Расход</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SecondPage.qml" line="44"/>
+        <location filename="../qml/pages/SecondPage.qml" line="46"/>
         <source>Доход</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SecondPage.qml" line="54"/>
+        <location filename="../qml/pages/SecondPage.qml" line="56"/>
         <source>Комментарий</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/SecondPage.qml" line="60"/>
+        <location filename="../qml/pages/SecondPage.qml" line="62"/>
         <source>Сохранить</source>
         <translation type="unfinished"></translation>
     </message>

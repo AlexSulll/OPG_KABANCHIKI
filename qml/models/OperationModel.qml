@@ -8,16 +8,18 @@
 */
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import "CategoryModel.qml"
+//import "CategoryModel.qml"
 
-QtObject {
-    objectName: "OperationModel"
+ListModel {
+    id: operationModel
+//    objectName: "OperationModel"
 
-    property int id: 0
-    property int action: 0
-    property QtObject category: ({})
-    property string date: ""
-    property string desc: ""
+//    property int id: 0
+//    property int amount: 0
+//    property int action: 0
+//    property string category: ""
+//    property string date: ""
+//    property string desc: ""
 
     function fromJson(json) {
         try {
@@ -30,5 +32,16 @@ QtObject {
             return False;
         }
         return True;
+    }
+
+    function addOperation(operation) {
+        append({
+                   id: operation.id,  // id операции
+                   amount: operation.amount,  // Сумма операции
+                   action: operation.action,  // Тип операции (0 - расход, 1 - доход)
+                   category: operation.category,  // Категория
+                   date: operation.date,  // Дата операции
+                   desc: operation.desc  // Описание операции
+        });
     }
 }

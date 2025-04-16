@@ -39,4 +39,42 @@
         <translation>WebBudget</translation>
     </message>
 </context>
+<context>
+    <name>SecondPage</name>
+    <message>
+        <location filename="../qml/pages/SecondPage.qml" line="27"/>
+        <source>Сумма операции</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SecondPage.qml" line="34"/>
+        <source>Дата операции (дд.мм.гггг)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SecondPage.qml" line="41"/>
+        <source>Тип операции</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SecondPage.qml" line="43"/>
+        <source>Расход</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SecondPage.qml" line="44"/>
+        <source>Доход</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SecondPage.qml" line="54"/>
+        <source>Комментарий</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/SecondPage.qml" line="60"/>
+        <source>Сохранить</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 </TS>

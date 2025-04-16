@@ -13,8 +13,8 @@ HEADERS += \
 DISTFILES += \
     qml/models/CategoryModel.qml \
     qml/models/OperationModel.qml \
-    qml/services/ExpenseService.qml \
-    qml/services/RevenueService.qml \
+    qml/pages/SecondPage.qml \
+    qml/services/OperationService.qml \
     rpm/ru.template.WebBudget.spec \
 
 AURORAAPP_ICONS = 86x86 108x108 128x128 172x172

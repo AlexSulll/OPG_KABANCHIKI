@@ -8,13 +8,14 @@
 */
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import "CategoryModel.qml"
 
 QtObject {
     objectName: "OperationModel"
 
     property int id: 0
     property int action: 0
-    property int category: 0
+    property QtObject category: ({})
     property string date: ""
     property string desc: ""
 

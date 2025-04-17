@@ -45,9 +45,9 @@ Rectangle {
         anchors {
             bottom: parent.bottom
             horizontalCenter: parent.horizontalCenter
-            bottomMargin: Theme.paddingLarge
+            topMargin: Theme.paddingLarge
         }
-        spacing: Theme.paddingLarge * 3
+        spacing: Theme.paddingLarge * 8
 
         Label {
             text: "Расходы"

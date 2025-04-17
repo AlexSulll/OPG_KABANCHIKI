@@ -1,6 +1,5 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-//import QtQuick.Controls 2.15
 
 Page {
     id: operationPage
@@ -13,6 +12,7 @@ Page {
     property string date: ""
     property string desc: ""
     property var operationModel
+    property var operationService
 
     SilicaFlickable {
         anchors.fill: parent
@@ -29,11 +29,8 @@ Page {
             TextField {
                 width: parent.width
                 placeholderText: qsTr("Сумма операции")
-                inputMethodHints: Qt.ImhFormattedNumbersOnly  // Ограничиваем ввод только числами
-//                validator: DoubleValidator {
-
-//                }
-
+                inputMethodHints: Qt.ImhDigitsOnly  // Ограничиваем ввод только числами
+                validator: IntValidator { bottom: 1 }
                 onTextChanged: operationPage.amount = text
             }
 
@@ -93,16 +90,18 @@ Page {
             Button {
                 text: qsTr("Сохранить")
                 onClicked: {
-                    if (operationModel) {
-                        operationModel.addOperation({
+                    if (operationService) {
+                        var op = {
                             amount: amount,
                             action: action,
                             category: category,
                             date: date,
                             desc: desc
-                        })
+                        }
+                        operationService.addOperation(op)
+                        operationModel.add(op)
+                        pageStack.pop()
                     }
-                    pageStack.pop()  // Возвращаемся на главную страницу
                 }
             }
         }

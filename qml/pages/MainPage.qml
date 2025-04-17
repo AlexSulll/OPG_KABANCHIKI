@@ -8,18 +8,26 @@ Page {
     objectName: "mainPage"
     allowedOrientations: Orientation.All
 
-    property var operations: []  // Массив операций для отображения
+    Models.OperationModel {
+            id: operationModel
+    }
+
+    Services.OperationService {
+           id: operationService
+    }
+
+    Component.onCompleted: {
+        operationService.initialize()
+        var loadedOps = operationService.loadOperations()
+        operationModel.load(loadedOps)
+    }
 
     PageHeader {
         id: header
         objectName: "pageHeader"
         title: "Расходы"
 
-        Models.OperationModel {
-                id: operationModel
-        }
-
-        extraContent.children: [
+    extraContent.children: [
             IconButton {
                 objectName: "aboutButton"
                 icon.source: "image://theme/icon-m-about"
@@ -38,6 +46,7 @@ Page {
                 onClicked: {
                     var page = pageStack.push(Qt.resolvedUrl("SecondPage.qml"))
                     page.operationModel = operationModel
+                    page.operationService = operationService
                     }
                 }
         ]
@@ -72,7 +81,7 @@ Page {
             }
 
 
-            Label {
+        Label {
                     visible: operationModel.count === 0
                     text: qsTr("Нет операций")
                     anchors.centerIn: parent

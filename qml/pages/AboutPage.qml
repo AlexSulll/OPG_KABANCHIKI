@@ -1,11 +1,7 @@
-/*
-    ! Название файла впоследствии поменять на более логичное
-
-    Отдельная от общего шаблона страница с добавлением item
-*/
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../models"
+import "../components"
 
 Page {
     id: aboutPage
@@ -17,30 +13,21 @@ Page {
         id: categoryModel
     }
 
-    // Свойство для доступа к данным модели
     property var categories: categoryModel.categories
 
-    // Контрейнер для с текста "Добавление" и сдвига кнопок категорий
-    // от Авроровской кнопки перехода "Назад" -
-    // можешь изменить color: "red" для просмотра
-    Rectangle {
-        id: titleAdd
-        height: aboutPage.height / 10
-        width: aboutPage.width
-        color: Theme.backgroundGlowColor
-        Text {
-            text: "Добавление"
-            anchors.centerIn: titleAdd
-            font.pixelSize: Theme.fontSizeExtraLarge*1.25
-            color: "white"
-        }
+    HeaderComponent {
+        id: header
+        headerText: "Добавление"
+        fontSize: Theme.fontSizeExtraLarge
+        color: "transparent"
+        showIcon: false
     }
 
     // Grid для отображения категорий
     SilicaGridView {
         id: categoriesGrid
         anchors {
-            top: titleAdd.bottom
+            top: header.bottom
             left: parent.left
             right: parent.right
             bottom: parent.bottom
@@ -51,18 +38,9 @@ Page {
         cellWidth: width / 3
         cellHeight: cellWidth * 1.2
 
-        /*
-        Здесь нагенеренная логика обработки -
-        из массива статик (твой ИЗМЕНЁННЫЙ файл CategoryModel) достаёт
-        */
-
-        // Используем массив как модель через ListModel
         model: ListModel {
             id: listModel
-
-            // Обновляем ListModel при изменении массива
             Component.onCompleted: updateModel()
-
             function updateModel() {
                 clear();
                 for (var i = 0; i < categoryModel.categories.length; i++) {
@@ -71,16 +49,12 @@ Page {
             }
         }
 
-        // Следим за изменениями в массиве категорий
         Connections {
             target: categoryModel
             onCategoriesChanged: listModel.updateModel()
         }
 
-        /*
-        */
-
-        // Расположение элементов категории на странице
+        // Отображение категорий
         delegate: BackgroundItem {
             width: categoriesGrid.cellWidth
             height: categoriesGrid.cellHeight
@@ -118,29 +92,21 @@ Page {
                     color: pressed ? Theme.highlightColor : Theme.primaryColor
                 }
             }
-
-            // Здесь хочу добавить автоматический переход на поле
-            // (ещё не склеенные) "Введите сумму" и выпадение компнента
-            // KeyPad вроде - клава только с цифрами
+            /*
+              Здесь хочу организовать автоматическое переключение на твои поля
+              которые потом будут располагаться ниже и выскакивающая клава с цифрами
+            */
             onClicked: {
                 console.log("Selected category:", nameCategory, "categoryId:", categoryId);
             }
         }
-
         /*
-          Тут внизу надо добавить отображение полей, которые ты создал в
-          Second..... - можно подключить (задав размеры совободной области),
-          можно просто вкинуть сюда же
+          Тут прикреплён или скопирован твоя форма
         */
-
         VerticalScrollDecorator {}
     }
 
-    /*
-      Дальше тоже генера с отображения (пока только) статика из CategoryModel
-    */
-
-    // Пример добавления новой категории
+    // Нагенерено
     function addNewCategory() {
         var newCategory = {
             categoryId: 5,

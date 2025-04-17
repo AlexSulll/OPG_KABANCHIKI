@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.15.2, 2025-04-17T19:02:49. -->
+<!-- Written by QtCreator 4.15.2, 2025-04-17T18:26:52. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -404,17 +404,17 @@
     <valuelist type="QVariantList" key="CustomOutputParsers"/>
     <value type="bool" key="MerRunConfiguration.DebugBypassOpenSslArmCapEnabled">true</value>
     <value type="bool" key="MerRunConfiguration.KeepUserData">true</value>
-    <value type="QString" key="MerRunConfiguration.QmlLiveBenchWorkspace">C:/AuroraProject/Par</value>
-    <value type="bool" key="MerRunConfiguration.QmlLiveEnabled">false</value>
+    <value type="QString" key="MerRunConfiguration.QmlLiveBenchWorkspace">C:/AuroraProject/test</value>
+    <value type="bool" key="MerRunConfiguration.QmlLiveEnabled">true</value>
     <value type="int" key="MerRunConfiguration.QmlLiveIpcPort">-1</value>
     <value type="int" key="MerRunConfiguration.QmlLiveOptions">3</value>
     <value type="QString" key="MerRunConfiguration.QmlLiveTargetWorkspace"></value>
     <value type="bool" key="MerRunConfiguration.SandboxEnabled">false</value>
     <value type="int" key="PE.EnvironmentAspect.Base">1</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">ru.template.test (on %{Device:Name})2</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">QmakeProjectManager.MerRunConfiguration:C:/AuroraProject/Par/ru.template.test.pro</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">C:/AuroraProject/Par/ru.template.test.pro</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">ru.template.test (on %{Device:Name})</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">QmakeProjectManager.MerRunConfiguration:C:/AuroraProject/test/ru.template.test.pro</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">C:/AuroraProject/test/ru.template.test.pro</value>
     <value type="int" key="RemoteLinux.EnvironmentAspect.Version">1</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>

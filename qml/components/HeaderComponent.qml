@@ -10,7 +10,6 @@ Rectangle {
     height: parent.height / 7
     color: "#191546"
 
-    // Настраиваемые свойства
     property string headerText: ""
     property int fontSize: Theme.fontSizeExtraLarge*2
     property bool showIcon: true

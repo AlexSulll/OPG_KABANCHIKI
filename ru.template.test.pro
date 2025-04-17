@@ -11,6 +11,7 @@ SOURCES += \
 HEADERS +=
 
 DISTFILES += \
+    qml/components/HeaderComponent.qml \
     qml/models/SideDrawer.qml \
     qml/models/SideMenuModel.qml \
     qml/pages/BasePage.qml \

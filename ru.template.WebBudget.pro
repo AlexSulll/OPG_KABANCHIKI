@@ -11,9 +11,13 @@ SOURCES += \
 HEADERS += \
 
 DISTFILES += \
+    qml/components/HeaderComponent.qml \
+    qml/components/SideDrawerComponent.qml \
     qml/models/CategoryModel.qml \
     qml/models/OperationModel.qml \
-    qml/pages/SecondPage.qml \
+    qml/models/SideMenuModel.qml \
+    qml/pages/BasePage.qml \
+    qml/services/CategoryService.qml \
     qml/services/OperationService.qml \
     rpm/ru.template.WebBudget.spec \
 

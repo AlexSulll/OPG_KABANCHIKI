@@ -1,8 +1,10 @@
-//Модель категории
-/*Объект состоит из следующих полей:
-    id - индефикатор категории из БД
-    nameCategory - название категории
-    pathToIcon - путь до иконки категории
+/*
+  Изменено:
+    а) id - зарезервированное слово -> categoryId
+    б) нейросетка дала функцию, необходимую для обработки
+    в) Закинула статик массив для тестирования отображения
+        categoryId=0 - кнопка добавления новой категории
+        (+одна иконка в начале твоих папок иконок - в 2х сразу)
 */
 import QtQuick 2.0
 import Sailfish.Silica 1.0
@@ -10,18 +12,30 @@ import Sailfish.Silica 1.0
 QtObject {
     objectName: "CategoryModel"
 
-    property int id: 0
-    property string nameCategory: ""
-    property string pathToIcon: ""
+    property var categories: []
 
-    function fromJson(json) {
+    // Инициализация с тестовыми данными
+    Component.onCompleted: {
+        categories = [
+            {categoryId: 0, nameCategory: "Добавить", pathToIcon: "../icons/Expense/addIcon.svg"},
+            {categoryId: 1, nameCategory: "Магазины", pathToIcon: "../icons/Expense/CafeIcon.svg"},
+            {categoryId: 2, nameCategory: "Образование", pathToIcon: "../icons/Expense/EducationIcon.svg"}
+        ];
+    }
+
+    // Загрузка данных из JSON
+    function loadFromJson(jsonData) {
         try {
-            id = json['id'];
-            nameCategory = json['nameCategory'];
-            pathToIcon = json['pathToIcon'];
-        } catch (e) {
-            return False;
+            categories = JSON.parse(jsonData);
+            return true;
+        } catch(e) {
+            console.error("Error parsing JSON:", e);
+            return false;
         }
-        return True;
+    }
+
+    // Добавление новой категории
+    function addCategory(category) {
+        categories.push(category);
     }
 }

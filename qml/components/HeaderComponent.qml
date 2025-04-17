@@ -8,7 +8,7 @@ Rectangle {
     id: headerRoot
     width: parent.width
     height: parent.height / 7
-    color: "#191546"
+    color: "#24224f"
 
     property string headerText: ""
     property int fontSize: Theme.fontSizeExtraLarge*2

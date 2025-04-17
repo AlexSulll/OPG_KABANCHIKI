@@ -15,98 +15,197 @@ Page {
 
     property var categories: categoryModel.categories
 
-    HeaderComponent {
-        id: header
-        headerText: "Добавление"
-        fontSize: Theme.fontSizeExtraLarge
-        color: "transparent"
-        showIcon: false
-    }
+    SilicaFlickable {
+        anchors.fill: parent
+        contentHeight: contentColumn.height
 
-    // Grid для отображения категорий
-    SilicaGridView {
-        id: categoriesGrid
-        anchors {
-            top: header.bottom
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
-            margins: Theme.paddingMedium
-        }
-        clip: true
+        Column {
+            id: contentColumn
+            width: parent.width
 
-        cellWidth: width / 3
-        cellHeight: cellWidth * 1.2
-
-        model: ListModel {
-            id: listModel
-            Component.onCompleted: updateModel()
-            function updateModel() {
-                clear();
-                for (var i = 0; i < categoryModel.categories.length; i++) {
-                    append(categoryModel.categories[i]);
-                }
+            HeaderComponent {
+                id: header
+                headerText: "Добавление"
+                fontSize: Theme.fontSizeExtraLarge
+                color: "transparent"
+                showIcon: false
             }
-        }
 
-        Connections {
-            target: categoryModel
-            onCategoriesChanged: listModel.updateModel()
-        }
+            // Grid для отображения категорий
+            SilicaGridView {
+                id: categoriesGrid
+                width: parent.width
+                height: cellHeight * Math.ceil(listModel.count / 3)
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    margins: Theme.paddingMedium
+                }
+                clip: true
 
-        // Отображение категорий
-        delegate: BackgroundItem {
-            width: categoriesGrid.cellWidth
-            height: categoriesGrid.cellHeight
-            clip: true
+                cellWidth: width / 3
+                cellHeight: cellWidth * 1.2
 
-            Column {
-                width: parent.width - Theme.paddingMedium*2
-                anchors.centerIn: parent
-                spacing: Theme.paddingSmall
-
-                Rectangle {
-                    width: parent.width * 0.8
-                    height: width
-                    radius: width/2
-                    color: Theme.rgba(Theme.highlightBackgroundColor, 0.2)
-                    anchors.horizontalCenter: parent.horizontalCenter
-
-                    Image {
-                        source: pathToIcon
-                        width: parent.width * 0.6
-                        height: width
-                        anchors.centerIn: parent
-                        sourceSize { width: width; height: height }
+                model: ListModel {
+                    id: listModel
+                    Component.onCompleted: updateModel()
+                    function updateModel() {
+                        clear();
+                        for (var i = 0; i < categoryModel.categories.length; i++) {
+                            append(categoryModel.categories[i]);
+                        }
                     }
                 }
 
-                Label {
-                    text: nameCategory
-                    width: parent.width
-                    horizontalAlignment: Text.AlignHCenter
-                    wrapMode: Text.Wrap
-                    font.pixelSize: Theme.fontSizeSmall
-                    maximumLineCount: 2
-                    elide: Text.ElideRight
-                    color: pressed ? Theme.highlightColor : Theme.primaryColor
+                Connections {
+                    target: categoryModel
+                    onCategoriesChanged: listModel.updateModel()
+                }
+
+                delegate: BackgroundItem {
+                    width: categoriesGrid.cellWidth
+                    height: categoriesGrid.cellHeight
+                    clip: true
+
+                    Column {
+                        width: parent.width - Theme.paddingMedium*2
+                        anchors.centerIn: parent
+                        spacing: Theme.paddingSmall
+
+                        Rectangle {
+                            width: parent.width * 0.8
+                            height: width
+                            radius: width/2
+                            color: Theme.rgba(Theme.highlightBackgroundColor, 0.2)
+                            anchors.horizontalCenter: parent.horizontalCenter
+
+                            Image {
+                                source: pathToIcon
+                                width: parent.width * 0.6
+                                height: width
+                                anchors.centerIn: parent
+                                sourceSize { width: width; height: height }
+                            }
+                        }
+
+                        Label {
+                            text: nameCategory
+                            width: parent.width
+                            horizontalAlignment: Text.AlignHCenter
+                            wrapMode: Text.Wrap
+                            font.pixelSize: Theme.fontSizeSmall
+                            maximumLineCount: 2
+                            elide: Text.ElideRight
+                            color: pressed ? Theme.highlightColor : Theme.primaryColor
+                        }
+                    }
+
+                    onClicked: {
+                        console.log("Selected category:", nameCategory, "categoryId:", categoryId);
+                    }
                 }
             }
-            /*
-              Здесь хочу организовать автоматическое переключение на твои поля
-              которые потом будут располагаться ниже и выскакивающая клава с цифрами
-            */
-            onClicked: {
-                console.log("Selected category:", nameCategory, "categoryId:", categoryId);
+
+            Column {
+                id: inputColumn
+                width: parent.width
+                spacing: Theme.paddingLarge
+                anchors.margins: Theme.paddingMedium
+
+                TextField {
+                    width: parent.width
+                    placeholderText: qsTr("Сумма операции")
+                    inputMethodHints: Qt.ImhDigitsOnly
+                    validator: IntValidator { bottom: 1 }
+                    onTextChanged: operationPage.amount = text
+                }
+
+                TextField {
+                    id: dateField
+                    width: parent.width
+                    placeholderText: qsTr("Дата операции (дд.мм.гггг)")
+                    onClicked: dateDialog.open()
+                    onTextChanged: operationPage.date = text
+                }
+
+                ComboBox {
+                    width: parent.width
+                    label: qsTr("Тип операции")
+                    menu: ContextMenu {
+                        MenuItem { text: qsTr("Расход") }
+                        MenuItem { text: qsTr("Доход") }
+                    }
+                    onCurrentIndexChanged: {
+                        operationPage.action = currentIndex
+                    }
+                }
+
+                TextArea {
+                    width: parent.width
+                    height: Theme.itemSizeLarge
+                    placeholderText: qsTr("Комментарий")
+                    inputMethodHints: Qt.ImhNoPredictiveText
+                    onTextChanged: operationPage.desc = text
+                }
+
+                Button {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    text: qsTr("Сохранить")
+                    onClicked: {
+                        if (operationService) {
+                            var op = {
+                                amount: operationPage.amount,
+                                action: operationPage.action,
+                                category: operationPage.category,
+                                date: operationPage.date,
+                                desc: operationPage.desc
+                            }
+                            operationService.addOperation(op)
+                            operationModel.add(op)
+                            pageStack.pop()
+                        }
+                    }
+                }
             }
         }
-        /*
-          Тут прикреплён или скопирован твоя форма
-        */
-        VerticalScrollDecorator {}
     }
 
-    // Нагенерено
+    // Календарь в стиле Sailfish OS
+    Dialog {
+        id: dateDialog
+        width: parent.width
+        height: column.height + Theme.paddingLarge * 2
+        anchors.centerIn: parent
+
+        Column {
+            id: column
+            width: parent.width
+            spacing: Theme.paddingLarge
+
+            DatePicker {
+                id: datePicker
+                width: parent.width
+                date: new Date()
+            }
+
+            Button {
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: qsTr("Готово")
+                onClicked: {
+                    dateField.text = Qt.formatDate(datePicker.date, "dd.MM.yyyy")
+                    dateDialog.close()
+                }
+            }
+        }
+
+        // Закрытие при клике вне области
+        MouseArea {
+            anchors.fill: parent
+            enabled: dateDialog.visible
+            onClicked: dateDialog.close()
+        }
+    }
+
     function addNewCategory() {
         var newCategory = {
             categoryId: 5,

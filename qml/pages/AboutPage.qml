@@ -14,6 +14,8 @@ Page {
     }
 
     property var categories: categoryModel.categories
+    property int selectedCategoryId: -1 // Хранит ID выбранной категории
+
 
     SilicaFlickable {
         anchors.fill: parent
@@ -63,9 +65,17 @@ Page {
                 }
 
                 delegate: BackgroundItem {
+                    id: delegateItem
                     width: categoriesGrid.cellWidth
                     height: categoriesGrid.cellHeight
                     clip: true
+
+                    // Фон для выделения
+                    Rectangle {
+                        anchors.fill: parent
+                        color: selectedCategoryId === categoryId ? Theme.rgba(Theme.highlightBackgroundColor, 0.2) : "transparent"
+                        radius: Theme.paddingSmall
+                    }
 
                     Column {
                         width: parent.width - Theme.paddingMedium*2
@@ -76,7 +86,7 @@ Page {
                             width: parent.width * 0.8
                             height: width
                             radius: width/2
-                            color: Theme.rgba(Theme.highlightBackgroundColor, 0.2)
+                            color: selectedCategoryId === categoryId ? Theme.highlightColor : Theme.rgba(Theme.highlightBackgroundColor, 0.2)
                             anchors.horizontalCenter: parent.horizontalCenter
 
                             Image {
@@ -96,12 +106,14 @@ Page {
                             font.pixelSize: Theme.fontSizeSmall
                             maximumLineCount: 2
                             elide: Text.ElideRight
-                            color: pressed ? Theme.highlightColor : Theme.primaryColor
+                            color: selectedCategoryId === categoryId ? Theme.highlightColor : (pressed ? Theme.highlightColor : Theme.primaryColor)
                         }
                     }
 
                     onClicked: {
                         console.log("Selected category:", nameCategory, "categoryId:", categoryId);
+                        selectedCategoryId = categoryId;
+                        operationPage.category = categoryId; // Обновляем выбранную категорию
                     }
                 }
             }

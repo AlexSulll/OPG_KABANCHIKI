@@ -4,42 +4,42 @@
 <context>
     <name>AboutPage</name>
     <message>
-        <location filename="../qml/pages/AboutPage.qml" line="117"/>
+        <location filename="../qml/pages/AboutPage.qml" line="129"/>
         <source>Сумма операции</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AboutPage.qml" line="126"/>
+        <location filename="../qml/pages/AboutPage.qml" line="138"/>
         <source>Дата операции (дд.мм.гггг)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AboutPage.qml" line="133"/>
+        <location filename="../qml/pages/AboutPage.qml" line="145"/>
         <source>Тип операции</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AboutPage.qml" line="135"/>
+        <location filename="../qml/pages/AboutPage.qml" line="147"/>
         <source>Расход</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AboutPage.qml" line="136"/>
+        <location filename="../qml/pages/AboutPage.qml" line="148"/>
         <source>Доход</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AboutPage.qml" line="146"/>
+        <location filename="../qml/pages/AboutPage.qml" line="158"/>
         <source>Комментарий</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AboutPage.qml" line="153"/>
+        <location filename="../qml/pages/AboutPage.qml" line="165"/>
         <source>Сохранить</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AboutPage.qml" line="193"/>
+        <location filename="../qml/pages/AboutPage.qml" line="205"/>
         <source>Готово</source>
         <translation type="unfinished"></translation>
     </message>

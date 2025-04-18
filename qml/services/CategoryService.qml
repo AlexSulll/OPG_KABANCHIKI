@@ -2,38 +2,39 @@ import QtQuick 2.0
 import QtQuick.LocalStorage 2.0
 
 QtObject {
-    property string databaseName: "WebBudgetDB"
+    objectName: "categoryService"
 
     function getDatabase() {
-        return LocalStorage.openDatabaseSync(databaseName, "1.0", "Category DB", 100000);
+        return LocalStorage.openDatabaseSync("WebBudgetDB", "1.0", "WebBudget storage", 1000000)
     }
 
     function initialize() {
-        var db = getDatabase();
+        var db = getDatabase()
         db.transaction(function(tx) {
-            tx.executeSql('CREATE TABLE IF NOT EXISTS categories (id INTEGER PRIMARY KEY AUTOINCREMENT, nameCategory TEXT, typeCategory TEXT, pathToIcon TEXT)');
-        });
+            tx.executeSql('CREATE TABLE IF NOT EXISTS categories (categoryId INTEGER PRIMARY KEY AUTOINCREMENT, nameCategory TEXT, typeCategory INTEGER, pathToIcon TEXT)')
+        })
     }
 
-    function addCategory(nameCategory, typeCategory, pathToIcon) {
-        var db = getDatabase();
-        db.transaction(function(tx) {
-            tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES (?, ?, ?)',
-                          [nameCategory, typeCategory, pathToIcon]);
-        });
-    }
-
-    function getCategoriesByType(typeCategory) {
-        var db = getDatabase();
-        var results = [];
+    function loadCategories(typeCategory) {
+        var db = getDatabase()
+        var result = []
         db.readTransaction(function(tx) {
-            var rs = tx.executeSql('SELECT * FROM categories WHERE typeCategory = ?', [typeCategory]);
-            for (var i = 0; i < rs.rows.length; i++) {
-                results.push(rs.rows.item(i));
+            var rs = tx.executeSql("SELECT * FROM categories WHERE typeCategory = ? ORDER BY categoryId", [typeCategory])
+            for (var i = 0; i < rs.rows.length; ++i) {
+                result.push(rs.rows.item(i))
             }
-        });
-        return results;
+        })
+        return result
     }
 
-    Component.onCompleted: initialize()
+    function addCategory(category) {
+        var db = getDatabase()
+        db.transaction(function(tx) {
+            tx.executeSql("INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES (?, ?, ?)", [
+                category.nameCategory,
+                category.typeCategory,
+                category.pathToIcon
+            ])
+        })
+    }
 }

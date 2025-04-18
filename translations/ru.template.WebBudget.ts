@@ -12,37 +12,37 @@
 <context>
     <name>OperationPage</name>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="134"/>
+        <location filename="../qml/pages/OperationPage.qml" line="139"/>
         <source>Сумма операции</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="142"/>
+        <location filename="../qml/pages/OperationPage.qml" line="147"/>
         <source>Дата операции (дд.мм.гггг)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="164"/>
+        <location filename="../qml/pages/OperationPage.qml" line="169"/>
         <source>Тип операции</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="166"/>
+        <location filename="../qml/pages/OperationPage.qml" line="171"/>
         <source>Расход</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="167"/>
+        <location filename="../qml/pages/OperationPage.qml" line="172"/>
         <source>Доход</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="177"/>
+        <location filename="../qml/pages/OperationPage.qml" line="182"/>
         <source>Комментарий</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="184"/>
+        <location filename="../qml/pages/OperationPage.qml" line="190"/>
         <source>Сохранить</source>
         <translation type="unfinished"></translation>
     </message>

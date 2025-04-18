@@ -8,34 +8,27 @@
 */
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import "../services" as Services
 
-QtObject {
+ListModel {
+    id: categoryModel
     objectName: "CategoryModel"
 
     property var categories: []
 
+    Services.CategoryService {
+            id: categoryService
+    }
+
     // Инициализация с тестовыми данными
-    Component.onCompleted: {
-        categories = [
-            {categoryId: 0, nameCategory: "Добавить", pathToIcon: "../icons/Expense/addIcon.svg"},
-            {categoryId: 1, nameCategory: "Магазины", pathToIcon: "../icons/Expense/CafeIcon.svg"},
-            {categoryId: 2, nameCategory: "Образование", pathToIcon: "../icons/Expense/EducationIcon.svg"}
-        ];
+
+    function loadCategoriesByType(typeCategory) {
+            Services.categoryService.initialize()
+            categories = Services.categoryService.loadCategories(typeCategory)
     }
 
-    // Загрузка данных из JSON
-    function loadFromJson(jsonData) {
-        try {
-            categories = JSON.parse(jsonData);
-            return true;
-        } catch(e) {
-            console.error("Error parsing JSON:", e);
-            return false;
-        }
-    }
-
-    // Добавление новой категории
     function addCategory(category) {
-        categories.push(category);
+            Services.categoryService.addCategory(category)
+            loadCategoriesByType(category.typeCategory)  // Перезагружаем
     }
 }

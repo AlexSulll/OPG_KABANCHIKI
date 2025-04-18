@@ -6,6 +6,8 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../components"
+import "../services" as Services
+import "../models" as Models
 
     Page {
         id: root
@@ -37,6 +39,27 @@ import "../components"
         // Компонент вызова бургера
         SideDrawerComponent {
             id: sideDrawer
+        }
+
+//        Models.OperationModel {
+//            id: operationModel
+//        }
+
+//        Services.OperationService {
+//            id: operationService
+//        }
+
+        Services.CategoryService {
+            id: categoryService
+        }
+
+        Models.CategoryModel {
+            id: categoryModel
+        }
+
+        Component.onCompleted: {
+            operationService.initialize()
+            categoryModel.loadCategoriesByType(0)
         }
 
         // Нижняя панель
@@ -128,8 +151,12 @@ import "../components"
 
                                 // Добавлено автоматическое закрытие бургера при условии перехода,
                                 // когда его состояние open
+//                                console.log(operationModel)
                                 sideDrawer.close();
-                                pageStack.push(Qt.resolvedUrl("OperationPage.qml"))
+                                pageStack.push(Qt.resolvedUrl("OperationPage.qml"), {
+//                                    operationModel: operationModel
+//                                    operationService: operationService
+                                })
                             }
                         }
                     }

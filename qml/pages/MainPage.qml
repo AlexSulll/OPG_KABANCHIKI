@@ -5,6 +5,7 @@ import "../services" as Services
 import "../models" as Models
 
 BasePage {
+    id: mainpage
     property string selectedTab: "expenses"
 
     HeaderComponent {
@@ -12,12 +13,4 @@ BasePage {
         headerText: "Баланс"
         selectedTab: parent.selectedTab
     }
-//    Models.OperationModel {
-//            id: operationModel
-//    }
-
-//    Services.OperationService {
-//           id: operationService
-//    }
-
 }

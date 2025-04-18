@@ -9,11 +9,11 @@ Page {
     allowedOrientations: Orientation.All
 
     // Экземпляр модели
-    CategoryModel {
-        id: categoryModel
-    }
+//    CategoryModel {
+//        id: categoryModel
+//    }
 
-    property var categories: categoryModel.categories
+    property var categories: []
 
     property string amount: ""
     property int action: 0
@@ -22,6 +22,13 @@ Page {
     property string desc: ""
     property var operationModel
     property var operationService
+    property var categoryModel
+    property var categoryService
+
+    Component.onCompleted: {
+        categoryModel.loadCategoriesByType(action)
+        categories = categoryModel.categories
+    }
 
     SilicaFlickable {
         anchors.fill: parent
@@ -56,7 +63,10 @@ Page {
 
                 model: ListModel {
                     id: listModel
-                    Component.onCompleted: updateModel()
+                    Component.onCompleted: {
+                        categoryModel.loadCategoriesByType(0)
+                        updateModel()
+                    }
                     function updateModel() {
                         clear();
                         for (var i = 0; i < categoryModel.categories.length; i++) {
@@ -65,10 +75,10 @@ Page {
                     }
                 }
 
-                Connections {
-                    target: categoryModel
-                    onCategoriesChanged: listModel.updateModel()
-                }
+//                Connections {
+//                    target: categoryModel
+//                    onCategoriesChanged: listModel.updateModel()
+//                }
 
                 delegate: BackgroundItem {
                     id: delegateItem
@@ -96,7 +106,7 @@ Page {
                             anchors.horizontalCenter: parent.horizontalCenter
 
                             Image {
-                                source: pathToIcon
+                                source: categoryModel.categories[index].pathToIcon
                                 width: parent.width * 0.6
                                 height: width
                                 anchors.centerIn: parent
@@ -105,7 +115,7 @@ Page {
                         }
 
                         Label {
-                            text: nameCategory
+                            text: categoryModel.categories[index].nameCategory
                             width: parent.width
                             horizontalAlignment: Text.AlignHCenter
                             wrapMode: Text.Wrap
@@ -118,7 +128,7 @@ Page {
 
                     onClicked: {
                         console.log("Selected category:", nameCategory, "categoryId:", categoryId);
-                        operationPage.selectedCategoryId = selectedCategoryId; // Обновляем выбранную категорию
+                        operationPage.selectedCategoryId = categoryId; // Обновляем выбранную категорию
                     }
                 }
             }
@@ -184,21 +194,21 @@ Page {
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: qsTr("Сохранить")
                     onClicked: {
+                        console.log("Save button clicked");
                         if (operationService) {
                             var op = {
                                 amount: amount,
                                 action: action,
-                                category: category,
+                                category: selectedCategoryId,
                                 date: date,
                                 desc: desc
                             }
-                            console.log("pageStack")
-                            /*
-                              TODO: Кнопка в принципе не работает, даже ничего не выводит по какой-то причине
-                              */
+                            console.log("Saving operation:", JSON.stringify(op))
                             operationService.addOperation(op)
                             operationModel.add(op)
                             pageStack.pop()
+                        } else {
+                            console.log("operationService is null")
                         }
                     }
                 }

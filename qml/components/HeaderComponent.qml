@@ -15,6 +15,7 @@ Rectangle {
     property bool showIcon: true
     property string selectedTab: "expenses"
 
+
     // Верхняя часть с текстом и иконкой
     Row {
         id: balanceRow
@@ -71,6 +72,7 @@ Rectangle {
                 anchors.fill: parent
                 onClicked: headerRoot.selectedTab = "revenue"
             }
+
         }
     }
 }

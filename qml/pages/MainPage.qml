@@ -8,9 +8,30 @@ BasePage {
     id: mainpage
     property string selectedTab: "expenses"
 
+    // Экземпляр сервиса
+    Services.CategoryService {
+        id: categoryService
+        Component.onCompleted: initialize()
+    }
+
     HeaderComponent {
         id: header
         headerText: "Баланс"
-        selectedTab: parent.selectedTab
+        selectedTab: mainpage.selectedTab
+        onSelectedTabChanged: {
+                mainpage.selectedTab = header.selectedTab; // Обновляем родителя
+                console.log("Выбран таб:", header.selectedTab);
+       }
+    }
+
+    // Кнопка удаления
+    Button {
+        text: "Удалить все категории"
+        anchors.centerIn: parent
+        color: "red"
+        onClicked: {
+            categoryService.dropCategories(); // Вызов метода через локальный id
+            console.log("Категории удалены");
+        }
     }
 }

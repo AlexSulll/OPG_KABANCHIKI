@@ -1,41 +1,44 @@
-/*
-  Изменено:
-    а) id - зарезервированное слово -> categoryId
-    б) нейросетка дала функцию, необходимую для обработки
-    в) Закинула статик массив для тестирования отображения
-        categoryId=0 - кнопка добавления новой категории
-        (+одна иконка в начале твоих папок иконок - в 2х сразу)
-*/
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import "../services" as Services
 
-QtObject {
+ListModel {
+    id: categoryModel
     objectName: "CategoryModel"
 
-    property var categories: []
 
-    // Инициализация с тестовыми данными
-    Component.onCompleted: {
-        categories = [
-            {categoryId: 0, nameCategory: "Добавить", pathToIcon: "../icons/Expense/addIcon.svg"},
-            {categoryId: 1, nameCategory: "Магазины", pathToIcon: "../icons/Expense/CafeIcon.svg"},
-            {categoryId: 2, nameCategory: "Образование", pathToIcon: "../icons/Expense/EducationIcon.svg"}
-        ];
+    // Сервис для работы с данными
+    property var service: Services.CategoryService {
+        id: categoryService
+        Component.onCompleted: initialize()
     }
 
-    // Загрузка данных из JSON
-    function loadFromJson(jsonData) {
-        try {
-            categories = JSON.parse(jsonData);
-            return true;
-        } catch(e) {
-            console.error("Error parsing JSON:", e);
-            return false;
+    // Динамический список категорий
+    property var categories: []
+
+    // Загрузка категорий по типу
+    function loadCategoriesByType(type) {
+        categories = service.loadCategories(type);
+        console.log("Загружены категории:", JSON.stringify(categories));
+        updateModel();
+    }
+
+    // Обновление ListModel
+    function updateModel() {
+        clear();
+        for (var i = 0; i < categories.length; i++) {
+            append({
+                categoryId: categories[i].categoryId,
+                nameCategory: categories[i].nameCategory,
+                pathToIcon: categories[i].pathToIcon,
+                typeCategory: categories[i].typeCategory
+            });
         }
     }
 
     // Добавление новой категории
     function addCategory(category) {
-        categories.push(category);
+        service.addCategory(category);
+        loadCategoriesByType(category.typeCategory);
     }
 }

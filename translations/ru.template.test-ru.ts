@@ -48,8 +48,8 @@
     <name>DefaultCoverPage</name>
     <message>
         <location filename="../qml/cover/DefaultCoverPage.qml" line="10"/>
-        <source>Template</source>
-        <translation>Шаблон</translation>
+        <source>WebBudget</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

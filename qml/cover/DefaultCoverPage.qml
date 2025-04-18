@@ -7,9 +7,9 @@ CoverBackground {
     CoverTemplate {
         objectName: "applicationCover"
         primaryText: "App"
-        secondaryText: qsTr("Template")
+        secondaryText: qsTr("WebBudget")
         icon {
-            source: Qt.resolvedUrl("../icons/test.svg")
+            source: Qt.resolvedUrl("../icons/WebBudget.svg")
             sourceSize { width: icon.width; height: icon.height }
         }
     }

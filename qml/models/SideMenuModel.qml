@@ -9,7 +9,7 @@ ListModel {
     ListElement {
         text: "Добавить"
         icon: "icon-splus-add"
-        page: "../pages/AboutPage.qml"
+        page: "../pages/OperationPage.qml"
     }
     // заглушка - не указан точный путь
     ListElement {

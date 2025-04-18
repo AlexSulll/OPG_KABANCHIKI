@@ -26,7 +26,7 @@ Rectangle {
         spacing: Theme.paddingMedium
 
         Image {
-            source: "../icons/budgetIcon.svg"
+            source: "../icons/WebBudget.svg"
             height: Theme.iconSizeLarge
             width: Theme.iconSizeLarge
             visible: headerRoot.showIcon

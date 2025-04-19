@@ -1,21 +1,13 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../components" as Components
+import "../services" as Services
+import "../models" as Models
 
 Page {
     id: operationPage
     allowedOrientations: Orientation.All
     anchors.centerIn: parent
-
-    property var operationService
-    property var categoryModel
-    property var selectedCategory: {
-        if(categoryModel && selectedCategoryId !== -1) {
-            return categoryModel.getCategoryById(selectedCategoryId)
-        }
-        return null
-    }
-    property var mainPage: null
 
     property string amount: ""
     property int selectedCategoryId: -1
@@ -23,24 +15,35 @@ Page {
     property string date: Qt.formatDate(new Date(), "dd.MM.yyyy")
     property string desc: ""
 
-    //Ломает почему-то
-    onStatusChanged: {
-//        if (status === PageStatus.Active) {
-//            mainPage = pageStack.find(function(page) {
-//                return page.objectName === "MainPage";
-//            });
-        if (categoryModel) {
-            categoryModel.loadCategoriesByType(action)
-        }
+    property var selectedCategory: null
+    property var operationModel
+
+    Services.CategoryService {
+        id: categoryService
+    }
+
+    Services.OperationService {
+        id: operationService
+    }
+
+    Models.OperationModel {
+        id: operationModel
     }
 
     onAmountChanged: {
-        console.log(JSON.stringify(categoryModel))
         console.log(JSON.stringify(selectedCategory))
         console.log(JSON.stringify(action))
-//        if (categoryModel) {
-//            categoryModel.loadCategoriesByType(action);
-//        }
+    }
+
+    Component.onCompleted: {
+            if (selectedCategoryId !== -1) {
+                // 3. Исправляем название метода (латинская 'C')
+                var categories = categoryService.loadCategoriesByCategoryId(selectedCategoryId);
+                if (categories.length > 0) {
+                    selectedCategory = categories[0];
+                    console.log("Категория:", selectedCategory.nameCategory);
+                }
+            }
     }
 
     SilicaFlickable {
@@ -90,28 +93,20 @@ Page {
                     enabled: amount !== "" && selectedCategoryId !== -1
                     onClicked: {
                         console.log(amount, action, selectedCategoryId, date, desc)
-                        if (operationService) {
-                            operationService.addOperation({
-                                amount: parseInt(amount),
-                                action: action,
-                                category: selectedCategoryId,
-                                date: date,
-                                desc: desc
-                            });
-
-                            if (mainPage.operationModel) {
-                                mainPage.operationModel.refresh();
-                            }
-
-                            pageStack.pop(mainPage);
+                        var operationAmount = parseInt(amount);
+                        operationService.addOperation({
+                                    amount: operationAmount,
+                                    action: action,
+                                    categoryId: selectedCategoryId,
+                                    date: date,
+                                    desc: desc
+                        });
+                            operationModel.refresh();
 
                             amount = "";
                             selectedCategoryId = -1;
                             desc = "";
-
-                            if (mainPage) mainPage.refreshOperations()
-                            pageStack.pop()
-//                            Qt.callLater(function() { pageStack.pop(); });
+                            pageStack.replaceAbove(null, Qt.resolvedUrl("MainPage.qml"))
                         }
                     }
                 }
@@ -130,4 +125,3 @@ Page {
                 }
             }
     }
-}

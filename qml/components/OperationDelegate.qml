@@ -28,7 +28,11 @@ BackgroundItem {
             anchors.verticalCenter: parent.verticalCenter
 
             Label {
-                text: operationData.category || "Без категории"
+                text: {
+                        // Получаем категорию по ID из CategoryModel
+                        var category = categoryModel.getCategoryById(operationData.categoryId);
+                        return category ? category.nameCategory : "Без категории";
+                }
                 color: Theme.primaryColor
                 font.pixelSize: Theme.fontSizeSmall
             }

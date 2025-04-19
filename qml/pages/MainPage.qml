@@ -9,6 +9,7 @@ BasePage {
     objectName: "MainPage"
 
     property string selectedTab: "expenses"
+//    property alias self: mainPage
 
     // Экземпляр сервиса
     Services.CategoryService {

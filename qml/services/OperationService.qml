@@ -13,7 +13,14 @@ QtObject {
     function initialize() {
         var db = getDatabase()
         db.transaction(function(tx) {
-            tx.executeSql('CREATE TABLE IF NOT EXISTS operations (id INTEGER PRIMARY KEY AUTOINCREMENT, amount INTEGER, action INTEGER, category TEXT, date TEXT, desc TEXT)')
+            tx.executeSql('CREATE TABLE IF NOT EXISTS operations (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                amount INTEGER,
+                action INTEGER,
+                categoryId INTEGER,
+                date TEXT,
+                desc TEXT
+            )');
         })
     }
 
@@ -32,10 +39,10 @@ QtObject {
     function addOperation(operation) {
         var db = getDatabase()
         db.transaction(function(tx) {
-            tx.executeSql('INSERT INTO operations (amount, action, category, date, desc) VALUES (?, ?, ?, ?, ?)', [
+            tx.executeSql('INSERT INTO operations (amount, action, categoryId, date, desc) VALUES (?, ?, ?, ?, ?)', [
                 operation.amount,
                 operation.action,
-                operation.category,
+                operation.categoryId,
                 operation.date,
                 operation.desc
             ])

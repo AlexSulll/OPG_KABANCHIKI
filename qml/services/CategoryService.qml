@@ -75,7 +75,7 @@ QtObject {
     }
 
     //Загрузка категории по ID
-    function loadCategoriesByСategoryId(categoryId) {
+    function loadCategoriesByCategoryId(categoryId) {
         var db = getDatabase();
         var result = [];
         db.readTransaction(function(tx) {

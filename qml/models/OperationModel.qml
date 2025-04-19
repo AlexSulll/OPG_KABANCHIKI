@@ -24,7 +24,7 @@ ListModel {
                     id: op.id,
                     amount: op.amount,
                     action: op.action,
-                    category: op.category,
+                    category: op.categoryId,
                     date: op.date,
                     desc: op.desc
             });
@@ -32,7 +32,9 @@ ListModel {
     }
 
     function add(operation) {
-        append(operation)
+        console.log("Данные операции:", operation);
+        service.addOperation(operation);
+        refresh();
     }
 
     function refresh() {

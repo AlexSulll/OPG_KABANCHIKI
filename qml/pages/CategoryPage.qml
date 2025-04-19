@@ -9,6 +9,7 @@ Page {
     // Принимаемые параметры
     property var categoryModel
     property int action: 0
+    property var mainPage: null
 
     // Локальные свойства
     property int selectedCategoryId: -1
@@ -64,10 +65,8 @@ Page {
                             isSelected: selectedCategoryId === model.categoryId
                             onCategorySelected: {
                                 var page = pageStack.push(Qt.resolvedUrl("OperationPage.qml"), {
-                                        categoryModel: categoryModel,
                                         action: action,
-                                        selectedCategoryId: categoryId, // Передаем ID выбранной категории
-//                                        mainPage: mainPage
+                                        selectedCategoryId: categoryId // Передаем ID выбранной категории
                                 });
                             }
                         }

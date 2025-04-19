@@ -63,11 +63,11 @@ Page {
                             pathToIcon: model.pathToIcon
                             isSelected: selectedCategoryId === model.categoryId
                             onCategorySelected: {
-                                selectedCategoryId = model.categoryId
-                                var page = pageStack.push(Qt.resolvedUrl("OperationPage.qml"))
-                                page.selectedCategoryId = selectedCategoryId
-                                page.action = action
-                                page.categoryModel = categoryModel
+                                var page = pageStack.push(Qt.resolvedUrl("OperationPage.qml"), {
+                                        categoryModel: categoryModel,
+                                        action: action,
+                                        selectedCategoryId: categoryId // Передаем ID выбранной категории
+                                })
                             }
                         }
 

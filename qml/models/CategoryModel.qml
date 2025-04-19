@@ -42,4 +42,18 @@ ListModel {
         service.addCategory(category);
         loadCategoriesByType(category.typeCategory);
     }
+
+    function getCategoryById(categoryId) {
+        for (var i = 0; i < categories.length; i++) {
+            if (categories[i].categoryId === categoryId) {
+                return {
+                    categoryId: categories[i].categoryId,
+                    nameCategory: categories[i].nameCategory,
+                    pathToIcon: categories[i].pathToIcon,
+                    typeCategory: categories[i].typeCategory
+                }
+            }
+        }
+        return null
+    }
 }

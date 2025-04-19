@@ -12,6 +12,7 @@ HEADERS += \
 
 DISTFILES += \
     qml/components/CategoryDelegate.qml \
+    qml/components/CategoryDisplay.qml \
     qml/components/HeaderComponent.qml \
     qml/components/SideDrawerComponent.qml \
     qml/models/CategoryModel.qml \

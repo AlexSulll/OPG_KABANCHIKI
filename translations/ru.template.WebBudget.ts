@@ -9,4 +9,12 @@
         <translation>WebBudget</translation>
     </message>
 </context>
+<context>
+    <name>OperationPage</name>
+    <message>
+        <location filename="../qml/pages/OperationPage.qml" line="69"/>
+        <source>Комментарий</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 </TS>

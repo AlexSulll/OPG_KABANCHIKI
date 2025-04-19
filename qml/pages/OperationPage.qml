@@ -1,12 +1,20 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import "../components" as Components
 
 Page {
     id: operationPage
     allowedOrientations: Orientation.All
+    anchors.centerIn: parent
 
     property var operationService
     property var categoryModel
+    property var selectedCategory: {
+        if(categoryModel && selectedCategoryId !== -1) {
+            return categoryModel.getCategoryById(selectedCategoryId)
+        }
+        return null
+    }
 
     property string amount: ""
     property int selectedCategoryId
@@ -14,9 +22,15 @@ Page {
     property string date: Qt.formatDate(new Date(), "dd.MM.yyyy")
     property string desc: ""
 
+    onStatusChanged: {
+        if (status === PageStatus.Active && categoryModel) {
+            categoryModel.loadCategoriesByType(action)
+        }
+    }
+
     onAmountChanged: {
         console.log(JSON.stringify(categoryModel))
-        console.log(JSON.stringify(selectedCategoryId))
+        console.log(JSON.stringify(selectedCategory))
         console.log(JSON.stringify(action))
 //        if (categoryModel) {
 //            categoryModel.loadCategoriesByType(action);
@@ -41,6 +55,11 @@ Page {
                     inputMethodHints: Qt.ImhDigitsOnly
                     validator: IntValidator { bottom: 1 }
                     onTextChanged: amount = text
+                }
+
+                Components.CategoryDisplay {
+                    width: parent.width
+                    categoryData: selectedCategory
                 }
 
                 TextField {

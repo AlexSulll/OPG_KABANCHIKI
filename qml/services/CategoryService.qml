@@ -40,6 +40,7 @@ QtObject {
     }
 
 
+
     function loadCategories(typeCategory) {
         var db = getDatabase();
         var result = [];

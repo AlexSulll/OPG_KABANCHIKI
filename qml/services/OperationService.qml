@@ -4,6 +4,8 @@ import QtQuick.LocalStorage 2.0
 QtObject {
     id: service
 
+    Component.onCompleted: initialize()
+
     function getDatabase() {
         return LocalStorage.openDatabaseSync("WebBudgetDB", "1.0", "WebBudget storage", 1000000)
     }
@@ -38,5 +40,24 @@ QtObject {
                 operation.desc
             ])
         })
+    }
+
+    function deleteOperation(operationId) {
+        var db = getDatabase()
+        db.transaction(function(tx) {
+            tx.executeSql('DELETE FROM operations WHERE id = ?', [operationId])
+        })
+    }
+
+    function getOperationsByType(type) {
+        var db = getDatabase()
+        var operations = []
+        db.readTransaction(function(tx) {
+            var rs = tx.executeSql('SELECT * FROM operations WHERE action = ?', [type])
+            for (var i = 0; i < rs.rows.length; i++) {
+                operations.push(rs.rows.item(i))
+            }
+        })
+        return operations
     }
 }

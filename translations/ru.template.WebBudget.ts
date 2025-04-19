@@ -12,7 +12,7 @@
 <context>
     <name>OperationPage</name>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="69"/>
+        <location filename="../qml/pages/OperationPage.qml" line="75"/>
         <source>Комментарий</source>
         <translation type="unfinished"></translation>
     </message>

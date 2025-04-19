@@ -15,15 +15,21 @@ Page {
         }
         return null
     }
+    property var mainPage: null
 
     property string amount: ""
-    property int selectedCategoryId
-    property int action
+    property int selectedCategoryId: -1
+    property int action: 0
     property string date: Qt.formatDate(new Date(), "dd.MM.yyyy")
     property string desc: ""
 
+    //Ломает почему-то
     onStatusChanged: {
-        if (status === PageStatus.Active && categoryModel) {
+//        if (status === PageStatus.Active) {
+//            mainPage = pageStack.find(function(page) {
+//                return page.objectName === "MainPage";
+//            });
+        if (categoryModel) {
             categoryModel.loadCategoriesByType(action)
         }
     }
@@ -92,7 +98,20 @@ Page {
                                 date: date,
                                 desc: desc
                             });
-                            Qt.callLater(function() { pageStack.pop(); });
+
+                            if (mainPage.operationModel) {
+                                mainPage.operationModel.refresh();
+                            }
+
+                            pageStack.pop(mainPage);
+
+                            amount = "";
+                            selectedCategoryId = -1;
+                            desc = "";
+
+                            if (mainPage) mainPage.refreshOperations()
+                            pageStack.pop()
+//                            Qt.callLater(function() { pageStack.pop(); });
                         }
                     }
                 }

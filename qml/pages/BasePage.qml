@@ -18,7 +18,11 @@ Page {
     }
 
     // Сервисы
-    Services.OperationService { id: operationService }
+    Services.OperationService {
+        id: operationService
+        Component.onCompleted: initialize()
+    }
+
     Services.CategoryService {
         id: categoryService
         Component.onCompleted: initialize()

@@ -6,12 +6,24 @@ import "../models" as Models
 
 BasePage {
     id: mainpage
+    objectName: "MainPage"
+
     property string selectedTab: "expenses"
 
     // Экземпляр сервиса
     Services.CategoryService {
         id: categoryService
         Component.onCompleted: initialize()
+    }
+
+    Services.OperationService {
+        id: operationService
+        Component.onCompleted: initialize()
+    }
+
+    Models.OperationModel {
+            id: operationModel
+            service: operationService
     }
 
     HeaderComponent {
@@ -24,6 +36,27 @@ BasePage {
        }
     }
 
+    SilicaListView {
+            anchors.fill: parent
+            model: operationModel
+
+            delegate: ListItem {
+                width: parent.width
+                contentHeight: Theme.itemSizeMedium
+
+                Label {
+                    text: "Сумма: " + model.amount + " ₽ | Категория: " + model.category
+                    anchors.centerIn: parent
+                }
+            }
+    }
+
+    Button {
+        anchors.centerIn: parent
+        text: "Обновить"
+        onClicked: operationModel.refresh()
+    }
+
     // Кнопка удаления
     Button {
         text: "Удалить все категории"
@@ -33,5 +66,9 @@ BasePage {
             categoryService.dropCategories(); // Вызов метода через локальный id
             console.log("Категории удалены");
         }
+    }
+
+    function refreshOperations() {
+            operationModel.refresh();
     }
 }

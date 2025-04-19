@@ -14,6 +14,7 @@ DISTFILES += \
     qml/components/CategoryDelegate.qml \
     qml/components/CategoryDisplay.qml \
     qml/components/HeaderComponent.qml \
+    qml/components/OperationDelegate.qml \
     qml/components/SideDrawerComponent.qml \
     qml/models/CategoryModel.qml \
     qml/models/OperationModel.qml \

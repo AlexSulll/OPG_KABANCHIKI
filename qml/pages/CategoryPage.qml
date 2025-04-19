@@ -66,8 +66,9 @@ Page {
                                 var page = pageStack.push(Qt.resolvedUrl("OperationPage.qml"), {
                                         categoryModel: categoryModel,
                                         action: action,
-                                        selectedCategoryId: categoryId // Передаем ID выбранной категории
-                                })
+                                        selectedCategoryId: categoryId, // Передаем ID выбранной категории
+//                                        mainPage: mainPage
+                                });
                             }
                         }
 

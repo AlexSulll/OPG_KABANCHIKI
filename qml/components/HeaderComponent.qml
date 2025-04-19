@@ -14,7 +14,14 @@ Rectangle {
     property int fontSize: Theme.fontSizeExtraLarge*2
     property bool showIcon: true
     property string selectedTab: "expenses"
+    property var operationModel: null
 
+    onSelectedTabChanged: {
+        if (operationModel) {
+            operationModel.loadByType(selectedTab === "expenses" ? 0 : 1)
+        }
+        console.log("Выбран таб:", selectedTab)
+    }
 
     // Верхняя часть с текстом и иконкой
     Row {

@@ -72,4 +72,17 @@ QtObject {
         });
         console.log("Все категории удалены");
     }
+
+    //Загрузка категории по ID
+    function loadCategoriesBycategoryId(categoryId) {
+        var db = getDatabase();
+        var result = [];
+        db.readTransaction(function(tx) {
+            var rs = tx.executeSql("SELECT * FROM categories WHERE categoryId = ?", [categoryId]);
+            for (var i = 0; i < rs.rows.length; ++i) {
+                result.push(rs.rows.item(i));
+            }
+        });
+        return result;
+    }
 }

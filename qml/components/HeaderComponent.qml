@@ -18,7 +18,7 @@ Rectangle {
 
     // Верхняя часть с текстом и иконкой
     Row {
-        id: balanceRow
+        id: balanceRow1
         anchors {
             top: parent.top
             horizontalCenter: parent.horizontalCenter
@@ -43,8 +43,9 @@ Rectangle {
 
     // Нижняя часть с переключателем расходы/доходы
     Row {
+        id: balanceRow2
         anchors {
-            bottom: parent.bottom
+            top: balanceRow1.bottom
             horizontalCenter: parent.horizontalCenter
             topMargin: Theme.paddingLarge
         }
@@ -58,7 +59,10 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: headerRoot.selectedTab = "expenses"
+                onClicked: {
+                    headerRoot.selectedTab = "expenses"
+                    action=0
+                }
             }
         }
 
@@ -70,7 +74,10 @@ Rectangle {
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: headerRoot.selectedTab = "revenue"
+                onClicked: {
+                    headerRoot.selectedTab = "revenue"
+                    action=1
+                }
             }
 
         }

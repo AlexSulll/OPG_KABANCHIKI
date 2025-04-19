@@ -67,7 +67,7 @@ Page {
                         anchors.top: gridFixContainer.top
                         cellWidth: width / 3
                         cellHeight: cellWidth * 1.2
-                        height: Math.max(implicitHeight, 900) // Минимум 400px
+                        height: Math.max(implicitHeight, 900)
                         model: categoryModel
                         interactive: false
 
@@ -76,7 +76,10 @@ Page {
                             nameCategory: model.nameCategory
                             pathToIcon: model.pathToIcon
                             isSelected: selectedCategoryId === model.categoryId
-                            onCategorySelected: selectedCategoryId = model.categoryId
+                            onCategorySelected: {
+                                selectedCategoryId = model.categoryId
+                                sumInput.forceActiveFocus()
+                            }
                         }
 
                         // Обновляем позицию при изменении модели
@@ -91,6 +94,7 @@ Page {
 
             // Поля ввода
             TextField {
+                id: sumInput
                 width: parent.width
                 anchors.top: categoriesGrid.bottom
                 placeholderText: "Сумма (руб)"

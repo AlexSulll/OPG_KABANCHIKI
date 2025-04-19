@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import QtQuick.LocalStorage 2.0
-
+import "../icons/Expense/"
 QtObject {
     objectName: "categoryService"
 
@@ -22,7 +22,19 @@ QtObject {
             // Проверка на пустую таблицу и добавление тестовых данных
             var check = tx.executeSql('SELECT COUNT(*) as count FROM categories');
             if (check.rows.item(0).count === 0) {
-                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Пусто", 0, "image://theme/icon-m-question")');
+                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Кафе", 0, "../icons/Expense/CafeIcon.svg")');
+                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Досуг", 0, "../icons/Expense/FreeTimeIcon.svg")');
+                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Образование", 0, "../icons/Expense/EducationIcon.svg")');
+                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Подарки", 0, "../icons/Expense/GiftIcon.svg")');
+                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Дом", 0, "../icons/Expense/HouseIcon.svg")');
+                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Продукты", 0, "../icons/Expense/ProductsIcon.svg")');
+                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Здоровье", 0, "../icons/Expense/HealthIcon.svg")');
+                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Добавить", 0, "../icons/Expense/addIcon.svg")');
+                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Зарплата", 1, "../icons/Revenue/SalaryIcon.svg")');
+                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Проценты по вкладу", 1, "../icons/Revenue/BankIcon.svg")');
+                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Подарок", 1, "../icons/Expense/GiftIcon.svg")');
+                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Другое", 1, "../icons/Revenue/OtherIcon.svg")');
+                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Добавить", 1, "../icons/Expense/addIcon.svg")');
             }
         });
     }

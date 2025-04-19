@@ -10,6 +10,12 @@ Page {
 
     // Добавляем свойство для управления видимостью панели
     property bool panelVisible: true
+    property string selectedTab: "expenses"
+    property int selectedAction: selectedTab === "revenue" ? 1 : 0
+
+    onSelectedTabChanged: {
+        console.log("Текущий таб:", selectedTab, "Действие:", selectedAction);
+    }
 
     // Сервисы
     Services.OperationService { id: operationService }
@@ -122,7 +128,7 @@ Page {
                             pageStack.push(Qt.resolvedUrl("OperationPage.qml"), {
                                 operationService: operationService,
                                 categoryModel: categoryModel,
-                                action: 0
+                                action: root.selectedAction
                             })
                         }
                     }

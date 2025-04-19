@@ -23,7 +23,16 @@ Page {
         }
     }
 
+    onActionChanged: {
+        console.log("Получено действие:", action);
+        if (categoryModel) {
+            categoryModel.loadCategoriesByType(action);
+        }
+    }
+
+
     SilicaFlickable {
+        anchors.top: balanceRow2.bottom
         anchors.fill: parent
         contentHeight: contentColumn.height
 
@@ -41,27 +50,49 @@ Page {
                 showIcon: false
             }
 
-            // Сетка категорий
-            GridView {
-                id: categoriesGrid
+            // Фиксированный контейнер для сетки с прокруткой
+            Item {
+                id: gridFixContainer
                 width: parent.width
-                height: cellHeight * Math.ceil(categoryModel.count / 3)
-                cellWidth: width / 3
-                cellHeight: cellWidth * 1.2
-                model: categoryModel
+                height: 900   // Фиксированная высота контейнера
+                clip: true // Обрезаем содержимое за пределами
 
-                delegate: Components.CategoryDelegate {
-                    categoryId: model.categoryId
-                    nameCategory: model.nameCategory
-                    pathToIcon: model.pathToIcon
-                    isSelected: selectedCategoryId === model.categoryId
-                    onCategorySelected: selectedCategoryId = model.categoryId
+                SilicaFlickable {
+                    anchors.fill: parent
+                    contentHeight: categoriesGrid.height
+
+                    GridView {
+                        id: categoriesGrid
+                        width: parent.width
+                        anchors.top: gridFixContainer.top
+                        cellWidth: width / 3
+                        cellHeight: cellWidth * 1.2
+                        height: Math.max(implicitHeight, 900) // Минимум 400px
+                        model: categoryModel
+                        interactive: false
+
+                        delegate: Components.CategoryDelegate {
+                            categoryId: model.categoryId
+                            nameCategory: model.nameCategory
+                            pathToIcon: model.pathToIcon
+                            isSelected: selectedCategoryId === model.categoryId
+                            onCategorySelected: selectedCategoryId = model.categoryId
+                        }
+
+                        // Обновляем позицию при изменении модели
+                        onModelChanged: {
+                            currentIndex = -1
+                            positionViewAtBeginning()
+                        }
+                    }
                 }
+                VerticalScrollDecorator {}
             }
 
             // Поля ввода
             TextField {
                 width: parent.width
+                anchors.top: categoriesGrid.bottom
                 placeholderText: "Сумма (руб)"
                 inputMethodHints: Qt.ImhDigitsOnly
                 validator: IntValidator { bottom: 1 }

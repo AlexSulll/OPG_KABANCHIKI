@@ -17,7 +17,11 @@ BasePage {
     HeaderComponent {
         id: header
         headerText: "Баланс"
-        selectedTab: parent.selectedTab
+        selectedTab: mainpage.selectedTab
+        onSelectedTabChanged: {
+                mainpage.selectedTab = header.selectedTab; // Обновляем родителя
+                console.log("Выбран таб:", header.selectedTab);
+       }
     }
 
     // Кнопка удаления

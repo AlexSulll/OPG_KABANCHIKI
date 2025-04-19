@@ -18,6 +18,7 @@ DISTFILES += \
     qml/models/OperationModel.qml \
     qml/models/SideMenuModel.qml \
     qml/pages/BasePage.qml \
+    qml/pages/OperationPage.qml \
     qml/services/CategoryService.qml \
     qml/services/OperationService.qml \
     rpm/ru.template.WebBudget.spec \

@@ -2,6 +2,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import QtQuick.LocalStorage 2.0
 import "../icons/Expense/"
+
 QtObject {
     objectName: "categoryService"
 
@@ -74,7 +75,7 @@ QtObject {
     }
 
     //Загрузка категории по ID
-    function loadCategoriesBycategoryId(categoryId) {
+    function loadCategoriesByСategoryId(categoryId) {
         var db = getDatabase();
         var result = [];
         db.readTransaction(function(tx) {

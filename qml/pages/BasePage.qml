@@ -125,8 +125,7 @@ Page {
                         anchors.fill: parent
                         onClicked: {
                             sideDrawer.close()
-                            pageStack.push(Qt.resolvedUrl("OperationPage.qml"), {
-                                operationService: operationService,
+                            pageStack.push(Qt.resolvedUrl("CategoryPage.qml"), {
                                 categoryModel: categoryModel,
                                 action: root.selectedAction
                             })

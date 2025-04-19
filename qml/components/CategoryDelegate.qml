@@ -18,6 +18,7 @@ BackgroundItem {
 
         // Иконка категории
         Rectangle {
+            id: iconContainer
             width: parent.width * 0.8
             height: width
             radius: width / 2
@@ -40,7 +41,7 @@ BackgroundItem {
         // Название категории
         Label {
             text: nameCategory
-            width: parent.width
+            anchors.horizontalCenter: iconContainer.horizontalCenter
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.Wrap
             maximumLineCount: 2

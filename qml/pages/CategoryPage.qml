@@ -20,6 +20,12 @@ Page {
         }
     }
 
+    Component.onCompleted: {
+        if (categoryModel) {
+            categoryModel.loadCategoriesByType(action);
+        }
+    }
+
     SilicaFlickable {
         anchors.fill: parent
         contentHeight: contentColumn.height

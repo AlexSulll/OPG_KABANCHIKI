@@ -1,11 +1,18 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import "../models" as Models
 
 Item {
     width: parent.width
     height: Theme.itemSizeMedium
 
     property var categoryData: null
+    property var categoryModel
+    property int action
+
+    Models.CategoryModel {
+        id: categoryModel
+    }
 
     Rectangle {
         width: parent.width - 2*Theme.horizontalPageMargin

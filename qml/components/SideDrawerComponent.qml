@@ -10,6 +10,7 @@ Item {
     anchors.fill: parent
     visible: false
 
+    property int action: 0
     property bool opened: false
 
     // Подключаем модель меню
@@ -80,6 +81,16 @@ Item {
 
                     onClicked: {
                         sideDrawer.close();
+                        if (page === "../pages/OperationPage.qml") {
+                            pageStack.push(Qt.resolvedUrl(page));
+                        }
+
+                        if (page === "../pages/CategoryPage.qml") {
+                            pageStack.push(Qt.resolvedUrl("../pages/CategoryPage.qml"), {
+                                    categoryModel: categoryModel,
+                                    action: 0 // или 1, в зависимости от контекста
+                            });
+                        }
 
                         /*
                             Тут надо доработать логику - скорее всего через стек
@@ -88,9 +99,9 @@ Item {
                             не было лишней прокрутки - убери условие - увидишь
                         */
 
-                        if (page !== "../pages/MainPage.qml") {
-                            pageStack.push(Qt.resolvedUrl(page));
-                        }
+//                        if (page !== "../pages/MainPage.qml") {
+//                            pageStack.push(Qt.resolvedUrl(page));
+//                        }
                     }
                 }
             }

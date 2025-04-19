@@ -17,6 +17,10 @@ Page {
         console.log("Текущий таб:", selectedTab, "Действие:", selectedAction);
     }
 
+    SideDrawerComponent {
+        action: selectedTab === "expenses" ? 0 : 1
+    }
+
     // Сервисы
     Services.OperationService {
         id: operationService

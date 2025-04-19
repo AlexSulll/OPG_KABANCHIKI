@@ -17,6 +17,7 @@ Page {
 
     property var selectedCategory: null
     property var operationModel
+    property var categoryModel
 
     Services.CategoryService {
         id: categoryService
@@ -30,9 +31,10 @@ Page {
         id: operationModel
     }
 
-    onAmountChanged: {
-        console.log(JSON.stringify(selectedCategory))
-        console.log(JSON.stringify(action))
+    onActionChanged: {
+        if (categoryModel) {
+            categoryModel.loadCategoriesByType(action);
+        }
     }
 
     Component.onCompleted: {

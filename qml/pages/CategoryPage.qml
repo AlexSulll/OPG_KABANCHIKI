@@ -70,10 +70,14 @@ Page {
                             pathToIcon: model.pathToIcon
                             isSelected: selectedCategoryId === model.categoryId
                             onCategorySelected: {
-                                var page = pageStack.push(Qt.resolvedUrl("OperationPage.qml"), {
+                                if (categoryId === 8 || categoryId === 13) {
+                                    pageStack.push(Qt.resolvedUrl("AddCategoryPage.qml"));
+                                } else {
+                                    pageStack.push(Qt.resolvedUrl("OperationPage.qml"), {
                                         action: action,
-                                        selectedCategoryId: categoryId // Передаем ID выбранной категории
+                                        selectedCategoryId: categoryId
                                 });
+                                }
                             }
                         }
 

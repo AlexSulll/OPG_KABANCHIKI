@@ -18,9 +18,7 @@ ListModel {
 
     // Загрузка категорий по типу
     function loadCategoriesByType(type) {
-        //console.log("Загрузка категорий для типа:", type);
         categories = service.loadCategories(type);
-        //console.log("Загружены категории:", JSON.stringify(categories));///////////////////////
         updateModel();
     }
 

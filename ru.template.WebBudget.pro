@@ -19,6 +19,7 @@ DISTFILES += \
     qml/models/CategoryModel.qml \
     qml/models/OperationModel.qml \
     qml/models/SideMenuModel.qml \
+    qml/pages/AddCategoryPage.qml \
     qml/pages/BasePage.qml \
     qml/pages/OperationPage.qml \
     qml/services/CategoryService.qml \

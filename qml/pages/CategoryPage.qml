@@ -71,7 +71,10 @@ Page {
                             isSelected: selectedCategoryId === model.categoryId
                             onCategorySelected: {
                                 if (categoryId === 8 || categoryId === 13) {
-                                    pageStack.push(Qt.resolvedUrl("AddCategoryPage.qml"));
+                                    pageStack.push(Qt.resolvedUrl("AddCategoryPage.qml"), {
+                                        categoryType: action,
+                                        categoryModel: categoryModel
+                                    });
                                 } else {
                                     pageStack.push(Qt.resolvedUrl("OperationPage.qml"), {
                                         action: action,

@@ -20,6 +20,7 @@ Rectangle {
         if (operationModel) {
             operationModel.loadByType(selectedTab === "expenses" ? 0 : 1)
         }
+        categoryModel.loadCategoriesByType(type);
         console.log("Выбран таб:", selectedTab)
     }
 

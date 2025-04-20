@@ -39,7 +39,6 @@ Page {
 
     Component.onCompleted: {
             if (selectedCategoryId !== -1) {
-                // 3. Исправляем название метода (латинская 'C')
                 var categories = categoryService.loadCategoriesByCategoryId(selectedCategoryId);
                 if (categories.length > 0) {
                     selectedCategory = categories[0];

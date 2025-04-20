@@ -4,7 +4,7 @@
 <context>
     <name>AddCategoryPage</name>
     <message>
-        <location filename="../qml/pages/AddCategoryPage.qml" line="78"/>
+        <location filename="../qml/pages/AddCategoryPage.qml" line="77"/>
         <source>Выберите иконку категории</source>
         <translation type="unfinished"></translation>
     </message>

@@ -18,6 +18,7 @@ Page {
     property var selectedCategory: null
     property var operationModel
     property var categoryModel
+    property var operationService
 
     Services.CategoryService {
         id: categoryService
@@ -25,10 +26,6 @@ Page {
 
     Services.OperationService {
         id: operationService
-    }
-
-    Models.OperationModel {
-        id: operationModel
     }
 
     onActionChanged: {
@@ -102,8 +99,6 @@ Page {
                                     date: date,
                                     desc: desc
                         });
-                            operationModel.refresh();
-
                             amount = "";
                             selectedCategoryId = -1;
                             desc = "";

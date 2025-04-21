@@ -36,7 +36,10 @@ Page {
     Models.CategoryModel {
         id: categoryModel
         service: categoryService
-        Component.onCompleted: loadCategoriesByType(0)
+        Component.onCompleted: {
+            loadCategoriesByType(1)
+            loadCategoriesByType(0)
+        }
     }
 
     // Основной контент
@@ -135,6 +138,8 @@ Page {
                             sideDrawer.close()
                             pageStack.push(Qt.resolvedUrl("CategoryPage.qml"), {
                                 categoryModel: categoryModel,
+                                operationModel: operationModel,
+                                operationService: operationService,
                                 action: root.selectedAction
                             })
                         }

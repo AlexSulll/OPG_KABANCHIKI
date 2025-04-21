@@ -22,6 +22,13 @@ ListModel {
         updateModel();
     }
 
+    function loadAllCategories() {
+        var expenses = service.loadCategories(0);
+        var revenues = service.loadCategories(1);
+        categories = expenses.concat(revenues);
+        updateModel();
+    }
+
     // Обновление ListModel
     function updateModel() {
         clear();

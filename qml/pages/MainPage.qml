@@ -9,6 +9,7 @@ BasePage {
     objectName: "MainPage"
 
     property string selectedTab: "expenses"
+    property int action: 0
     property var categoryModel: Models.CategoryModel {}
 
     // Экземпляр сервиса
@@ -27,10 +28,14 @@ BasePage {
             service: operationService
     }
 
+    Component.onCompleted: operationModel.loadByType(action)
+
     Models.CategoryModel {
         id: categoryModel
         service: categoryService
-        Component.onCompleted: loadCategoriesByType(0)
+        Component.onCompleted: {
+            loadAllCategories();
+        }
     }
 
     HeaderComponent {
@@ -40,7 +45,7 @@ BasePage {
         operationModel: operationModel
         onSelectedTabChanged: {
                 mainpage.selectedTab = header.selectedTab; // Обновляем родителя
-                operationModel.loadByType(header.selectedTab === "expenses" ? 0 : 1)
+                action: header.selectedTab === "expenses" ? 0 : 1;
        }
     }
 
@@ -68,8 +73,8 @@ BasePage {
 
                 Rectangle {
                     anchors.fill: parent
-                    radius: Theme.paddingSmall
-                    color: Theme.rgba(Theme.highlightBackgroundColor, 0.1)
+                    radius: Theme.paddingMedium
+                    color: Theme.rgba("#24224f", 0.9)
 
                     Row {
                         anchors.fill: parent
@@ -78,11 +83,12 @@ BasePage {
 
                         // Иконка категории
                         Image {
+                            id:icon
                             asynchronous: true
-                            width: Theme.iconSizeMedium  // Пример: 64px
+                            width: Theme.iconSizeMedium
                             height: width
                             anchors.verticalCenter: parent.verticalCenter
-                            source: categoryData ? "file://" + categoryData.pathToIcon : ""
+                            source: categoryData ? categoryData.pathToIcon : ""
                             sourceSize: Qt.size(width, height)
                             fillMode: Image.PreserveAspectFit
 
@@ -98,25 +104,20 @@ BasePage {
                                 }
                             }
 
-                            // Временная рамка для визуализации области
-                            Rectangle {
-                                anchors.fill: parent
-                                color: "transparent"
-                                border.color: "red"
-                                border.width: 1
-                            }
                         }
 
                         // Название категории и дата
                         Column {
                             width: parent.width * 0.6
                             anchors.verticalCenter: parent.verticalCenter
+                            anchors.left: icon.right
+                            anchors.leftMargin: Theme.paddingLarge
                             spacing: Theme.paddingSmall
 
                             Label {
                                 text: categoryData ? categoryData.nameCategory : "Без категории"
                                 color: Theme.primaryColor
-                                font.pixelSize: Theme.fontSizeSmall
+                                font.pixelSize: Theme.fontSizeLarge
                                 truncationMode: TruncationMode.Fade
                             }
 
@@ -127,13 +128,23 @@ BasePage {
                             }
                         }
 
-                        // Сумма операции
                         Label {
-                            width: parent.width * 0.3
+                            id: amountLabel
+                            width: Math.min(implicitWidth, parent.width * 0.35)
+                            anchors {
+                                verticalCenter: parent.verticalCenter
+                                right: parent.right
+                                rightMargin: Theme.paddingSmall
+                            }
                             horizontalAlignment: Text.AlignRight
                             text: (model.action === 0 ? "-" : "+") + model.amount + " ₽"
                             color: model.action === 0 ? Theme.errorColor : Theme.highlightColor
-                            font.pixelSize: Theme.fontSizeMedium
+                            font {
+                                pixelSize: Theme.fontSizeLarge
+                                family: Theme.fontFamilyHeading
+                                bold: true
+                            }
+                            elide: Text.ElideRight
                         }
                     }
                 }

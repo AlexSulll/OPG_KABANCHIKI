@@ -8,6 +8,8 @@ Page {
 
     // Принимаемые параметры
     property var categoryModel
+    property var operationModel
+    property var operationService
     property int action: 0
     property var mainPage: null
 
@@ -78,7 +80,10 @@ Page {
                                 } else {
                                     pageStack.push(Qt.resolvedUrl("OperationPage.qml"), {
                                         action: action,
-                                        selectedCategoryId: categoryId
+                                        selectedCategoryId: categoryId,
+                                        operationModel: operationModel,
+                                        categoryModel: categoryModel,
+                                        operationService: operationService
                                 });
                                 }
                             }

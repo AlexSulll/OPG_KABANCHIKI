@@ -2,6 +2,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import QtQuick.LocalStorage 2.0
 import "../icons/Expense/"
+
 QtObject {
     objectName: "categoryService"
 
@@ -40,7 +41,6 @@ QtObject {
     }
 
 
-
     function loadCategories(typeCategory) {
         var db = getDatabase();
         var result = [];
@@ -72,5 +72,18 @@ QtObject {
             tx.executeSql("DELETE FROM sqlite_sequence WHERE name='categories'");
         });
         console.log("Все категории удалены");
+    }
+
+    //Загрузка категории по ID
+    function loadCategoriesByCategoryId(categoryId) {
+        var db = getDatabase();
+        var result = [];
+        db.readTransaction(function(tx) {
+            var rs = tx.executeSql("SELECT * FROM categories WHERE categoryId = ?", [categoryId]);
+            for (var i = 0; i < rs.rows.length; ++i) {
+                result.push(rs.rows.item(i));
+            }
+        });
+        return result;
     }
 }

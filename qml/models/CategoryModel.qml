@@ -18,9 +18,14 @@ ListModel {
 
     // Загрузка категорий по типу
     function loadCategoriesByType(type) {
-        console.log("Загрузка категорий для типа:", type);
         categories = service.loadCategories(type);
-        console.log("Загружены категории:", JSON.stringify(categories));///////////////////////
+        updateModel();
+    }
+
+    function loadAllCategories() {
+        var expenses = service.loadCategories(0);
+        var revenues = service.loadCategories(1);
+        categories = expenses.concat(revenues);
         updateModel();
     }
 
@@ -41,5 +46,19 @@ ListModel {
     function addCategory(category) {
         service.addCategory(category);
         loadCategoriesByType(category.typeCategory);
+    }
+
+    function getCategoryById(categoryId) {
+        for (var i = 0; i < categories.length; i++) {
+            if (categories[i].categoryId === categoryId) {
+                return {
+                    categoryId: categories[i].categoryId,
+                    nameCategory: categories[i].nameCategory,
+                    pathToIcon: categories[i].pathToIcon,
+                    typeCategory: categories[i].typeCategory
+                }
+            }
+        }
+        return null
     }
 }

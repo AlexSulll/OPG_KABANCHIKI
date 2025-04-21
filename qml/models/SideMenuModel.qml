@@ -15,7 +15,7 @@ ListModel {
     ListElement {
         text: "Категории"
         icon: "icon-m-edit"
-        page: "MainPage.qml"
+        page: "../pages/CategoryPage.qml"
     }
     // заглушка - не указан точный путь
     ListElement {

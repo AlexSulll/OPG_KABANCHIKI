@@ -45,10 +45,26 @@
     </message>
 </context>
 <context>
+    <name>AddCategoryPage</name>
+    <message>
+        <location filename="../qml/pages/AddCategoryPage.qml" line="77"/>
+        <source>Выберите иконку категории</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DefaultCoverPage</name>
     <message>
         <location filename="../qml/cover/DefaultCoverPage.qml" line="10"/>
         <source>WebBudget</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OperationPage</name>
+    <message>
+        <location filename="../qml/pages/OperationPage.qml" line="85"/>
+        <source>Комментарий</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

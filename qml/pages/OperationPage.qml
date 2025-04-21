@@ -1,148 +1,128 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import "../components" as Components  // Импорт кастомных компонентов
+import "../components" as Components
+import "../services" as Services
+import "../models" as Models
 
 Page {
     id: operationPage
     allowedOrientations: Orientation.All
+    anchors.centerIn: parent
 
-    // Принимаемые параметры
-    property var operationService
-    property var categoryModel
-    property int action: 0
-
-    // Локальные свойства
     property string amount: ""
     property int selectedCategoryId: -1
+    property int action: 0
     property string date: Qt.formatDate(new Date(), "dd.MM.yyyy")
     property string desc: ""
 
-    Component.onCompleted: {
-        if (categoryModel) {
-            categoryModel.loadCategoriesByType(action);
-        }
+    property var selectedCategory: null
+    property var operationModel
+    property var categoryModel
+
+    Services.CategoryService {
+        id: categoryService
+    }
+
+    Services.OperationService {
+        id: operationService
+    }
+
+    Models.OperationModel {
+        id: operationModel
     }
 
     onActionChanged: {
-        console.log("Получено действие:", action);
         if (categoryModel) {
             categoryModel.loadCategoriesByType(action);
         }
     }
 
+    Component.onCompleted: {
+            if (selectedCategoryId !== -1) {
+                var categories = categoryService.loadCategoriesByCategoryId(selectedCategoryId);
+                if (categories.length > 0) {
+                    selectedCategory = categories[0];
+                    console.log("Категория:", selectedCategory.nameCategory);
+                }
+            }
+    }
 
     SilicaFlickable {
-        anchors.top: balanceRow2.bottom
-        anchors.fill: parent
-        contentHeight: contentColumn.height
+            anchors.fill: parent
+            contentHeight: column.height
 
-        Column {
-            id: contentColumn
-            width: parent.width
-            spacing: Theme.paddingLarge
-
-            // Кастомный заголовок
-            Components.HeaderComponent {
-                id: header
-                headerText: "Добавление"
-                fontSize: Theme.fontSizeExtraLarge
-                color: "transparent"
-                showIcon: false
-            }
-
-            // Фиксированный контейнер для сетки с прокруткой
-            Item {
-                id: gridFixContainer
+            Column {
+                id: column
                 width: parent.width
-                height: 900   // Фиксированная высота контейнера
-                clip: true // Обрезаем содержимое за пределами
+                spacing: Theme.paddingLarge
+                anchors.top: parent.top
+                anchors.topMargin: Theme.paddingLarge
 
-                SilicaFlickable {
-                    anchors.fill: parent
-                    contentHeight: categoriesGrid.height
-
-                    GridView {
-                        id: categoriesGrid
-                        width: parent.width
-                        anchors.top: gridFixContainer.top
-                        cellWidth: width / 3
-                        cellHeight: cellWidth * 1.2
-                        height: Math.max(implicitHeight, 900)
-                        model: categoryModel
-                        interactive: false
-
-                        delegate: Components.CategoryDelegate {
-                            categoryId: model.categoryId
-                            nameCategory: model.nameCategory
-                            pathToIcon: model.pathToIcon
-                            isSelected: selectedCategoryId === model.categoryId
-                            onCategorySelected: {
-                                selectedCategoryId = model.categoryId
-                                sumInput.forceActiveFocus()
-                            }
-                        }
-
-                        // Обновляем позицию при изменении модели
-                        onModelChanged: {
-                            currentIndex = -1
-                            positionViewAtBeginning()
-                        }
-                    }
+                TextField {
+                    id: sumInput
+                    width: parent.width
+                    placeholderText: "Сумма (руб)"
+                    inputMethodHints: Qt.ImhDigitsOnly
+                    validator: IntValidator { bottom: 1 }
+                    onTextChanged: amount = text
                 }
-                VerticalScrollDecorator {}
-            }
 
-            // Поля ввода
-            TextField {
-                id: sumInput
-                width: parent.width
-                anchors.top: categoriesGrid.bottom
-                placeholderText: "Сумма (руб)"
-                inputMethodHints: Qt.ImhDigitsOnly
-                validator: IntValidator { bottom: 1 }
-                onTextChanged: amount = text
-            }
+                Components.CategoryDisplay {
+                    width: parent.width
+                    categoryData: selectedCategory
+                }
 
-            TextField {
-                width: parent.width
-                placeholderText: "Дата"
-                text: date
-                onClicked: dateDialog.open()
-            }
+                TextField {
+                    width: parent.width
+                    placeholderText: "Дата"
+                    text: date
+                    onClicked: dateDialog.open()
+                }
 
-            // Кнопка сохранения
-            Button {
-                text: "Сохранить"
-                anchors.horizontalCenter: parent.horizontalCenter
-                enabled: amount !== "" && selectedCategoryId !== -1
-                onClicked: {
-                    if (operationService) {
+                TextArea {
+                    width: parent.width
+                    height: Theme.itemSizeLarge
+                    placeholderText: qsTr("Комментарий")
+                    inputMethodHints: Qt.ImhNoPredictiveText
+                    onTextChanged: operationPage.desc = text
+                }
+
+                // Кнопка сохранения
+                Button {
+                    text: "Сохранить"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    enabled: amount !== "" && selectedCategoryId !== -1
+                    onClicked: {
+                        console.log(amount, action, selectedCategoryId, date, desc)
+                        var operationAmount = parseInt(amount);
                         operationService.addOperation({
-                            amount: parseInt(amount),
-                            action: action,
-                            category: selectedCategoryId,
-                            date: date,
-                            desc: desc
+                                    amount: operationAmount,
+                                    action: action,
+                                    categoryId: selectedCategoryId,
+                                    date: date,
+                                    desc: desc
                         });
-                        Qt.callLater(function() { pageStack.pop(); });
+                            operationModel.refresh();
+
+                            amount = "";
+                            selectedCategoryId = -1;
+                            desc = "";
+                            pageStack.replaceAbove(null, Qt.resolvedUrl("MainPage.qml"))
+                        }
+                    }
+                }
+                Dialog {
+                    id: dateDialog
+                    width: parent.width
+
+                    DatePicker {
+                        id: datePicker
+                        date: new Date()
+                        onDateChanged: {
+                                operationPage.date = Qt.formatDate(date, "dd.MM.yyyy");
+                                dateDialog.close();
+                        }
                     }
                 }
             }
-        }
     }
-
-    // Диалог выбора даты
-    Dialog {
-        id: dateDialog
-        width: parent.width
-
-        DatePicker {
-            id: datePicker
-            date: new Date()
-            onDateChanged: {
-                operationPage.date = Qt.formatDate(date, "dd.MM.yyyy");
-                dateDialog.close();
-            }
-        }
-    }
-}

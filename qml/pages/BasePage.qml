@@ -17,8 +17,16 @@ Page {
         console.log("Текущий таб:", selectedTab, "Действие:", selectedAction);
     }
 
+    SideDrawerComponent {
+        action: selectedTab === "expenses" ? 0 : 1
+    }
+
     // Сервисы
-    Services.OperationService { id: operationService }
+    Services.OperationService {
+        id: operationService
+        Component.onCompleted: initialize()
+    }
+
     Services.CategoryService {
         id: categoryService
         Component.onCompleted: initialize()
@@ -28,7 +36,10 @@ Page {
     Models.CategoryModel {
         id: categoryModel
         service: categoryService
-        Component.onCompleted: loadCategoriesByType(0)
+        Component.onCompleted: {
+            loadCategoriesByType(1)
+            loadCategoriesByType(0)
+        }
     }
 
     // Основной контент
@@ -125,8 +136,7 @@ Page {
                         anchors.fill: parent
                         onClicked: {
                             sideDrawer.close()
-                            pageStack.push(Qt.resolvedUrl("OperationPage.qml"), {
-                                operationService: operationService,
+                            pageStack.push(Qt.resolvedUrl("CategoryPage.qml"), {
                                 categoryModel: categoryModel,
                                 action: root.selectedAction
                             })

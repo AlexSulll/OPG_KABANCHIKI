@@ -4,13 +4,13 @@ import "../components"
 import "../services" as Services
 import "../models" as Models
 
-BasePage {
-    id: mainpage
-    objectName: "MainPage"
+Page {
+    id: categorydetailspage
+    objectName: "CategoryDetailsPage"
 
-    property string selectedTab: "expenses"
-    property int action: 0
     property var categoryModel: Models.CategoryModel {}
+    property int categoryId
+    property int action
 
     // Экземпляр сервиса
     Services.CategoryService {
@@ -28,15 +28,7 @@ BasePage {
             service: operationService
     }
 
-    Component.onCompleted: {
-        operationModel.loadByTypeOperation(action);
-    }
-
-    onSelectedTabChanged: {
-        operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1);
-        categoryModel.loadCategoriesByType(type);
-        console.log("Выбран таб:", selectedTab)
-    }
+    Component.onCompleted: operationModel.loadByTypeCategory(categoryId, action);
 
     Models.CategoryModel {
         id: categoryModel
@@ -46,15 +38,15 @@ BasePage {
         }
     }
 
-    HeaderComponent {
+    HeaderCategoryComponent {
         id: header
-        headerText: "Баланс"
-        selectedTab: mainpage.selectedTab
-        operationModel: operationModel
-        onSelectedTabChanged: {
-                mainpage.selectedTab = header.selectedTab; // Обновляем родителя
-                action: header.selectedTab === "expenses" ? 0 : 1;
-       }
+        headerText: {
+            if (categoryModel) {
+                var category = categoryModel.getCategoryById(categoryId)
+                return category ? category.nameCategory : "Детали категории"
+            }
+            return "Детали категории"
+        }
     }
 
     SilicaListView {
@@ -74,10 +66,7 @@ BasePage {
                 contentHeight: Theme.itemSizeMedium
 
                 // Получаем данные о категории
-                property var categoryData: {
-                        var data = categoryModel.getCategoryById(model.categoryId);
-                        return data;
-               }
+                property var categoryData: categoryModel.getCategoryById(model.categoryId);
 
                 Rectangle {
                     anchors.fill: parent
@@ -115,8 +104,8 @@ BasePage {
                                 font.pixelSize: Theme.fontSizeLarge
                                 truncationMode: TruncationMode.Fade
                             }
-
                         }
+
 
                         Label {
                             id: amountLabel
@@ -127,8 +116,8 @@ BasePage {
                                 rightMargin: Theme.paddingSmall
                             }
                             horizontalAlignment: Text.AlignRight
-                            text: isNaN(model.total) ? "0 ₽" : Number(model.total).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
-                            color: action === 0 ? "red" : "green"
+                            text: Number(model.amount).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
+                            color: model.action === 0 ? "red" : "green"
                             font {
                                 pixelSize: Theme.fontSizeLarge
                                 family: Theme.fontFamilyHeading
@@ -139,9 +128,9 @@ BasePage {
                     }
                 }
                 onClicked: {
-                        pageStack.push(Qt.resolvedUrl("../pages/CategoryDetailsPage.qml"), {
-                            categoryId: model.categoryId,
-                            action: mainpage.action,
+                        pageStack.push(Qt.resolvedUrl("../pages/OperationDetailsPage.qml"), {
+                            operationId: model.id,
+                            operationModel: operationModel,
                             categoryModel: categoryModel
                         });
                 }

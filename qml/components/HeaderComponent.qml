@@ -16,14 +16,6 @@ Rectangle {
     property string selectedTab: "expenses"
     property var operationModel: null
 
-    onSelectedTabChanged: {
-        if (operationModel) {
-            operationModel.loadByType(selectedTab === "expenses" ? 0 : 1)
-        }
-        categoryModel.loadCategoriesByType(type);
-        console.log("Выбран таб:", selectedTab)
-    }
-
     // Верхняя часть с текстом и иконкой
     Row {
         id: balanceRow1

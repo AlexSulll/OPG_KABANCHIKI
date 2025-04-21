@@ -85,4 +85,45 @@ QtObject {
         })
         return categories
     }
+
+    function getOperationByCategory(categoryId, type) {
+        var db = getDatabase()
+        var operations = []
+        db.readTransaction(function(tx) {
+            var rs = tx.executeSql(
+                        'SELECT * FROM operations
+                         WHERE categoryId = ? AND action = ?
+                         ORDER BY date DESC',
+                        [categoryId, type]
+            )
+            for (var i = 0; i < rs.rows.length; i++) {
+                        operations.push(rs.rows.item(i))
+            }
+        })
+        return operations
+    }
+
+    function updateOperation(operation) {
+        var db = getDatabase()
+        db.transaction(function(tx) {
+            tx.executeSql(
+                'UPDATE operations SET \
+                    amount = ?, \
+                    action = ?, \
+                    categoryId = ?, \
+                    date = ?, \
+                    desc = ? \
+                 WHERE id = ?',
+                [
+                    operation.amount,
+                    operation.action,
+                    operation.categoryId,
+                    operation.date,
+                    operation.desc,
+                    operation.id
+                ]
+            )
+        })
+    }
+
 }

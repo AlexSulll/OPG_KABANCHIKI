@@ -17,23 +17,6 @@ ListModel {
         }
     }
 
-//    function load(operations) {
-//        clear();
-//        if (operations && operations.length > 0) {
-//            for (var i = 0; i < operations.length; i++) {
-//                var op = operations[i];
-//                append({
-//                    id: op.id,
-//                    amount: op.amount,
-//                    action: op.action,
-//                    categoryId: op.categoryId,
-//                    date: op.date,
-//                    desc: op.desc
-//                });
-//            }
-//        }
-//    }
-
     function load(operations) {
         clear()
         if (operations) {
@@ -68,34 +51,34 @@ ListModel {
         }
     }
 
-    function loadByType(type) {
+    function loadByTypeOperation(type) {
             load(service.getTotalSumByCategory(type))
     }
 
-    function getSumByCategory(categoryId, categoryModel) {
-        var result = {
-            "icon": "",
-            "name": "Неизвестная категория",
-            "total": 0
-        }
+    function loadByTypeCategory(categoryId, action) {
+        loadOperation(service.getOperationByCategory(categoryId, action))
+    }
 
-        // Находим категорию в модели категорий
-        var category = categoryModel.getCategoryById(categoryId)
-        if (category) {
-            result.icon = category.pathToIcon
-            result.name = category.nameCategory
+    function loadOperation(operations) {
+        clear();
+        if (operations) {
+            operations.forEach(function(op) {
+                append({
+                    id: op.id,
+                    amount: op.amount,
+                    action: op.action,
+                    categoryId: op.categoryId,
+                    date: op.date,
+                    desc: op.desc
+                })
+            })
         }
+    }
 
-        // Считаем сумму операций
+    function getOperationById(id) {
         for (var i = 0; i < count; i++) {
-            var operation = get(i)
-            if (operation.categoryId === categoryId) {
-                result.total += operation.action === 0
-                    ? -operation.amount
-                    : operation.amount
-            }
+            if (get(i).id === id) return get(i)
         }
-
-        return result
+        return null
     }
 }

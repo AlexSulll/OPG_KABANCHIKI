@@ -13,14 +13,16 @@ HEADERS += \
 DISTFILES += \
     qml/components/CategoryDelegate.qml \
     qml/components/CategoryDisplay.qml \
+    qml/components/HeaderCategoryComponent.qml \
     qml/components/HeaderComponent.qml \
-    qml/components/OperationDelegate.qml \
     qml/components/SideDrawerComponent.qml \
     qml/models/CategoryModel.qml \
     qml/models/OperationModel.qml \
     qml/models/SideMenuModel.qml \
     qml/pages/AddCategoryPage.qml \
     qml/pages/BasePage.qml \
+    qml/pages/CategoryDetailsPage.qml \
+    qml/pages/OperationDetailsPage.qml \
     qml/pages/OperationPage.qml \
     qml/services/CategoryService.qml \
     qml/services/OperationService.qml \

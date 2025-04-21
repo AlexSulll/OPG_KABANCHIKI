@@ -28,7 +28,9 @@ BasePage {
             service: operationService
     }
 
-    Component.onCompleted: operationModel.loadByType(action)
+    Component.onCompleted: {
+        operationModel.loadByType(action);
+    }
 
     Models.CategoryModel {
         id: categoryModel
@@ -91,19 +93,6 @@ BasePage {
                             source: categoryData ? categoryData.pathToIcon : ""
                             sourceSize: Qt.size(width, height)
                             fillMode: Image.PreserveAspectFit
-
-                            // Добавляем отладочную информацию
-                            onStatusChanged: {
-                                if (status === Image.Ready) {
-                                    console.log("Иконка загружена:", source,
-                                               "\nРеальный размер:", implicitWidth + "x" + implicitHeight,
-                                               "\nОтображаемый размер:", width + "x" + height);
-                                }
-                                if (status === Image.Error) {
-                                    console.error("Ошибка загрузки иконки:", source);
-                                }
-                            }
-
                         }
 
                         // Название категории и дата
@@ -121,11 +110,6 @@ BasePage {
                                 truncationMode: TruncationMode.Fade
                             }
 
-                            Label {
-                                text: Qt.formatDate(new Date(model.date), "dd.MM.yyyy")
-                                color: Theme.secondaryColor
-                                font.pixelSize: Theme.fontSizeExtraSmall
-                            }
                         }
 
                         Label {
@@ -137,8 +121,8 @@ BasePage {
                                 rightMargin: Theme.paddingSmall
                             }
                             horizontalAlignment: Text.AlignRight
-                            text: (model.action === 0 ? "-" : "+") + model.amount + " ₽"
-                            color: model.action === 0 ? Theme.errorColor : Theme.highlightColor
+                            text: isNaN(model.total) ? "0 ₽" : Number(model.total).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
+                            color: action === 0 ? "red" : "green"
                             font {
                                 pixelSize: Theme.fontSizeLarge
                                 family: Theme.fontFamilyHeading

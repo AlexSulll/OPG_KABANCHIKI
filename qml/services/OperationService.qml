@@ -56,15 +56,33 @@ QtObject {
         })
     }
 
-    function getOperationsByType(type) {
+    // В OperationService.qml
+    function getTotalSumByCategory(type) {
         var db = getDatabase()
-        var operations = []
+        var categories = []
         db.readTransaction(function(tx) {
-            var rs = tx.executeSql('SELECT * FROM operations WHERE action = ?', [type])
+            var rs = tx.executeSql(
+                        'SELECT
+                            operations.action,
+                            operations.categoryId,
+                            operations.date,
+                            operations.desc,
+                            SUM(operations.amount) as total
+                        FROM operations
+                        JOIN categories
+                            ON categories.categoryId = operations.categoryId AND operations.action = ?
+                        GROUP BY categories.categoryId
+                        ORDER BY total DESC', [type])
             for (var i = 0; i < rs.rows.length; i++) {
-                operations.push(rs.rows.item(i))
+                var item = rs.rows.item(i)
+                categories.push({
+                    categoryId: item.categoryId,
+                    name: item.nameCategory,
+                    icon: item.pathToIcon,
+                    total: item.total
+                })
             }
         })
-        return operations
+        return categories
     }
 }

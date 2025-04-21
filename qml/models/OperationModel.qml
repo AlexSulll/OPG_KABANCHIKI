@@ -17,20 +17,34 @@ ListModel {
         }
     }
 
+//    function load(operations) {
+//        clear();
+//        if (operations && operations.length > 0) {
+//            for (var i = 0; i < operations.length; i++) {
+//                var op = operations[i];
+//                append({
+//                    id: op.id,
+//                    amount: op.amount,
+//                    action: op.action,
+//                    categoryId: op.categoryId,
+//                    date: op.date,
+//                    desc: op.desc
+//                });
+//            }
+//        }
+//    }
+
     function load(operations) {
-        clear();
-        if (operations && operations.length > 0) {
-            for (var i = 0; i < operations.length; i++) {
-                var op = operations[i];
+        clear()
+        if (operations) {
+            operations.forEach(function(op) {
                 append({
-                    id: op.id,
-                    amount: op.amount,
-                    action: op.action,
                     categoryId: op.categoryId,
-                    date: op.date,
-                    desc: op.desc
-                });
-            }
+                    name: op.name,
+                    icon: op.icon,
+                    total: op.total || 0 // Добавлено значение по умолчанию
+                })
+            })
         }
     }
 
@@ -55,7 +69,7 @@ ListModel {
     }
 
     function loadByType(type) {
-            load(service.getOperationsByType(type))
+            load(service.getTotalSumByCategory(type))
     }
 
     function getSumByCategory(categoryId, categoryModel) {

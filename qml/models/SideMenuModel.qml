@@ -11,7 +11,6 @@ ListModel {
         icon: "icon-splus-add"
         page: "../pages/OperationPage.qml"
     }
-    // заглушка - не указан точный путь
     ListElement {
         text: "Категории"
         icon: "icon-m-edit"

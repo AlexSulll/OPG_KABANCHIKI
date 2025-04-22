@@ -56,7 +56,6 @@ QtObject {
         })
     }
 
-    // В OperationService.qml
     function getTotalSumByCategory(type) {
         var db = getDatabase()
         var categories = []
@@ -91,9 +90,7 @@ QtObject {
         var operations = []
         db.readTransaction(function(tx) {
             var rs = tx.executeSql(
-                        'SELECT * FROM operations
-                         WHERE categoryId = ? AND action = ?
-                         ORDER BY date DESC',
+                        'SELECT * FROM operations WHERE categoryId = ? AND action = ? ORDER BY date DESC',
                         [categoryId, type]
             )
             for (var i = 0; i < rs.rows.length; i++) {
@@ -107,13 +104,7 @@ QtObject {
         var db = getDatabase()
         db.transaction(function(tx) {
             tx.executeSql(
-                'UPDATE operations SET \
-                    amount = ?, \
-                    action = ?, \
-                    categoryId = ?, \
-                    date = ?, \
-                    desc = ? \
-                 WHERE id = ?',
+                'UPDATE operations SET amount = ?, action = ?, categoryId = ?, date = ?, desc = ? WHERE id = ?',
                 [
                     operation.amount,
                     operation.action,

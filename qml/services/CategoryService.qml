@@ -20,7 +20,6 @@ QtObject {
                 pathToIcon TEXT
             )');
 
-            // Проверка на пустую таблицу и добавление тестовых данных
             var check = tx.executeSql('SELECT COUNT(*) as count FROM categories');
             if (check.rows.item(0).count === 0) {
                 tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Кафе", 0, "../icons/Expense/CafeIcon.svg")');
@@ -39,7 +38,6 @@ QtObject {
             }
         });
     }
-
 
     function loadCategories(typeCategory) {
         var db = getDatabase();
@@ -64,17 +62,14 @@ QtObject {
         });
     }
 
-    // Новый метод для удаления
     function dropCategories() {
         var db = getDatabase();
         db.transaction(function(tx) {
             tx.executeSql("DELETE FROM categories");
             tx.executeSql("DELETE FROM sqlite_sequence WHERE name='categories'");
         });
-        console.log("Все категории удалены");
     }
 
-    //Загрузка категории по ID
     function loadCategoriesByCategoryId(categoryId) {
         var db = getDatabase();
         var result = [];

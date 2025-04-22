@@ -14,7 +14,6 @@ Rectangle {
     property int fontSize: Theme.fontSizeExtraLarge*2
     property bool showIcon: true
 
-    // Верхняя часть с текстом и иконкой
     Row {
         id: balanceRow1
         anchors {

@@ -2,6 +2,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 BackgroundItem {
+
     property int categoryId: -1
     property string nameCategory: ""
     property string pathToIcon: ""
@@ -16,7 +17,6 @@ BackgroundItem {
         anchors.centerIn: parent
         spacing: Theme.paddingSmall
 
-        // Иконка категории
         Rectangle {
             id: iconContainer
             width: parent.width * 0.8
@@ -38,7 +38,6 @@ BackgroundItem {
             }
         }
 
-        // Название категории
         Label {
             text: nameCategory
             anchors.horizontalCenter: iconContainer.horizontalCenter

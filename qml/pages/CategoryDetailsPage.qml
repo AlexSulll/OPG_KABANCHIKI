@@ -8,31 +8,18 @@ Page {
     id: categorydetailspage
     objectName: "CategoryDetailsPage"
 
-    property var categoryModel: Models.CategoryModel {}
+    property var categoryModel
     property int categoryId
     property int action
 
-    // Экземпляр сервиса
-    Services.CategoryService {
-        id: categoryService
-        Component.onCompleted: initialize()
-    }
-
-    Services.OperationService {
-        id: operationService
-        Component.onCompleted: initialize()
-    }
-
     Models.OperationModel {
             id: operationModel
-            service: operationService
     }
 
     Component.onCompleted: operationModel.loadByTypeCategory(categoryId, action);
 
     Models.CategoryModel {
         id: categoryModel
-        service: categoryService
         Component.onCompleted: {
             loadAllCategories();
         }
@@ -45,7 +32,6 @@ Page {
                 var category = categoryModel.getCategoryById(categoryId)
                 return category ? category.nameCategory : "Детали категории"
             }
-            return "Детали категории"
         }
     }
 
@@ -65,7 +51,6 @@ Page {
                 width: parent.width
                 contentHeight: Theme.itemSizeMedium
 
-                // Получаем данные о категории
                 property var categoryData: categoryModel.getCategoryById(model.categoryId);
 
                 Rectangle {
@@ -78,7 +63,6 @@ Page {
                         anchors.margins: Theme.paddingMedium
                         spacing: Theme.paddingMedium
 
-                        // Иконка категории
                         Image {
                             id:icon
                             asynchronous: true
@@ -90,7 +74,6 @@ Page {
                             fillMode: Image.PreserveAspectFit
                         }
 
-                        // Название категории и дата
                         Column {
                             width: parent.width * 0.6
                             anchors.verticalCenter: parent.verticalCenter
@@ -127,6 +110,7 @@ Page {
                         }
                     }
                 }
+
                 onClicked: {
                         pageStack.push(Qt.resolvedUrl("../pages/OperationDetailsPage.qml"), {
                             operationId: model.id,

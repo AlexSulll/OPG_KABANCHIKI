@@ -1,19 +1,15 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import "../components" as Components  // Импорт кастомных компонентов
+import "../components" as Components
 
 Page {
     id: categoryPage
     allowedOrientations: Orientation.All
 
-    // Принимаемые параметры
     property var categoryModel
     property var operationModel
-    property var operationService
     property int action: 0
-    property var mainPage: null
 
-    // Локальные свойства
     property int selectedCategoryId: -1
 
     onActionChanged: {
@@ -37,7 +33,6 @@ Page {
             width: parent.width
             spacing: Theme.paddingLarge
 
-            // Кастомный заголовок
             Components.HeaderComponent {
                 id: header
                 headerText: "Добавление"
@@ -46,12 +41,11 @@ Page {
                 showIcon: false
             }
 
-            // Фиксированный контейнер для сетки с прокруткой
             Item {
                 id: gridFixContainer
                 width: parent.width
-                height: 900   // Фиксированная высота контейнера
-                clip: true // Обрезаем содержимое за пределами
+                height: 900
+                clip: true
 
                 SilicaFlickable {
                     anchors.fill: parent
@@ -82,14 +76,12 @@ Page {
                                         action: action,
                                         selectedCategoryId: categoryId,
                                         operationModel: operationModel,
-                                        categoryModel: categoryModel,
-                                        operationService: operationService
+                                        categoryModel: categoryModel
                                 });
                                 }
                             }
                         }
 
-                        // Обновляем позицию при изменении модели
                         onModelChanged: {
                             currentIndex = -1
                             positionViewAtBeginning()

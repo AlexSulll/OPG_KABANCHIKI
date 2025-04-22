@@ -18,15 +18,6 @@ Page {
     property var selectedCategory: null
     property var operationModel
     property var categoryModel
-    property var operationService
-
-    Services.CategoryService {
-        id: categoryService
-    }
-
-    Services.OperationService {
-        id: operationService
-    }
 
     onActionChanged: {
         if (categoryModel) {
@@ -36,10 +27,9 @@ Page {
 
     Component.onCompleted: {
             if (selectedCategoryId !== -1) {
-                var categories = categoryService.loadCategoriesByCategoryId(selectedCategoryId);
+                var categories = categoryModel.loadCategoriesByCategoryId(selectedCategoryId);
                 if (categories.length > 0) {
                     selectedCategory = categories[0];
-                    console.log("Категория:", selectedCategory.nameCategory);
                 }
             }
     }
@@ -84,7 +74,6 @@ Page {
                     onTextChanged: operationPage.desc = text
                 }
 
-                // Кнопка сохранения
                 Button {
                     text: "Сохранить"
                     anchors.horizontalCenter: parent.horizontalCenter
@@ -92,7 +81,7 @@ Page {
                     onClicked: {
                         console.log(amount, action, selectedCategoryId, date, desc)
                         var operationAmount = parseInt(amount);
-                        operationService.addOperation({
+                        operationModel.add({
                                     amount: operationAmount,
                                     action: action,
                                     categoryId: selectedCategoryId,
@@ -106,18 +95,25 @@ Page {
                         }
                     }
                 }
-                Dialog {
-                    id: dateDialog
-                    width: parent.width
+    }
 
-                    DatePicker {
-                        id: datePicker
-                        date: new Date()
-                        onDateChanged: {
-                                operationPage.date = Qt.formatDate(date, "dd.MM.yyyy");
-                                dateDialog.close();
-                        }
-                    }
+    Dialog {
+        id: dateDialog
+
+        Column {
+            DialogHeader {
+                title: "Выберите дату"
+                acceptText: "ОК"
+                cancelText: "Отмена"
+            }
+
+            DatePicker {
+                id: datePicker
+                date: new Date()
+                onDateChanged: {
+                    operationPage.date = Qt.formatDate(date, "dd.MM.yyyy");
                 }
             }
+        }
     }
+}

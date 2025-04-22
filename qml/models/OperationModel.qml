@@ -1,7 +1,3 @@
-/*
-  OperationModel.qml
-*/
-
 import QtQuick 2.0
 import "../services" as Services
 
@@ -17,22 +13,7 @@ ListModel {
         }
     }
 
-    function load(operations) {
-        clear()
-        if (operations) {
-            operations.forEach(function(op) {
-                append({
-                    categoryId: op.categoryId,
-                    name: op.name,
-                    icon: op.icon,
-                    total: op.total || 0 // Добавлено значение по умолчанию
-                })
-            })
-        }
-    }
-
     function add(operation) {
-        console.log("Данные операции:", operation);
         service.addOperation(operation);
         refresh();
     }
@@ -41,8 +22,7 @@ ListModel {
         if (service) {
             var ops = service.loadOperations();
             if (ops && ops.length > 0) {
-                load(ops);
-                console.log("Загружено операций:", count);
+                loadOperation(ops);
             } else {
                 console.error("Не удалось загрузить операции");
             }
@@ -52,7 +32,7 @@ ListModel {
     }
 
     function loadByTypeOperation(type) {
-            load(service.getTotalSumByCategory(type))
+            loadOperation(service.getTotalSumByCategory(type))
     }
 
     function loadByTypeCategory(categoryId, action) {
@@ -69,7 +49,8 @@ ListModel {
                     action: op.action,
                     categoryId: op.categoryId,
                     date: op.date,
-                    desc: op.desc
+                    desc: op.desc,
+                    total: op.total || 0
                 })
             })
         }
@@ -80,5 +61,22 @@ ListModel {
             if (get(i).id === id) return get(i)
         }
         return null
+    }
+
+    function updateOperation(operation) {
+        service.updateOperation(operation)
+        refresh()
+    }
+
+    function deleteOperation(id) {
+        service.deleteOperation(id)
+        refresh()
+    }
+
+    function parseDate(dateStr) {
+        var parts = dateStr.split(".");
+        return parts.length === 3
+            ? new Date(parts[2], parts[1]-1, parts[0])
+            : new Date()
     }
 }

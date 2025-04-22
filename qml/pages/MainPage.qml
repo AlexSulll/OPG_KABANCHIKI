@@ -1,7 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../components"
-import "../services" as Services
 import "../models" as Models
 
 BasePage {
@@ -12,38 +11,19 @@ BasePage {
     property int action: 0
     property var categoryModel: Models.CategoryModel {}
 
-    // Экземпляр сервиса
-    Services.CategoryService {
-        id: categoryService
-        Component.onCompleted: initialize()
-    }
-
-    Services.OperationService {
-        id: operationService
-        Component.onCompleted: initialize()
-    }
-
     Models.OperationModel {
             id: operationModel
-            service: operationService
-    }
-
-    Component.onCompleted: {
-        operationModel.loadByTypeOperation(action);
-    }
-
-    onSelectedTabChanged: {
-        operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1);
-        categoryModel.loadCategoriesByType(type);
-        console.log("Выбран таб:", selectedTab)
     }
 
     Models.CategoryModel {
         id: categoryModel
-        service: categoryService
         Component.onCompleted: {
             loadAllCategories();
         }
+    }
+
+    Component.onCompleted: {
+        operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1);
     }
 
     HeaderComponent {
@@ -52,8 +32,9 @@ BasePage {
         selectedTab: mainpage.selectedTab
         operationModel: operationModel
         onSelectedTabChanged: {
-                mainpage.selectedTab = header.selectedTab; // Обновляем родителя
+                mainpage.selectedTab = header.selectedTab;
                 action: header.selectedTab === "expenses" ? 0 : 1;
+                operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1);
        }
     }
 
@@ -73,11 +54,7 @@ BasePage {
                 width: parent.width
                 contentHeight: Theme.itemSizeMedium
 
-                // Получаем данные о категории
-                property var categoryData: {
-                        var data = categoryModel.getCategoryById(model.categoryId);
-                        return data;
-               }
+                property var categoryData: categoryModel.getCategoryById(model.categoryId);
 
                 Rectangle {
                     anchors.fill: parent
@@ -89,7 +66,6 @@ BasePage {
                         anchors.margins: Theme.paddingMedium
                         spacing: Theme.paddingMedium
 
-                        // Иконка категории
                         Image {
                             id:icon
                             asynchronous: true
@@ -101,7 +77,6 @@ BasePage {
                             fillMode: Image.PreserveAspectFit
                         }
 
-                        // Название категории и дата
                         Column {
                             width: parent.width * 0.6
                             anchors.verticalCenter: parent.verticalCenter
@@ -115,7 +90,6 @@ BasePage {
                                 font.pixelSize: Theme.fontSizeLarge
                                 truncationMode: TruncationMode.Fade
                             }
-
                         }
 
                         Label {
@@ -128,7 +102,7 @@ BasePage {
                             }
                             horizontalAlignment: Text.AlignRight
                             text: isNaN(model.total) ? "0 ₽" : Number(model.total).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
-                            color: action === 0 ? "red" : "green"
+                            color: selectedTab === "expenses" ? "red" : "green"
                             font {
                                 pixelSize: Theme.fontSizeLarge
                                 family: Theme.fontFamilyHeading

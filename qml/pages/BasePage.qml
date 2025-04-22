@@ -8,41 +8,21 @@ Page {
     id: root
     allowedOrientations: Orientation.All
 
-    // Добавляем свойство для управления видимостью панели
     property bool panelVisible: true
     property string selectedTab: "expenses"
     property int selectedAction: selectedTab === "revenue" ? 1 : 0
-
-    onSelectedTabChanged: {
-        console.log("Текущий таб:", selectedTab, "Действие:", selectedAction);
-    }
 
     SideDrawerComponent {
         action: selectedTab === "expenses" ? 0 : 1
     }
 
-    // Сервисы
-    Services.OperationService {
-        id: operationService
-        Component.onCompleted: initialize()
-    }
-
-    Services.CategoryService {
-        id: categoryService
-        Component.onCompleted: initialize()
-    }
-
-    // Модель категорий
     Models.CategoryModel {
         id: categoryModel
-        service: categoryService
         Component.onCompleted: {
-            loadCategoriesByType(1)
-            loadCategoriesByType(0)
+            loadAllCategories();
         }
     }
 
-    // Основной контент
     default property alias pageContent: contentContainer.data
 
     Rectangle {
@@ -65,13 +45,12 @@ Page {
         id: sideDrawer
     }
 
-    // Нижняя панель
     DockedPanel {
         id: bottomPanel
         width: parent.width
         height: Theme.itemSizeLarge * 1.1
         dock: Dock.Bottom
-        open: root.panelVisible // Используем объявленное свойство
+        open: root.panelVisible
 
         Rectangle {
             anchors.fill: parent
@@ -139,7 +118,6 @@ Page {
                             pageStack.push(Qt.resolvedUrl("CategoryPage.qml"), {
                                 categoryModel: categoryModel,
                                 operationModel: operationModel,
-                                operationService: operationService,
                                 action: root.selectedAction
                             })
                         }

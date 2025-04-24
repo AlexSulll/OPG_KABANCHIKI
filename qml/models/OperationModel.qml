@@ -23,7 +23,6 @@ ListModel {
         var income = service.getTotalIncome();
         var expenses = service.getTotalExpenses();
         totalBalance = income - expenses;
-        balanceUpdated();
         return totalBalance;
     }
 

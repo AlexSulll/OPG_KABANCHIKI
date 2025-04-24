@@ -26,6 +26,7 @@ Page {
 
     HeaderCategoryComponent {
         id: header
+        fontSize: Theme.fontSizeExtraLarge*1.2
         headerText: {
             if (categoryModel) {
                 var category = categoryModel.getCategoryById(categoryId)

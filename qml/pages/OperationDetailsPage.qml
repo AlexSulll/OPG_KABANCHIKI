@@ -36,7 +36,7 @@ Page {
             spacing: Theme.paddingLarge
 
             PageHeader {
-                title: "Редактирование операции"
+                title: "Просмотр и редактирование операции"
             }
 
             TextField {

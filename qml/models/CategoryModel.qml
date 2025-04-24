@@ -6,17 +6,13 @@ ListModel {
     id: categoryModel
     objectName: "CategoryModel"
 
-
-    // Сервис для работы с данными
     property var service: Services.CategoryService {
         id: categoryService
         Component.onCompleted: initialize()
     }
 
-    // Динамический список категорий
     property var categories: []
 
-    // Загрузка категорий по типу
     function loadCategoriesByType(type) {
         categories = service.loadCategories(type);
         updateModel();
@@ -29,7 +25,6 @@ ListModel {
         updateModel();
     }
 
-    // Обновление ListModel
     function updateModel() {
         clear();
         for (var i = 0; i < categories.length; i++) {
@@ -42,10 +37,8 @@ ListModel {
         }
     }
 
-    // Добавление новой категории
     function addCategory(category) {
         service.addCategory(category);
-        loadCategoriesByType(category.typeCategory);
     }
 
     function getCategoryById(categoryId) {
@@ -60,5 +53,30 @@ ListModel {
             }
         }
         return null
+    }
+
+    function filteredCategories(action) {
+        loadAllCategories();
+        return categories.filter(function(cat) {
+            return cat.categoryId !== 8 &&
+                   cat.categoryId !== 13 &&
+                   cat.typeCategory === action;
+        });
+    }
+
+    function getIndexById(categoryId) {
+        for (var i = 0; i < count; i++) {
+            if (get(i).categoryId === categoryId) return i
+        }
+        return -1
+    }
+
+    function getCategoryName(categoryId) {
+        var category = getCategoryById(categoryId)
+        return category ? category.nameCategory : "Не выбрана"
+    }
+
+    function loadCategoriesByCategoryId(selectedCategoryId) {
+        return service.loadCategoriesByCategoryId(selectedCategoryId);
     }
 }

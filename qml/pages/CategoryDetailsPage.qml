@@ -3,17 +3,19 @@ import Sailfish.Silica 1.0
 import "../components"
 import "../models" as Models
 
-BasePage {
-    id: mainpage
-    objectName: "MainPage"
+Page {
+    id: categorydetailspage
+    objectName: "CategoryDetailsPage"
 
-    property string selectedTab: "expenses"
-    property int action: 0
-    property var categoryModel: Models.CategoryModel {}
+    property var categoryModel
+    property int categoryId
+    property int action
 
     Models.OperationModel {
             id: operationModel
     }
+
+    Component.onCompleted: operationModel.loadByTypeCategory(categoryId, action);
 
     Models.CategoryModel {
         id: categoryModel
@@ -22,21 +24,13 @@ BasePage {
         }
     }
 
-    Component.onCompleted: {
-        operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1);
-        operationModel.calculateTotalBalance();
-    }
-
-    HeaderComponent {
+    HeaderCategoryComponent {
         id: header
-        headerText: Number(operationModel.totalBalance).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
-        selectedTab: mainpage.selectedTab
-        operationModel: operationModel
-        onSelectedTabChanged: {
-            mainpage.selectedTab = header.selectedTab
-            mainpage.action = header.selectedTab === "expenses" ? 0 : 1
-            operationModel.loadByTypeOperation(mainpage.action)
-            operationModel.calculateTotalBalance()
+        headerText: {
+            if (categoryModel) {
+                var category = categoryModel.getCategoryById(categoryId)
+                return category ? category.nameCategory : "Детали категории"
+            }
         }
     }
 
@@ -94,6 +88,7 @@ BasePage {
                             }
                         }
 
+
                         Label {
                             id: amountLabel
                             width: Math.min(implicitWidth, parent.width * 0.35)
@@ -103,8 +98,8 @@ BasePage {
                                 rightMargin: Theme.paddingSmall
                             }
                             horizontalAlignment: Text.AlignRight
-                            text: isNaN(model.total) ? "0 ₽" : Number(model.total).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
-                            color: selectedTab === "expenses" ? "red" : "green"
+                            text: Number(model.amount).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
+                            color: model.action === 0 ? "red" : "green"
                             font {
                                 pixelSize: Theme.fontSizeLarge
                                 family: Theme.fontFamilyHeading
@@ -114,10 +109,11 @@ BasePage {
                         }
                     }
                 }
+
                 onClicked: {
-                        pageStack.push(Qt.resolvedUrl("../pages/CategoryDetailsPage.qml"), {
-                            categoryId: model.categoryId,
-                            action: mainpage.action,
+                        pageStack.push(Qt.resolvedUrl("../pages/OperationDetailsPage.qml"), {
+                            operationId: model.id,
+                            operationModel: operationModel,
                             categoryModel: categoryModel
                         });
                 }

@@ -56,15 +56,83 @@ QtObject {
         })
     }
 
-    function getOperationsByType(type) {
+    function getTotalSumByCategory(type) {
+        var db = getDatabase()
+        var categories = []
+        db.readTransaction(function(tx) {
+            var rs = tx.executeSql(
+                        'SELECT
+                            operations.action,
+                            operations.categoryId,
+                            operations.date,
+                            operations.desc,
+                            SUM(operations.amount) as total
+                        FROM operations
+                        JOIN categories
+                            ON categories.categoryId = operations.categoryId AND operations.action = ?
+                        GROUP BY categories.categoryId
+                        ORDER BY total DESC', [type])
+            for (var i = 0; i < rs.rows.length; i++) {
+                var item = rs.rows.item(i)
+                categories.push({
+                    categoryId: item.categoryId,
+                    name: item.nameCategory,
+                    icon: item.pathToIcon,
+                    total: item.total
+                })
+            }
+        })
+        return categories
+    }
+
+    function getOperationByCategory(categoryId, type) {
         var db = getDatabase()
         var operations = []
         db.readTransaction(function(tx) {
-            var rs = tx.executeSql('SELECT * FROM operations WHERE action = ?', [type])
+            var rs = tx.executeSql(
+                        'SELECT * FROM operations WHERE categoryId = ? AND action = ? ORDER BY date DESC',
+                        [categoryId, type]
+            )
             for (var i = 0; i < rs.rows.length; i++) {
-                operations.push(rs.rows.item(i))
+                        operations.push(rs.rows.item(i))
             }
         })
         return operations
     }
+
+    function getTotalIncome() {
+        var total = 0;
+        getDatabase().readTransaction(function(tx) {
+            var rs = tx.executeSql('SELECT SUM(amount) as total FROM operations WHERE action = 1');
+            total = rs.rows.item(0).total || 0;
+        });
+        return total;
+    }
+
+    function getTotalExpenses() {
+        var total = 0;
+        getDatabase().readTransaction(function(tx) {
+            var rs = tx.executeSql('SELECT SUM(amount) as total FROM operations WHERE action = 0');
+            total = rs.rows.item(0).total || 0;
+        });
+        return total;
+    }
+
+    function updateOperation(operation) {
+        var db = getDatabase()
+        db.transaction(function(tx) {
+            tx.executeSql(
+                'UPDATE operations SET amount = ?, action = ?, categoryId = ?, date = ?, desc = ? WHERE id = ?',
+                [
+                    operation.amount,
+                    operation.action,
+                    operation.categoryId,
+                    operation.date,
+                    operation.desc,
+                    operation.id
+                ]
+            )
+        })
+    }
+
 }

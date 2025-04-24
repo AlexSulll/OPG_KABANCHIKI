@@ -1,7 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../components" as Components
-import "../services" as Services
 import "../models" as Models
 
 Page {
@@ -19,18 +18,6 @@ Page {
     property var operationModel
     property var categoryModel
 
-    Services.CategoryService {
-        id: categoryService
-    }
-
-    Services.OperationService {
-        id: operationService
-    }
-
-    Models.OperationModel {
-        id: operationModel
-    }
-
     onActionChanged: {
         if (categoryModel) {
             categoryModel.loadCategoriesByType(action);
@@ -39,10 +26,9 @@ Page {
 
     Component.onCompleted: {
             if (selectedCategoryId !== -1) {
-                var categories = categoryService.loadCategoriesByCategoryId(selectedCategoryId);
+                var categories = categoryModel.loadCategoriesByCategoryId(selectedCategoryId);
                 if (categories.length > 0) {
                     selectedCategory = categories[0];
-                    console.log("Категория:", selectedCategory.nameCategory);
                 }
             }
     }
@@ -87,7 +73,6 @@ Page {
                     onTextChanged: operationPage.desc = text
                 }
 
-                // Кнопка сохранения
                 Button {
                     text: "Сохранить"
                     anchors.horizontalCenter: parent.horizontalCenter
@@ -95,15 +80,13 @@ Page {
                     onClicked: {
                         console.log(amount, action, selectedCategoryId, date, desc)
                         var operationAmount = parseInt(amount);
-                        operationService.addOperation({
+                        operationModel.add({
                                     amount: operationAmount,
                                     action: action,
                                     categoryId: selectedCategoryId,
                                     date: date,
                                     desc: desc
                         });
-                            operationModel.refresh();
-
                             amount = "";
                             selectedCategoryId = -1;
                             desc = "";
@@ -111,18 +94,25 @@ Page {
                         }
                     }
                 }
-                Dialog {
-                    id: dateDialog
-                    width: parent.width
+    }
 
-                    DatePicker {
-                        id: datePicker
-                        date: new Date()
-                        onDateChanged: {
-                                operationPage.date = Qt.formatDate(date, "dd.MM.yyyy");
-                                dateDialog.close();
-                        }
-                    }
+    Dialog {
+        id: dateDialog
+
+        Column {
+            DialogHeader {
+                title: "Выберите дату"
+                acceptText: "ОК"
+                cancelText: "Отмена"
+            }
+
+            DatePicker {
+                id: datePicker
+                date: new Date()
+                onDateChanged: {
+                    operationPage.date = Qt.formatDate(date, "dd.MM.yyyy");
                 }
             }
+        }
     }
+}

@@ -1,13 +1,10 @@
-/*
-  OperationModel.qml
-*/
-
 import QtQuick 2.0
 import "../services" as Services
 
 ListModel {
     id: operationModel
     objectName: "OperationModel"
+    property real totalBalance: 0
 
     property var service: Services.OperationService {
         id: internalService
@@ -17,35 +14,24 @@ ListModel {
         }
     }
 
-    function load(operations) {
-        clear();
-        if (operations && operations.length > 0) {
-            for (var i = 0; i < operations.length; i++) {
-                var op = operations[i];
-                append({
-                    id: op.id,
-                    amount: op.amount,
-                    action: op.action,
-                    categoryId: op.categoryId,
-                    date: op.date,
-                    desc: op.desc
-                });
-            }
-        }
-    }
-
     function add(operation) {
-        console.log("Данные операции:", operation);
         service.addOperation(operation);
         refresh();
+    }
+
+    function calculateTotalBalance() {
+        var income = service.getTotalIncome();
+        var expenses = service.getTotalExpenses();
+        totalBalance = income - expenses;
+        balanceUpdated();
+        return totalBalance;
     }
 
     function refresh() {
         if (service) {
             var ops = service.loadOperations();
             if (ops && ops.length > 0) {
-                load(ops);
-                console.log("Загружено операций:", count);
+                loadOperation(ops);
             } else {
                 console.error("Не удалось загрузить операции");
             }
@@ -54,34 +40,52 @@ ListModel {
         }
     }
 
-    function loadByType(type) {
-            load(service.getOperationsByType(type))
+    function loadByTypeOperation(type) {
+            loadOperation(service.getTotalSumByCategory(type))
     }
 
-    function getSumByCategory(categoryId, categoryModel) {
-        var result = {
-            "icon": "",
-            "name": "Неизвестная категория",
-            "total": 0
-        }
+    function loadByTypeCategory(categoryId, action) {
+        loadOperation(service.getOperationByCategory(categoryId, action))
+    }
 
-        // Находим категорию в модели категорий
-        var category = categoryModel.getCategoryById(categoryId)
-        if (category) {
-            result.icon = category.pathToIcon
-            result.name = category.nameCategory
+    function loadOperation(operations) {
+        clear();
+        if (operations) {
+            operations.forEach(function(op) {
+                append({
+                    id: op.id,
+                    amount: op.amount,
+                    action: op.action,
+                    categoryId: op.categoryId,
+                    date: op.date,
+                    desc: op.desc,
+                    total: op.total || 0
+                })
+            })
         }
+    }
 
-        // Считаем сумму операций
+    function getOperationById(id) {
         for (var i = 0; i < count; i++) {
-            var operation = get(i)
-            if (operation.categoryId === categoryId) {
-                result.total += operation.action === 0
-                    ? -operation.amount
-                    : operation.amount
-            }
+            if (get(i).id === id) return get(i)
         }
+        return null
+    }
 
-        return result
+    function updateOperation(operation) {
+        service.updateOperation(operation)
+        refresh()
+    }
+
+    function deleteOperation(id) {
+        service.deleteOperation(id)
+        refresh()
+    }
+
+    function parseDate(dateStr) {
+        var parts = dateStr.split(".");
+        return parts.length === 3
+            ? new Date(parts[2], parts[1]-1, parts[0])
+            : new Date()
     }
 }

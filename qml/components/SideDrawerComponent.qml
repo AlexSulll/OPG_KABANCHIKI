@@ -13,18 +13,15 @@ Item {
     property int action: 0
     property bool opened: false
 
-    // Подключаем модель меню
     SideMenuModel {
         id: menuModel
     }
 
-    // Затемнение фона
     Rectangle {
         anchors.fill: parent
         color: Theme.rgba(0, 0, 0, 0.5)
         opacity: sideDrawer.opened ? 1 : 0
 
-        // Любой нецелевой клик закрывает страницу
         MouseArea {
             anchors.fill: parent
             onClicked: sideDrawer.close()
@@ -35,7 +32,6 @@ Item {
         }
     }
 
-    // Отображение меню
     Rectangle {
         id: drawerContent
         width: parent.width * 0.75
@@ -53,11 +49,9 @@ Item {
                 height: Theme.itemSizeLarge
             }
 
-            // Начало работы с моделью
             Repeater {
                 model: menuModel
 
-                // Расположение элементов в модели
                 delegate: BackgroundItem {
                     width: parent.width
                     height: Theme.itemSizeLarge
@@ -98,10 +92,6 @@ Item {
                             (сейчас через if обрабатывается только MainPage)
                             не было лишней прокрутки - убери условие - увидишь
                         */
-
-//                        if (page !== "../pages/MainPage.qml") {
-//                            pageStack.push(Qt.resolvedUrl(page));
-//                        }
                     }
                 }
             }

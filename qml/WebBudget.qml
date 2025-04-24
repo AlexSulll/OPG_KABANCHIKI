@@ -11,9 +11,4 @@ ApplicationWindow {
     initialPage: Qt.resolvedUrl("pages/MainPage.qml")
     cover: Qt.resolvedUrl("cover/DefaultCoverPage.qml")
     allowedOrientations: defaultAllowedOrientations
-
-//    MainPage {
-//            id: mainPage
-//            visible: true
-//    }
 }

@@ -47,7 +47,7 @@
 <context>
     <name>AddCategoryPage</name>
     <message>
-        <location filename="../qml/pages/AddCategoryPage.qml" line="77"/>
+        <location filename="../qml/pages/AddCategoryPage.qml" line="76"/>
         <source>Выберите иконку категории</source>
         <translation type="unfinished"></translation>
     </message>
@@ -63,7 +63,7 @@
 <context>
     <name>OperationPage</name>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="85"/>
+        <location filename="../qml/pages/OperationPage.qml" line="71"/>
         <source>Комментарий</source>
         <translation type="unfinished"></translation>
     </message>

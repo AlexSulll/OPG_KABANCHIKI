@@ -6,7 +6,7 @@ Page {
     id: addCategoryPage
 
     property var categoryModel
-    property int categoryType: 0 // 0 - расходы, 1 - доходы
+    property int categoryType: 0
 
     property string categoryName: ""
     property string iconPath: ""
@@ -62,7 +62,6 @@ Page {
                         typeCategory: categoryType,
                         pathToIcon: iconPath
                     }
-                    console.log(JSON.stringify(newCategory));
                     categoryModel.addCategory(newCategory)
                     pageStack.pop()
                 }

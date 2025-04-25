@@ -32,40 +32,47 @@ ListModel {
     }
 
 
-    function calculateChartData(operationModel, action) {  // поменять в mainpage на operationmodel
-        //console.log("Calculating chart for action:", action);
+    function calculateChartData(operationModel, action) {
         var data = [];
         var filtered = operationModel.loadByTypeOperationForCard(action);
-        console.log("Filtered:", JSON.stringify(filtered));
+        console.log("Filtered data:", JSON.stringify(filtered));
 
-
+        // Рассчитываем общую сумму для текущего типа операций
+        var totalForType = 0;
         for (var i = 0; i < filtered.length; i++) {
-            var cat = filtered[i]["categoryId"];
-            var catTotal = filtered[i]["total"]; // счёт суммы не работает - надо получить через сервис
-            if (catTotal > 0) {
+            totalForType += filtered[i].total;
+        }
+
+        // Формируем данные для секторов
+        for (var j = 0; j < filtered.length; j++) {
+            var item = filtered[j];
+            if (item.total > 0) {
                 data.push({
-                    value: catTotal,
-                    color: getColorForCategory(cat.categoryId),
-                    categoryId: cat,
-                    name: filtered[i]["name"],
+                    value: item.total,
+                    percentage: totalForType > 0 ? (item.total / totalForType * 100) : 0,
+                    color: getColorForCategory(item.categoryId),
+                    categoryId: item.categoryId,
+                    name: item.name,
                     isExpense: action === 0
-                })
+                });
             }
         }
 
-        data.sort(function(a, b) { return b.value - a.value })
+        data.sort(function(a, b) { return b.value - a.value; });
+
         if (data.length === 0) {
             data.push({
                 value: 0,
+                percentage: 0,
                 color: "",
                 categoryId: "",
                 name: "Нет данных",
-                isExpense: action === 0  // Add this line
-            })
+                isExpense: action === 0
+            });
         }
-        sectors = data
-        updateSectors()
-        //console.log("CharFunc END:", JSON.stringify(sectors));
+
+        sectors = data;
+        updateSectors();
     }
 
     function updateSectors() {

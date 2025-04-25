@@ -23,6 +23,7 @@ BasePage {
         id: sectorModel
         Component.onCompleted: {
             updateSectors();
+            analyticsCard.isExpense = !action
         }
     }
 
@@ -34,7 +35,6 @@ BasePage {
         operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1);
         operationModel.calculateTotalBalance();
         sectorModel.calculateChartData(categoryModel, selectedTab === "expenses" ? 0 : 1)
-        analyticsCard.isExpense = header.selectedTab === "expenses" ? 0 : 1
     }
 
 

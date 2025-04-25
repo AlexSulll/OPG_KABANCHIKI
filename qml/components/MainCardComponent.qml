@@ -1,6 +1,8 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
+
+
 Item {
     id: cardRoot
     width: parent.width - 2 * Theme.paddingLarge
@@ -62,6 +64,7 @@ Item {
                             total += sectors[i].value
                         }
                     }
+
 
                     if (total <= 0) {
                         // Если нет данных, рисуем серое кольцо
@@ -126,10 +129,11 @@ Item {
                     font.bold: true
                 }
 
+
                 Label {
                     width: parent.width
                     horizontalAlignment: Text.AlignHCenter
-                    text: {
+                    text:  {
                         var count = 0
                         for (var i = 0; i < sectors.length; i++) {
                             if ((isExpense && sectors[i].isExpense) || (!isExpense && !sectors[i].isExpense)) {
@@ -138,6 +142,7 @@ Item {
                         }
                         return count === 0 ? "Нет операций" : count + " категории"
                     }
+
                     color: Theme.secondaryColor
                     font.pixelSize: Theme.fontSizeExtraSmall
                 }

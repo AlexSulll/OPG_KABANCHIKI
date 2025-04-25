@@ -85,11 +85,4 @@ ListModel {
         return service.loadCategoriesByCategoryId(selectedCategoryId);
     }
 
-    function getColorForCategory(categoryId) {
-        var colors = [
-            "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0",
-            "#9966FF", "#FF9F40", "#8AC24A", "#FF5722"
-        ]
-        return colors[categoryId % colors.length]
-    }
 }

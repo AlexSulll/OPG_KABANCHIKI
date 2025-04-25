@@ -10,10 +10,7 @@ BasePage {
     property string selectedTab: "expenses"
     property int action: 0
     property var categoryModel: Models.CategoryModel {}
-
-    Models.OperationModel {
-            id: operationModel
-    }
+    property var sectors: Models.SectorsModel {}
 
     Models.CategoryModel {
         id: categoryModel
@@ -22,10 +19,24 @@ BasePage {
         }
     }
 
+    Models.SectorsModel {
+        id: sectorModel
+        Component.onCompleted: {
+            updateSectors();
+        }
+    }
+
+    Models.OperationModel {
+            id: operationModel
+    }
+
     Component.onCompleted: {
         operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1);
         operationModel.calculateTotalBalance();
+        sectorModel.calculateChartData(categoryModel, selectedTab === "expenses" ? 0 : 1)
+        analyticsCard.isExpense = header.selectedTab === "expenses" ? 0 : 1
     }
+
 
     HeaderComponent {
         id: header
@@ -37,6 +48,7 @@ BasePage {
             mainpage.action = header.selectedTab === "expenses" ? 0 : 1
             operationModel.loadByTypeOperation(mainpage.action)
             operationModel.calculateTotalBalance()
+            analyticsCard.isExpense = header.selectedTab === "expenses" ? 1 : 0 // Здесь пока наоборот - я не знаю, как это пофиксить
         }
     }
 
@@ -47,13 +59,6 @@ BasePage {
             horizontalCenter: parent.horizontalCenter
             margins: Theme.paddingLarge
         }
-        sectors: {
-            var data = operationModel.calculateChartData(categoryModel, action);
-            console.log("Sectors data:", JSON.stringify(data));
-            return data;
-        }
-        totalValue: operationModel.totalBalance
-        isExpense: header.selectedTab === "expenses" ? 1 : 0 // Здесь пока наоборот - я не знаю, как это пофиксить
     }
 
     SilicaListView {

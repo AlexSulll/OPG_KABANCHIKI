@@ -61,14 +61,6 @@
     </message>
 </context>
 <context>
-    <name>MainPage</name>
-    <message>
-        <location filename="../qml/pages/MainPage.qml" line="50"/>
-        <source>Текущий баланс</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>OperationPage</name>
     <message>
         <location filename="../qml/pages/OperationPage.qml" line="71"/>

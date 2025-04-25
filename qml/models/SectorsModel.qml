@@ -6,7 +6,8 @@ ListModel {
     id: sectorModel
     objectName: "SectorModel"
 
-    property var sectors: calculateChartData(operationModel, 0) || []
+
+    property var sectors:  []
     property real total: 0
 
     function getTotalByCategory(categoryId) {

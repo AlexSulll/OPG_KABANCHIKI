@@ -8,8 +8,8 @@ BasePage {
     objectName: "MainPage"
 
     property string selectedTab: "expenses"
-    property bool isExpense: selectedTab === "expenses"
     property int action: 0
+    property bool isExpense: action === 0
     property var categoryModel: Models.CategoryModel {}
     property var sectors: Models.SectorsModel {}
 
@@ -22,10 +22,6 @@ BasePage {
 
     Models.SectorsModel {
         id: sectorModel
-        Component.onCompleted: {
-            calculateChartData(operationModel, 0);
-            analyticsCard.isExpense = 1;
-        }
     }
 
     Models.OperationModel {
@@ -36,6 +32,7 @@ BasePage {
         categoryModel.loadAllCategories();
         operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1);
         operationModel.calculateTotalBalance();
+        sectorModel.calculateChartData(operationModel, 0)
     }
 
 
@@ -50,7 +47,7 @@ BasePage {
             operationModel.loadByTypeOperation(mainpage.action)
             operationModel.calculateTotalBalance()
             analyticsCard.isExpense = mainpage.action === 0
-            analyticsCard.calculateChartData(operationModel, analyticsCard.isExpense);
+            sectorModel.calculateChartData(operationModel, mainpage.action)
         }
     }
 

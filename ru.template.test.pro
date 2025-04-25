@@ -12,6 +12,7 @@ HEADERS +=
 
 DISTFILES += \
     qml/components/CategoryDelegate.qml \
+    qml/components/MainCardComponent.qml \
     qml/models/SideDrawer.qml \
     qml/models/SideMenuModel.qml \
     qml/pages/BasePage.qml \

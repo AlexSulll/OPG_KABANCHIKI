@@ -87,4 +87,45 @@ ListModel {
             ? new Date(parts[2], parts[1]-1, parts[0])
             : new Date()
     }
+
+    function getTotalByCategory(categoryId) {
+        var total = 0
+        for (var i = 0; i < count; i++) {
+            var item = get(i)
+            if (item.categoryId === categoryId) {
+                total += item.total
+            }
+        }
+        return total
+    }
+
+
+    function calculateChartData(categoryModel, action) {
+            var data = []
+            var filtered = categoryModel.filteredCategories(action)
+            var total = totalBalance
+
+            for (var i = 0; i < filtered.length; i++) {
+                var cat = filtered[i]
+                var catTotal = getTotalByCategory(cat.categoryId)
+                if (catTotal > 0) {
+                    data.push({
+                        value: catTotal,
+                        color: categoryModel.getColorForCategory(cat.categoryId),
+                        categoryId: cat.categoryId,
+                        name: cat.nameCategory
+                    })
+                }
+            }
+
+            data.sort(function(a, b) { return b.value - a.value })
+            if (data.length === 0) {
+                data.push({
+                    value: 100,
+                    color: Theme.rgba(Theme.secondaryColor, 0.2),
+                    name: "Нет данных"
+                })
+            }
+            return data
+        }
 }

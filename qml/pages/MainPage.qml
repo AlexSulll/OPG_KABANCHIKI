@@ -40,9 +40,25 @@ BasePage {
         }
     }
 
+    MainCardComponent {
+        id: analyticsCard
+        anchors {
+            top: header.bottom
+            horizontalCenter: parent.horizontalCenter
+            margins: Theme.paddingLarge
+        }
+        sectors: {
+            var data = operationModel.calculateChartData(categoryModel, action);
+            console.log("Sectors data:", JSON.stringify(data));
+            return data;
+        }
+        totalValue: operationModel.totalBalance
+        isExpense: header.selectedTab === "expenses" ? 1 : 0 // Здесь пока наоборот - я не знаю, как это пофиксить
+    }
+
     SilicaListView {
             anchors {
-                top: header.bottom
+                top: analyticsCard.bottom
                 left: parent.left
                 right: parent.right
                 bottom: parent.bottom
@@ -104,7 +120,7 @@ BasePage {
                             }
                             horizontalAlignment: Text.AlignRight
                             text: isNaN(model.total) ? "0 ₽" : Number(model.total).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
-                            color: selectedTab === "expenses" ? "red" : "green"
+                            color: selectedTab === "expenses" ? "#FF6384" : Theme.highlightColor
                             font {
                                 pixelSize: Theme.fontSizeLarge
                                 family: Theme.fontFamilyHeading

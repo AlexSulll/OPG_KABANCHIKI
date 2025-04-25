@@ -100,7 +100,7 @@ Page {
                             }
                             horizontalAlignment: Text.AlignRight
                             text: Number(model.amount).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
-                            color: model.action === 0 ? "red" : "green"
+                            color: model.action === 0 ? "#FF6384" : Theme.highlightColor
                             font {
                                 pixelSize: Theme.fontSizeLarge
                                 family: Theme.fontFamilyHeading

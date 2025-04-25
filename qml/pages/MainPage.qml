@@ -87,62 +87,62 @@ BasePage {
                     color: Theme.rgba("#24224f", 0.9)
 
                     Row {
+                        id: itemContainer
                         anchors.fill: parent
                         anchors.margins: Theme.paddingMedium
                         spacing: Theme.paddingMedium
+                        layoutDirection: Qt.LeftToRight
 
                         Image {
-                            id:icon
-                            asynchronous: true
+                            id: icon
                             width: Theme.iconSizeMedium
                             height: width
-                            anchors.verticalCenter: parent.verticalCenter
                             source: categoryData ? categoryData.pathToIcon : ""
                             sourceSize: Qt.size(width, height)
                             fillMode: Image.PreserveAspectFit
                         }
 
-                        Column {
-                            width: parent.width * 0.6
-                            anchors.verticalCenter: parent.verticalCenter
-                            anchors.left: icon.right
-                            anchors.leftMargin: Theme.paddingLarge
-                            spacing: Theme.paddingSmall
-
-                            Label {
-                                text: categoryData ? categoryData.nameCategory : "Без категории"
-                                color: Theme.primaryColor
-                                font.pixelSize: Theme.fontSizeLarge
-                                truncationMode: TruncationMode.Fade
+                         Label {
+                            width: parent.width
+                            text: categoryData ? categoryData.nameCategory : "Без категории"
+                            color: Theme.primaryColor
+                            anchors{
+                                verticalCenter: itemContainer.verticalCenter
+                                left: icon.right
+                                leftMargin: Theme.paddingLarge
                             }
-                        }
+                            font.pixelSize: Theme.fontSizeLarge
+                            truncationMode: TruncationMode.Fade
+                         }
 
                         Label {
                             id: amountLabel
-                            width: Math.min(implicitWidth, parent.width * 0.35)
+                            width: parent.width * 0.35 - Theme.paddingMedium
+                            horizontalAlignment: Text.AlignRight
                             anchors {
                                 verticalCenter: parent.verticalCenter
                                 right: parent.right
                                 rightMargin: Theme.paddingSmall
                             }
-                            horizontalAlignment: Text.AlignRight
                             text: isNaN(model.total) ? "0 ₽" : Number(model.total).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
                             color: selectedTab === "expenses" ? "#FF6384" : Theme.highlightColor
                             font {
                                 pixelSize: Theme.fontSizeLarge
                                 family: Theme.fontFamilyHeading
                                 bold: true
+
                             }
                             elide: Text.ElideRight
                         }
                     }
                 }
+
                 onClicked: {
-                        pageStack.push(Qt.resolvedUrl("../pages/CategoryDetailsPage.qml"), {
-                            categoryId: model.categoryId,
-                            action: mainpage.action,
-                            categoryModel: categoryModel
-                        });
+                    pageStack.push(Qt.resolvedUrl("../pages/CategoryDetailsPage.qml"), {
+                        categoryId: model.categoryId,
+                        action: mainpage.action,
+                        categoryModel: categoryModel
+                    });
                 }
             }
 

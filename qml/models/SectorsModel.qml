@@ -58,6 +58,7 @@ ListModel {
             }
         }
 
+
         data.sort(function(a, b) { return b.value - a.value; });
 
         if (data.length === 0) {
@@ -65,7 +66,7 @@ ListModel {
                 value: 0,
                 percentage: 0,
                 color: "",
-                categoryId: "",
+                categoryId: -1,
                 name: "Нет данных",
                 isExpense: action === 0
             });

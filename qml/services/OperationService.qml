@@ -3,8 +3,8 @@ import QtQuick.LocalStorage 2.0
 
 QtObject {
     id: service
-
     Component.onCompleted: initialize()
+
 
     function getDatabase() {
         return LocalStorage.openDatabaseSync("WebBudgetDB", "1.0", "WebBudget storage", 1000000)

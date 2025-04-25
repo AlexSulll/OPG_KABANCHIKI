@@ -172,11 +172,7 @@ Item {
     }
 
     onSectorsChanged: {
-        backgroundRing.requestPaint()
-        sectorsCanvas.requestPaint()
-    }
-
-    onIsExpenseChanged: {               // изменение кольца
+        console.log("Sectors changed:", JSON.stringify(sectors));
         backgroundRing.requestPaint()
         sectorsCanvas.requestPaint()
     }

@@ -8,6 +8,7 @@ BasePage {
     objectName: "MainPage"
 
     property string selectedTab: "expenses"
+    property bool isExpense: selectedTab === "expenses"
     property int action: 0
     property var categoryModel: Models.CategoryModel {}
     property var sectors: Models.SectorsModel {}
@@ -22,8 +23,8 @@ BasePage {
     Models.SectorsModel {
         id: sectorModel
         Component.onCompleted: {
-            updateSectors();
-            analyticsCard.isExpense = !action
+            calculateChartData(operationModel, 0);
+            analyticsCard.isExpense = 1;
         }
     }
 
@@ -32,9 +33,9 @@ BasePage {
     }
 
     Component.onCompleted: {
+        categoryModel.loadAllCategories();
         operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1);
         operationModel.calculateTotalBalance();
-        sectorModel.calculateChartData(categoryModel, selectedTab === "expenses" ? 0 : 1)
     }
 
 
@@ -48,7 +49,8 @@ BasePage {
             mainpage.action = header.selectedTab === "expenses" ? 0 : 1
             operationModel.loadByTypeOperation(mainpage.action)
             operationModel.calculateTotalBalance()
-            analyticsCard.isExpense = header.selectedTab === "expenses" ? 1 : 0 // Здесь пока наоборот - я не знаю, как это пофиксить
+            analyticsCard.isExpense = mainpage.action === 0
+            analyticsCard.calculateChartData(operationModel, analyticsCard.isExpense);
         }
     }
 
@@ -59,6 +61,9 @@ BasePage {
             horizontalCenter: parent.horizontalCenter
             margins: Theme.paddingLarge
         }
+        sectors: sectorModel.sectors
+        totalValue: operationModel.totalBalance
+        isExpense: selectedTab === "expenses"
     }
 
     SilicaListView {

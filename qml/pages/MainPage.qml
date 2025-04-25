@@ -12,6 +12,7 @@ BasePage {
     property var categoryModel: Models.CategoryModel {}
     property var sectors: Models.SectorsModel {}
 
+
     Models.CategoryModel {
         id: categoryModel
         Component.onCompleted: {
@@ -22,7 +23,9 @@ BasePage {
     Models.SectorsModel {
         id: sectorModel
         Component.onCompleted: {
-            updateSectors();
+            calculateChartData(categoryModel, !action)
+            analyticsCard.isExpense = !action               // изменение кольца
+            console.log("Sectors data:", JSON.stringify(sectors));
         }
     }
 
@@ -33,8 +36,6 @@ BasePage {
     Component.onCompleted: {
         operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1);
         operationModel.calculateTotalBalance();
-        sectorModel.calculateChartData(categoryModel, selectedTab === "expenses" ? 0 : 1)
-        analyticsCard.isExpense = header.selectedTab === "expenses" ? 0 : 1
     }
 
 

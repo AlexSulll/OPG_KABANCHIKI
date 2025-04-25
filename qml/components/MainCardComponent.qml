@@ -175,4 +175,9 @@ Item {
         backgroundRing.requestPaint()
         sectorsCanvas.requestPaint()
     }
+
+    onIsExpenseChanged: {               // изменение кольца
+        backgroundRing.requestPaint()
+        sectorsCanvas.requestPaint()
+    }
 }

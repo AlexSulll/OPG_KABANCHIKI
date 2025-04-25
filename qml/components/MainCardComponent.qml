@@ -140,7 +140,7 @@ Item {
                                 count++
                             }
                         }
-                        return count === 1 ? "Нет операций" : count + " категории"
+                        return sectors[0].categoryId === "" ? "Нет операций" : count + " категории"
                     }
 
                     color: Theme.secondaryColor

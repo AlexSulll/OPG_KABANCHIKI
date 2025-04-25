@@ -32,10 +32,9 @@ ListModel {
     }
 
 
-    function calculateChartData(operationModel, action) {
+    function calculateChartData(operationModel, action, startDate, endDate) {
         var data = [];
-        var filtered = operationModel.loadByTypeOperationForCard(action);
-        console.log("Filtered data:", JSON.stringify(filtered));
+        var filtered = operationModel.loadByTypeOperationForCard(action, startDate, endDate);
 
         // Рассчитываем общую сумму для текущего типа операций
         var totalForType = 0;

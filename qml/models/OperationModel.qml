@@ -39,8 +39,8 @@ ListModel {
         }
     }
 
-    function loadByTypeOperation(type) {
-            loadOperation(service.getTotalSumByCategory(type))
+    function loadByTypeOperation(type, startDate, endDate) {
+            loadOperation(service.getTotalSumByCategory(type, startDate, endDate))
     }
 
     function loadByTypeCategory(categoryId, action) {
@@ -49,6 +49,7 @@ ListModel {
 
     function loadOperation(operations) {
         clear();
+        console.log("Загружено операций:", operations.length);
         if (operations) {
             operations.forEach(function(op) {
                 append({
@@ -90,7 +91,6 @@ ListModel {
 
     function loadByTypeOperationForCard(type) {
         data = service.getTotalSumByCategory(type);
-        console.log("Data:", JSON.stringify(data));
         return data
     }
 

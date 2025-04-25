@@ -56,7 +56,7 @@ QtObject {
         })
     }
 
-    function getTotalSumByCategory(type) {
+    function getTotalSumByCategory(type, startDate, endDate) {
         var db = getDatabase()
         var categories = []
         db.readTransaction(function(tx) {
@@ -70,8 +70,9 @@ QtObject {
                         FROM operations
                         JOIN categories
                             ON categories.categoryId = operations.categoryId AND operations.action = ?
+                        WHERE date >= ? AND date <= ?
                         GROUP BY categories.categoryId
-                        ORDER BY total DESC', [type])
+                        ORDER BY total DESC', [type, startDate, endDate])
             for (var i = 0; i < rs.rows.length; i++) {
                 var item = rs.rows.item(i)
                 categories.push({
@@ -134,5 +135,6 @@ QtObject {
             )
         })
     }
+
 
 }

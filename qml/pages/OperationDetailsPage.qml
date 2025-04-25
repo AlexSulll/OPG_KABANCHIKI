@@ -52,7 +52,6 @@ Page {
             ComboBox {
                 id: categoryCombo
                 width: parent.width
-                //label: "Категория"
                 currentIndex: categoryModel.getIndexById(categoryId)
 
                 Row {

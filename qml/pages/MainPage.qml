@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import "../components"
+import "../components"  as Components
 import "../models" as Models
 
 BasePage {
@@ -12,6 +12,10 @@ BasePage {
     property bool isExpense: action === 0
     property var categoryModel: Models.CategoryModel {}
     property var sectors: Models.SectorsModel {}
+
+    property string currentPeriod: "month"
+    property date startDate
+    property date endDate
 
     Models.CategoryModel {
         id: categoryModel
@@ -26,17 +30,25 @@ BasePage {
 
     Models.OperationModel {
             id: operationModel
+            Component.onCompleted: {
+                loadByTypeOperation(selectedTab === "expenses" ? 0 : 1, startDate, endDate)
+            }
     }
 
     Component.onCompleted: {
-        categoryModel.loadAllCategories();
-        operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1);
-        operationModel.calculateTotalBalance();
+        var dates = getPeriodDates(currentPeriod);
+        startDate = dates.startDate;
+        endDate = dates.endDate;
+
+        categoryModel.loadAllCategories()
+        operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1, startDate, endDate)
+        operationModel.calculateTotalBalance()
         sectorModel.calculateChartData(operationModel, 0)
+        getPeriodDates(currentPeriod)
     }
 
 
-    HeaderComponent {
+    Components.HeaderComponent {
         id: header
         headerText: Number(operationModel.totalBalance).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
         selectedTab: mainpage.selectedTab
@@ -44,23 +56,58 @@ BasePage {
         onSelectedTabChanged: {
             mainpage.selectedTab = header.selectedTab
             mainpage.action = header.selectedTab === "expenses" ? 0 : 1
-            operationModel.loadByTypeOperation(mainpage.action)
+            operationModel.loadByTypeOperation(mainpage.action, startDate, endDate)
             operationModel.calculateTotalBalance()
             analyticsCard.isExpense = mainpage.action === 0
-            sectorModel.calculateChartData(operationModel, mainpage.action)
+            sectorModel.calculateChartData(operationModel, mainpage.action, startDate, endDate)
         }
     }
 
-    MainCardComponent {
-        id: analyticsCard
+    Row {
+        id: periodSelector
         anchors {
             top: header.bottom
+            left: parent.left
+            right: parent.right
+            margins: Theme.paddingMedium
+            topMargin: Theme.paddingLarge
+        }
+
+        height: Theme.itemSizeMedium
+        spacing: Theme.paddingSmall
+
+        Repeater {
+            model: ["day", "week", "month", "year", "custom"]
+
+            delegate: Components.PeriodButton {
+                width: (periodSelector.width - periodSelector.spacing*4)/5
+                period: modelData
+                selectedPeriod: mainpage.currentPeriod
+
+                onPeriodSelected: {
+                    if(period === "custom") {
+                        dateRangeDialog.open()
+                    } else {
+                        mainpage.currentPeriod = period;
+                        var dates = getPeriodDates(period); // Обновляем даты
+                        operationModel.loadByTypeOperation(mainpage.action, dates.startDate, dates.endDate);
+                        sectorModel.calculateChartData(operationModel, mainpage.action);
+                    }
+                }
+            }
+        }
+    }
+
+    Components.MainCardComponent {
+        id: analyticsCard
+        anchors {
+            top: periodSelector.bottom
             horizontalCenter: parent.horizontalCenter
             margins: Theme.paddingLarge
         }
         sectors: sectorModel.sectors
         totalValue: operationModel.totalBalance
-        isExpense: selectedTab === "expenses"
+        isExpense: selectedTab === "expenses" ? true : false
     }
 
     SilicaListView {
@@ -138,14 +185,66 @@ BasePage {
                     }
                 }
                 onClicked: {
+                        console.log(JSON.stringify(operationModel));
+                        console.log(JSON.stringify(categoryModel));
                         pageStack.push(Qt.resolvedUrl("../pages/CategoryDetailsPage.qml"), {
                             categoryId: model.categoryId,
                             action: mainpage.action,
-                            categoryModel: categoryModel
+                            categoryModel: categoryModel,
+                            currentPeriod: currentPeriod
                         });
                 }
             }
 
             VerticalScrollDecorator {}
         }
+
+    function getPeriodDates(period) {
+        var now = new Date(); // Фиксируем текущую дату
+        var start = new Date(now);
+        var end = new Date(now);
+
+        switch(period) {
+            case "day":
+                start.setHours(0, 0, 0, 0);
+                end.setHours(23, 59, 59, 999);
+                break;
+
+            case "week":
+                var day = start.getDay();
+                var diff = start.getDate() - day + (day === 0 ? -6 : 1);
+                start.setDate(diff);
+                end = new Date(start);
+                end.setDate(start.getDate() + 6);
+                end.setHours(23, 59, 59, 999);
+                break;
+
+            case "month":
+                start.setDate(1);
+                start.setHours(0, 0, 0, 0);
+                end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+                end.setHours(23, 59, 59, 999);
+                break;
+
+            case "year":
+                start = new Date(now.getFullYear(), 0, 1);
+                end = new Date(now.getFullYear(), 11, 31);
+                end.setHours(23, 59, 59, 999);
+                break;
+
+            case "custom":
+                start = startDate;
+                end = endDate;
+                break;
+        }
+
+        // Присваиваем свойствам страницы
+        mainpage.startDate = start;
+        mainpage.endDate = end;
+
+        return {
+            startDate: Qt.formatDate(start, "dd.MM.yyyy"),
+            endDate: Qt.formatDate(end, "dd.MM.yyyy")
+        };
+    }
 }

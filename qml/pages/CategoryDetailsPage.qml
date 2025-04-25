@@ -10,9 +10,10 @@ Page {
     property var categoryModel
     property int categoryId
     property int action
+    property string currentPeriod
 
     Models.OperationModel {
-            id: operationModel
+        id: operationModel
     }
 
     Component.onCompleted: operationModel.loadByTypeCategory(categoryId, action);
@@ -112,6 +113,7 @@ Page {
                 }
 
                 onClicked: {
+                    console.log(JSON.stringify(operationModel));
                         pageStack.push(Qt.resolvedUrl("../pages/OperationDetailsPage.qml"), {
                             operationId: model.id,
                             operationModel: operationModel,

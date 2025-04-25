@@ -36,7 +36,7 @@ Page {
             spacing: Theme.paddingLarge
 
             PageHeader {
-                title: "Редактирование операции"
+                title: "Просмотр и редактирование операции"
             }
 
             TextField {
@@ -49,19 +49,66 @@ Page {
                 validator: IntValidator { bottom: 1 }
             }
 
-            //FIX IF Сделать чтобы название категории было вместе с иконкой категории
             ComboBox {
+                id: categoryCombo
                 width: parent.width
-                label: "Категория"
+                //label: "Категория"
                 currentIndex: categoryModel.getIndexById(categoryId)
-                value: categoryModel.getCategoryName(categoryId)
+
+                Row {
+                    anchors.left: parent.left
+                    anchors.leftMargin: Theme.horizontalPageMargin
+                    anchors.verticalCenter: parent.verticalCenter
+                    spacing: Theme.paddingMedium
+
+                    Image {
+                        source: categoryModel.getCategoryIcon(categoryId) || ""
+                        width: Theme.iconSizeSmall
+                        height: Theme.iconSizeSmall
+                        visible: Boolean(source)
+                    }
+
+                    Label {
+                        text: categoryModel.getCategoryName(categoryId)
+                        truncationMode: TruncationMode.Fade
+                    }
+                }
 
                 menu: ContextMenu {
                     Repeater {
                         model: categoryModel.filteredCategories(action)
-                        delegate: MenuItem {
-                            text: modelData.nameCategory
-                            onClicked: categoryId = modelData.categoryId
+                        delegate: Component {
+                            Item {
+                                width: parent.width
+                                height: Theme.itemSizeSmall
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: {
+                                        categoryId = modelData.categoryId;
+                                    }
+                                }
+
+                                Row {
+                                    anchors.fill: parent
+                                    spacing: Theme.paddingMedium
+                                    anchors.leftMargin: Theme.paddingLarge*1.1
+
+                                    Image {
+                                        source: modelData.pathToIcon || ""
+                                        width: Theme.iconSizeSmall
+                                        height: Theme.iconSizeSmall
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+
+                                    Label {
+                                        text: modelData.nameCategory
+                                        width: parent.width - x - Theme.paddingMedium
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        color: pressed ? Theme.highlightColor : Theme.primaryColor
+                                    }
+                                }
+                            }
                         }
                     }
                 }

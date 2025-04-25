@@ -3,8 +3,8 @@ import QtQuick.LocalStorage 2.0
 
 QtObject {
     id: service
-
     Component.onCompleted: initialize()
+
 
     function getDatabase() {
         return LocalStorage.openDatabaseSync("WebBudgetDB", "1.0", "WebBudget storage", 1000000)
@@ -98,6 +98,24 @@ QtObject {
             }
         })
         return operations
+    }
+
+    function getTotalIncome() {
+        var total = 0;
+        getDatabase().readTransaction(function(tx) {
+            var rs = tx.executeSql('SELECT SUM(amount) as total FROM operations WHERE action = 1');
+            total = rs.rows.item(0).total || 0;
+        });
+        return total;
+    }
+
+    function getTotalExpenses() {
+        var total = 0;
+        getDatabase().readTransaction(function(tx) {
+            var rs = tx.executeSql('SELECT SUM(amount) as total FROM operations WHERE action = 0');
+            total = rs.rows.item(0).total || 0;
+        });
+        return total;
     }
 
     function updateOperation(operation) {

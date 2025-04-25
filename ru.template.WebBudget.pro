@@ -15,9 +15,11 @@ DISTFILES += \
     qml/components/CategoryDisplay.qml \
     qml/components/HeaderCategoryComponent.qml \
     qml/components/HeaderComponent.qml \
+    qml/components/MainCardComponent.qml \
     qml/components/SideDrawerComponent.qml \
     qml/models/CategoryModel.qml \
     qml/models/OperationModel.qml \
+    qml/models/SectorsModel.qml \
     qml/models/SideMenuModel.qml \
     qml/pages/AddCategoryPage.qml \
     qml/pages/BasePage.qml \

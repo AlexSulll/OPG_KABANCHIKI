@@ -4,7 +4,8 @@ import "../services" as Services
 ListModel {
     id: operationModel
     objectName: "OperationModel"
-
+    property real totalBalance: 0
+    property var data: []
     property var service: Services.OperationService {
         id: internalService
         Component.onCompleted: {
@@ -16,6 +17,13 @@ ListModel {
     function add(operation) {
         service.addOperation(operation);
         refresh();
+    }
+
+    function calculateTotalBalance() {
+        var income = service.getTotalIncome();
+        var expenses = service.getTotalExpenses();
+        totalBalance = income - expenses;
+        return totalBalance;
     }
 
     function refresh() {
@@ -79,4 +87,11 @@ ListModel {
             ? new Date(parts[2], parts[1]-1, parts[0])
             : new Date()
     }
+
+    function loadByTypeOperationForCard(type) {
+        data = service.getTotalSumByCategory(type);
+        console.log("Data:", JSON.stringify(data));
+        return data
+    }
+
 }

@@ -9,11 +9,9 @@ BasePage {
 
     property string selectedTab: "expenses"
     property int action: 0
+    property bool isExpense: action === 0
     property var categoryModel: Models.CategoryModel {}
-
-    Models.OperationModel {
-            id: operationModel
-    }
+    property var sectors: Models.SectorsModel {}
 
     Models.CategoryModel {
         id: categoryModel
@@ -22,25 +20,52 @@ BasePage {
         }
     }
 
-    Component.onCompleted: {
-        operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1);
+    Models.SectorsModel {
+        id: sectorModel
     }
+
+    Models.OperationModel {
+            id: operationModel
+    }
+
+    Component.onCompleted: {
+        categoryModel.loadAllCategories();
+        operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1);
+        operationModel.calculateTotalBalance();
+        sectorModel.calculateChartData(operationModel, 0)
+    }
+
 
     HeaderComponent {
         id: header
-        headerText: "Баланс"
+        headerText: Number(operationModel.totalBalance).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
         selectedTab: mainpage.selectedTab
         operationModel: operationModel
         onSelectedTabChanged: {
-                mainpage.selectedTab = header.selectedTab;
-                action: header.selectedTab === "expenses" ? 0 : 1;
-                operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1);
-       }
+            mainpage.selectedTab = header.selectedTab
+            mainpage.action = header.selectedTab === "expenses" ? 0 : 1
+            operationModel.loadByTypeOperation(mainpage.action)
+            operationModel.calculateTotalBalance()
+            analyticsCard.isExpense = mainpage.action === 0
+            sectorModel.calculateChartData(operationModel, mainpage.action)
+        }
+    }
+
+    MainCardComponent {
+        id: analyticsCard
+        anchors {
+            top: header.bottom
+            horizontalCenter: parent.horizontalCenter
+            margins: Theme.paddingLarge
+        }
+        sectors: sectorModel.sectors
+        totalValue: operationModel.totalBalance
+        isExpense: selectedTab === "expenses"
     }
 
     SilicaListView {
             anchors {
-                top: header.bottom
+                top: analyticsCard.bottom
                 left: parent.left
                 right: parent.right
                 bottom: parent.bottom
@@ -102,7 +127,7 @@ BasePage {
                             }
                             horizontalAlignment: Text.AlignRight
                             text: isNaN(model.total) ? "0 ₽" : Number(model.total).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
-                            color: selectedTab === "expenses" ? "red" : "green"
+                            color: selectedTab === "expenses" ? "#FF6384" : Theme.highlightColor
                             font {
                                 pixelSize: Theme.fontSizeLarge
                                 family: Theme.fontFamilyHeading

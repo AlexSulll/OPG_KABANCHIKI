@@ -76,7 +76,13 @@ ListModel {
         return category ? category.nameCategory : "Не выбрана"
     }
 
+    function getCategoryIcon(categoryId) {
+        var category = getCategoryById(categoryId)
+        return category ? category.pathToIcon : "Не выбрана"
+    }
+
     function loadCategoriesByCategoryId(selectedCategoryId) {
         return service.loadCategoriesByCategoryId(selectedCategoryId);
     }
+
 }

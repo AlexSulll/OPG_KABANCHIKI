@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../services" as Services
+import "../components"
 
 ListModel {
     id: sectorModel
@@ -9,6 +10,7 @@ ListModel {
 
     property var sectors:  []
     property real total: 0
+    property string currentPeriod: "All"
 
     function getTotalByCategory(categoryId) {
         var total = 0
@@ -34,7 +36,8 @@ ListModel {
 
     function calculateChartData(operationModel, action) {
         var data = [];
-        var filtered = operationModel.loadByTypeOperationForCard(action);
+        var currentPeriod = operationModel.currentPeriod
+        var filtered = operationModel.loadByTypeOperationForCardAndDateFiltering(action, currentPeriod);
         console.log("Filtered data:", JSON.stringify(filtered));
 
         // Рассчитываем общую сумму для текущего типа операций

@@ -1,10 +1,12 @@
 import QtQuick 2.0
 import QtQuick.LocalStorage 2.0
+import "../components"
 
 QtObject {
     id: service
     Component.onCompleted: initialize()
-
+    property var range: []
+    property string currentPeriod: "All"
 
     function getDatabase() {
         return LocalStorage.openDatabaseSync("WebBudgetDB", "1.0", "WebBudget storage", 1000000)
@@ -78,7 +80,8 @@ QtObject {
                     categoryId: item.categoryId,
                     name: item.nameCategory,
                     icon: item.pathToIcon,
-                    total: item.total
+                    total: item.total,
+                    date: item.date,
                 })
             }
         })
@@ -135,4 +138,45 @@ QtObject {
         })
     }
 
+    function getFilteredCategories(type, period) {
+        var db = getDatabase()
+        var categories = []
+        currentPeriod = period
+        var range = dateFilter.getDateRange(currentPeriod)
+        console.log("Filter range from:", range.fromDate, "to:", range.toDate)
+
+        if (period === "All") {
+            return getTotalSumByCategory(type)
+        }
+
+        db.readTransaction(function(tx) {
+            // Создаем SQLite-совместимые строки дат
+            var fromDateStr = Qt.formatDateTime(range.fromDate, "yyyy-MM-dd")
+            var toDateStr = Qt.formatDateTime(range.toDate, "yyyy-MM-dd")
+
+            console.log("Using dates for SQL:", fromDateStr, toDateStr)
+
+            var query = 'SELECT operations.action, operations.categoryId, ' +
+                   'SUM(operations.amount) as total ' +
+                   'FROM operations WHERE operations.action = ? ' +
+                   'AND (substr(date, 7, 4) || "-" || substr(date, 4, 2) || "-" || substr(date, 1, 2)) ' +
+                   'BETWEEN ? AND ? ' +
+                   'GROUP BY operations.categoryId ORDER BY total DESC'
+
+            var rs = tx.executeSql(query, [type, fromDateStr, toDateStr])
+            console.log("Found rows:", rs.rows.length)
+
+            for (var i = 0; i < rs.rows.length; i++) {
+                var item = rs.rows.item(i)
+                categories.push({
+                    categoryId: item.categoryId,
+                    total: item.total || 0,
+                    action: item.action
+                })
+            }
+        })
+
+        console.log("Returning categories:", JSON.stringify(categories))
+        return categories
+    }
 }

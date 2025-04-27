@@ -13,6 +13,7 @@ BasePage {
     property var categoryModel: Models.CategoryModel {}
     property var sectors: Models.SectorsModel {}
 
+
     Models.CategoryModel {
         id: categoryModel
         Component.onCompleted: {
@@ -28,6 +29,11 @@ BasePage {
             id: operationModel
     }
 
+    Models.DateFilterModel {
+        id: dateFilter
+        operationModel: operationModel
+    }
+
     Component.onCompleted: {
         categoryModel.loadAllCategories();
         operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1);
@@ -40,7 +46,6 @@ BasePage {
         id: header
         headerText: Number(operationModel.totalBalance).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
         selectedTab: mainpage.selectedTab
-        operationModel: operationModel
         onSelectedTabChanged: {
             mainpage.selectedTab = header.selectedTab
             mainpage.action = header.selectedTab === "expenses" ? 0 : 1
@@ -53,6 +58,7 @@ BasePage {
 
     MainCardComponent {
         id: analyticsCard
+        operationModel: operationModel
         anchors {
             top: header.bottom
             horizontalCenter: parent.horizontalCenter

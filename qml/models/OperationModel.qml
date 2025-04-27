@@ -6,6 +6,7 @@ ListModel {
     objectName: "OperationModel"
     property real totalBalance: 0
     property var data: []
+    property string currentPeriod: "All"
     property var service: Services.OperationService {
         id: internalService
         Component.onCompleted: {
@@ -92,6 +93,20 @@ ListModel {
         data = service.getTotalSumByCategory(type);
         console.log("Data:", JSON.stringify(data));
         return data
+    }
+
+    function loadByTypeOperationForCardAndDateFiltering(type, period) {
+        if (period==="All") {
+            loadByTypeOperationForCard(type)
+        }
+        data = service.getFilteredCategories(type, period);
+        console.log("Data:", JSON.stringify(data));
+        return data
+    }
+
+    function formatDateForSQL(date) {
+        if (!date) return ""
+        return Qt.formatDate(date, "yyyy-MM-dd")
     }
 
 }

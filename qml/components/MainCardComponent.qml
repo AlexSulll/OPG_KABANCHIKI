@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-
+import "../models" as Models
 
 
 Item {
@@ -11,8 +11,18 @@ Item {
     property real rotationAngle: 0
     property real scaleFactor: 1.0
     property var sectors: []
+    property var period: []
     property real totalValue: 0
     property bool isExpense: true  // true - расходы, false - доходы
+    property string selectedPeriod: "All"
+    property var dateRange: []
+    property var operationModel: null
+    property string currentPeriod: "All"
+
+    Models.DateFilterModel {
+        id: dateModel
+        operationModel: operationModel
+    }
 
     Rectangle {
         id: cardBackground
@@ -20,11 +30,57 @@ Item {
         radius: Theme.paddingLarge * 1.5
         color: Theme.rgba("#24224f", 0.9)
 
+        Row {
+            id: periodSelector
+            anchors {
+                top: parent.top
+                topMargin: Theme.paddingMedium
+                horizontalCenter: parent.horizontalCenter
+            }
+            spacing: Theme.paddingLarge
+
+            Repeater {
+                model: dateModel
+                delegate: BackgroundItem {
+                    width: periodLabel.width + Theme.paddingMedium * 2
+                    height: periodLabel.height + Theme.paddingSmall * 2
+
+                    Label {
+                        id: periodLabel
+                        anchors.centerIn: parent
+                        text: dateLabel
+                        color: selectedPeriod === dateId ? Theme.highlightColor : Theme.secondaryColor
+                        font.pixelSize: Theme.fontSizeExtraLarge
+                        font.underline: selectedPeriod === dateId
+                    }
+
+                    onClicked: {
+                            selectedPeriod = dateId;
+                            operationModel.currentPeriod = selectedPeriod
+
+
+                            var filteredOps = operationModel.service.getFilteredCategories(mainpage.action, selectedPeriod)
+                            // Обновляем модель
+                            operationModel.loadOperation(filteredOps)
+                            operationModel.calculateTotalBalance()
+
+                            // Обновляем график
+                            isExpense = mainpage.action === 0
+                            sectorModel.calculateChartData(operationModel, mainpage.action)
+                            sectorsCanvas.requestPaint();
+                            backgroundRing.requestPaint();
+                    }
+                }
+            }
+        }
+
+
         Item {
             id: chartContainer
             width: parent.width * 0.8
             height: width
             anchors.centerIn: parent
+            anchors.verticalCenterOffset: Theme.paddingMedium  // Make space for period selector
 
             Canvas {
                 id: backgroundRing
@@ -65,7 +121,6 @@ Item {
                         }
                     }
 
-
                     if (total <= 0) {
                         // Если нет данных, рисуем серое кольцо
                         ctx.beginPath()
@@ -103,7 +158,6 @@ Item {
                 width: parent.width * 0.6
                 spacing: Theme.paddingSmall
 
-
                 Label {
                     width: parent.width
                     horizontalAlignment: Text.AlignHCenter
@@ -129,7 +183,6 @@ Item {
                     font.bold: true
                 }
 
-
                 Label {
                     width: parent.width
                     horizontalAlignment: Text.AlignHCenter
@@ -142,7 +195,6 @@ Item {
                         }
                         return count===1 && sectors[0]["value"]===0 ? "Нет категорий" : count + " категории"
                     }
-
                     color: Theme.secondaryColor
                     font.pixelSize: Theme.fontSizeExtraSmall
                 }

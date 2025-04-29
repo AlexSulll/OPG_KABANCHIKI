@@ -9,24 +9,20 @@ Page {
     property var categoryModel
     property var operationModel
     property int action: 0
-
+    property bool fromMainButton: true
     property int selectedCategoryId: -1
+    property int editingCategoryId: -1
 
     onActionChanged: {
-        if (categoryModel) {
             categoryModel.loadCategoriesByType(action);
-        }
     }
 
     Component.onCompleted: {
-        if (categoryModel) {
             categoryModel.loadCategoriesByType(action);
-        }
     }
 
     SilicaFlickable {
         anchors.fill: parent
-        contentHeight: contentColumn.height
 
         Column {
             id: contentColumn
@@ -35,7 +31,7 @@ Page {
 
             Components.HeaderComponent {
                 id: header
-                headerText: "Добавление"
+                headerText: fromMainButton ? "Добавление" : "Категории"
                 fontSize: Theme.fontSizeExtraLarge
                 color: "transparent"
                 showIcon: false
@@ -44,7 +40,7 @@ Page {
             Item {
                 id: gridFixContainer
                 width: parent.width
-                height: 900
+                height: 1200
                 clip: true
 
                 SilicaFlickable {
@@ -56,29 +52,68 @@ Page {
                         width: parent.width
                         cellWidth: width / 3
                         cellHeight: cellWidth * 1.2
-                        height: Math.max(implicitHeight, 900)
+                        height: categoryPage.height
                         model: categoryModel
                         interactive: false
 
-                        delegate: Components.CategoryDelegate {
-                            categoryId: model.categoryId
-                            nameCategory: model.nameCategory
-                            pathToIcon: model.pathToIcon
-                            isSelected: selectedCategoryId === model.categoryId
-                            onCategorySelected: {
-                                if (categoryId === 8 || categoryId === 13) {
-                                    pageStack.push(Qt.resolvedUrl("AddCategoryPage.qml"), {
-                                        categoryType: action,
-                                        categoryModel: categoryModel
-                                    });
-                                } else {
-                                    pageStack.push(Qt.resolvedUrl("OperationPage.qml"), {
-                                        action: action,
-                                        selectedCategoryId: categoryId,
-                                        operationModel: operationModel,
-                                        categoryModel: categoryModel
-                                });
+                        delegate: Item {
+                            width: GridView.view.cellWidth
+                            height: GridView.view.cellHeight
+
+                            Components.CategoryDelegate {
+                                id: categoryDelegate
+                                width: parent.width - Theme.paddingMedium
+                                height: parent.height - Theme.paddingMedium
+                                anchors.centerIn: parent
+                                categoryId: model.categoryId
+                                nameCategory: model.nameCategory
+                                pathToIcon: model.pathToIcon
+                                isSelected: selectedCategoryId === model.categoryId
+                                visible: editingCategoryId !== model.categoryId
+
+                                onCategorySelected: {
+                                    if (fromMainButton) {
+                                        // Старое поведение
+                                        if (categoryId === 8 || categoryId === 13) {
+                                            pageStack.push(Qt.resolvedUrl("AddCategoryPage.qml"), {
+                                                categoryType: action,
+                                                categoryModel: categoryModel
+                                            });
+                                        } else {
+                                            pageStack.push(Qt.resolvedUrl("OperationPage.qml"), {
+                                                action: action,
+                                                selectedCategoryId: categoryId,
+                                                operationModel: operationModel,
+                                                categoryModel: categoryModel
+                                            });
+                                        }
+                                    } else {
+                                        // Новое поведение для бургер-меню
+                                        editingCategoryId = categoryId
+                                        editField.text = nameCategory
+                                        editField.forceActiveFocus()
+                                    }
                                 }
+                            }
+
+                            TextField {
+                                id: editField
+                                visible: editingCategoryId === model.categoryId
+                                width: parent.width - Theme.paddingMedium
+                                anchors.centerIn: parent
+                                text: model.nameCategory
+                                label: "Название категории"
+                                EnterKey.onClicked: {
+                                    if (text.trim() !== "") {
+                                        if (!categoryModel.updateCategoryName(model.categoryId, text)) {
+                                            console.error("Failed to update category name")
+                                        }
+                                    }
+                                    editingCategoryId = -1
+                                    focus = false
+                                    pageStack.replaceAbove(null, Qt.resolvedUrl("MainPage.qml"))
+                                }
+                                EnterKey.iconSource: "image://theme/icon-m-enter-accept"
                             }
                         }
 

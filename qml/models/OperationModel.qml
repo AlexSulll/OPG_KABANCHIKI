@@ -111,4 +111,24 @@ ListModel {
         return Qt.formatDate(date, "yyyy-MM-dd")
     }
 
+    function getTotalSum() {
+        var sum = 0
+        if (!operationModel) return 0
+
+        for (var i = 0; i < operationModel.count; i++) {
+            var item = operationModel.get(i)
+            if (item && ((!action && item.action === 0) || (action && item.action === 1))) {
+                sum += item.total || 0
+            }
+        }
+        return sum
+    }
+
+    function updateBalanceText() {
+        if (balanceHidden) {
+            header.headerText = "****** ₽"
+        } else {
+            header.headerText = Number(operationModel.totalBalance).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
+        }
+    }
 }

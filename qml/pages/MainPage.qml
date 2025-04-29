@@ -13,7 +13,6 @@ BasePage {
     property var categoryModel: Models.CategoryModel {}
     property var sectors: Models.SectorsModel {}
 
-
     Models.CategoryModel {
         id: categoryModel
         Component.onCompleted: {

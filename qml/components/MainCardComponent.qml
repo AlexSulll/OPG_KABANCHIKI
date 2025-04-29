@@ -58,7 +58,7 @@ Item {
                     onClicked: {
                         selectedPeriod = dateId;
                         operationModel.currentPeriod = selectedPeriod
-                        selectedSector = -1 // Сброс выбранного сектора
+                        selectedSector = -1
 
                         var filteredOps = operationModel.service.getFilteredCategories(mainpage.action, selectedPeriod)
                         // Обновляем модель
@@ -285,7 +285,7 @@ Item {
                                     count++
                                 }
                             }
-                            return count===1 && sectors[0]["value"]===0 ? "Нет категорий" : count + " категории"
+                            return count===1 && sectors[0]["value"]===0 ? "Нет категорий" : count + " категори"+ (count === 1 ? "я" : (count >= 5 ? "й" : "и") )
                         }
                     }
                     color: Theme.secondaryColor

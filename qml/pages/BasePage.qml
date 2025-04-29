@@ -86,7 +86,14 @@ Page {
                 IconButton {
                     icon.source: "image://theme/icon-m-storage"
                     anchors.centerIn: parent
-                    onClicked: console.log("Analytics clicked")
+                    onClicked: {
+                        pageStack.push(Qt.resolvedUrl("AnalyticsPage.qml"), {
+                            operationModel: operationModel,
+                            categoryModel: categoryModel,
+                            action: selectedTab === "expenses" ? 0 : 1,
+                            selectedTab: mainpage.selectedTab
+                        })
+                    }
                 }
             }
 

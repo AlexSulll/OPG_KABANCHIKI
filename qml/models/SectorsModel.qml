@@ -55,7 +55,7 @@ ListModel {
                     percentage: totalForType > 0 ? (item.total / totalForType * 100) : 0,
                     color: getColorForCategory(item.categoryId),
                     categoryId: item.categoryId,
-                    name: item.name,
+                    name: item.categoryName || item.name,
                     isExpense: action === 0
                 });
             }

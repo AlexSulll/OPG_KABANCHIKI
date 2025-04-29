@@ -57,12 +57,14 @@ ListModel {
                     amount: op.amount,
                     action: op.action,
                     categoryId: op.categoryId,
+                    categoryName: op.categoryName,
                     date: op.date,
                     desc: op.desc,
                     total: op.total || 0
                 })
             })
         }
+        console.log("LOADING: ", JSON.stringify(operations))
     }
 
     function getOperationById(id) {

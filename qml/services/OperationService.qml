@@ -68,7 +68,8 @@ QtObject {
                             operations.categoryId,
                             operations.date,
                             operations.desc,
-                            SUM(operations.amount) as total
+                            SUM(operations.amount) as total,
+                            categories.nameCategory as nameCategory
                         FROM operations
                         JOIN categories
                             ON categories.categoryId = operations.categoryId AND operations.action = ?
@@ -150,33 +151,41 @@ QtObject {
         }
 
         db.readTransaction(function(tx) {
-            // Создаем SQLite-совместимые строки дат
-            var fromDateStr = Qt.formatDateTime(range.fromDate, "yyyy-MM-dd")
-            var toDateStr = Qt.formatDateTime(range.toDate, "yyyy-MM-dd")
+            // Преобразуем даты в формат, соответствующий хранимому в базе
+            var fromDateStr = Qt.formatDateTime(range.fromDate, "dd-MM-yyyy")
+            var toDateStr = Qt.formatDateTime(range.toDate, "dd-MM-yyyy")
 
             console.log("Using dates for SQL:", fromDateStr, toDateStr)
 
             var query = 'SELECT operations.action, operations.categoryId, ' +
-                   'SUM(operations.amount) as total ' +
-                   'FROM operations WHERE operations.action = ? ' +
+                   'SUM(operations.amount) as total, categories.nameCategory as nameCategory ' +
+                   'FROM operations ' +
+                   'JOIN categories ON categories.categoryId = operations.categoryId ' +
+                   'WHERE operations.action = ? ' +
                    'AND (substr(date, 7, 4) || "-" || substr(date, 4, 2) || "-" || substr(date, 1, 2)) ' +
                    'BETWEEN ? AND ? ' +
                    'GROUP BY operations.categoryId ORDER BY total DESC'
 
-            var rs = tx.executeSql(query, [type, fromDateStr, toDateStr])
+            // Преобразуем в SQL-формат даты для сравнения
+            var sqlFromDate = Qt.formatDateTime(range.fromDate, "yyyy-MM-dd")
+            var sqlToDate = Qt.formatDateTime(range.toDate, "yyyy-MM-dd")
+
+            var rs = tx.executeSql(query, [type, sqlFromDate, sqlToDate])
+            console.log("Executed query:", query, "with params:", [type, sqlFromDate, sqlToDate])
             console.log("Found rows:", rs.rows.length)
 
             for (var i = 0; i < rs.rows.length; i++) {
                 var item = rs.rows.item(i)
                 categories.push({
                     categoryId: item.categoryId,
+                    categoryName: item.nameCategory,
                     total: item.total || 0,
                     action: item.action
                 })
             }
         })
-
         console.log("Returning categories:", JSON.stringify(categories))
+
         return categories
     }
 }

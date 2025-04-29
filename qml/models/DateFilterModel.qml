@@ -41,44 +41,6 @@ ListModel {
         return filteredOperations;
     }
 
-    function parseDate(dateStr) {
-        if (!dateStr) return null;
-
-        // Пробуем разные форматы даты
-        try {
-            // Формат ISO (yyyy-MM-dd)
-            if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
-                return new Date(dateStr);
-            }
-
-            // Формат dd.MM.yyyy
-            if (dateStr.match(/^\d{2}\.\d{2}\.\d{4}$/)) {
-                var parts = dateStr.split('.');
-                return new Date(parts[2], parts[1]-1, parts[0]);
-            }
-
-            // Пробуем стандартный парсинг
-            var date = new Date(dateStr);
-            if (!isNaN(date.getTime())) return date;
-
-        } catch(e) {
-            console.warn("Error parsing date:", dateStr, e);
-        }
-        return null;
-    }
-
-    function formatDateToDDMMYYYY(date) {
-        if (!date) return "Н/Д";
-
-        function pad(num) {
-            return (num < 10) ? "0" + num : num;
-        }
-
-        return pad(date.getDate()) + "." +
-               pad(date.getMonth() + 1) + "." +
-               date.getFullYear();
-    }
-
     function getDateRange(period) {
         var now = new Date()
         var fromDate = new Date(now)

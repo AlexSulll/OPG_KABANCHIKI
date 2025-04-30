@@ -41,6 +41,13 @@ BasePage {
         sectorModel.calculateChartData(operationModel, 0)
     }
 
+    onVisibleChanged: {
+        if (visible) {
+            operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1);
+            operationModel.calculateTotalBalance();
+            sectorModel.calculateChartData(operationModel, mainpage.action);
+        }
+    }
 
     HeaderComponent {
         id: header
@@ -149,7 +156,9 @@ BasePage {
                         categoryId: model.categoryId,
                         action: mainpage.action,
                         categoryModel: categoryModel,
-                        currentPeriod: dateFilter.currentPeriod
+                        currentPeriod: dateFilter.currentPeriod,
+//                        operationModel: operationModel,
+                        dateFilterModel: dateFilter
                     });
                 }
             }

@@ -11,13 +11,21 @@ Page {
     property int categoryId
     property int action
     property string currentPeriod: "All"
+    property var operationModel
+    property var dateFilterModel
 
     Models.OperationModel {
         id: operationModel
     }
 
     Component.onCompleted: {
-        operationModel.loadOperationsByCategoryAndPeriod(categoryId, action, currentPeriod);
+        console.log("CategoryDetailsPage - operationModel:", operationModel, "dateFilterModel:", dateFilterModel);
+        if (operationModel && dateFilterModel) {
+            operationModel.dateFilterModel = dateFilterModel; // Устанавливаем dateFilterModel
+            operationModel.loadOperationsByCategoryAndPeriod(categoryId, action, currentPeriod);
+        } else {
+            console.error("operationModel или dateFilterModel не были переданы на CategoryDetailsPage");
+        }
     }
 
     Models.CategoryModel {

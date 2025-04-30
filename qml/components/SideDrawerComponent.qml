@@ -82,7 +82,8 @@ Item {
                         if (page === "../pages/CategoryPage.qml") {
                             pageStack.push(Qt.resolvedUrl("../pages/CategoryPage.qml"), {
                                     categoryModel: categoryModel,
-                                    action: 0 // или 1, в зависимости от контекста
+                                    action: 0,
+                                    fromMainButton: false
                             });
                         }
 

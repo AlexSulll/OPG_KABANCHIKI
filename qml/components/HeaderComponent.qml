@@ -52,7 +52,7 @@ Rectangle {
         Label {
             text: "Расходы"
             color: headerRoot.selectedTab === "expenses" ? Theme.highlightColor : Theme.primaryColor
-            font.pixelSize: Theme.fontSizeLarge*1.25
+            font.pixelSize: Theme.fontSizeLarge*1.45
             font.bold: headerRoot.selectedTab === "expenses"
 
             MouseArea {
@@ -67,7 +67,7 @@ Rectangle {
         Label {
             text: "Доходы"
             color: headerRoot.selectedTab === "revenue" ? Theme.highlightColor : Theme.primaryColor
-            font.pixelSize: Theme.fontSizeLarge*1.25
+            font.pixelSize: Theme.fontSizeLarge*1.45
             font.bold: headerRoot.selectedTab === "revenue"
 
             MouseArea {

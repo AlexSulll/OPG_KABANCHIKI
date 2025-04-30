@@ -85,4 +85,20 @@ ListModel {
         return service.loadCategoriesByCategoryId(selectedCategoryId);
     }
 
+
+    function updateCategoryName(categoryId, newName) {
+        service.updateCategory(categoryId, newName)
+
+        for (var i = 0; i < count; i++) {
+            if (get(i).categoryId === categoryId) {
+                setProperty(i, "nameCategory", newName);
+                updateModel()
+                return true;
+            }
+        }
+
+        console.warn("Category with id", categoryId, "not found");
+        return false;
+    }
+
 }

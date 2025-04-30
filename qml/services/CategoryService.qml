@@ -81,4 +81,19 @@ QtObject {
         });
         return result;
     }
+
+    function updateCategory(categoryId, text) {
+        var db = getDatabase();
+        var result = false;
+        db.transaction(function(tx) {
+            var query = "UPDATE categories SET nameCategory = ? WHERE categoryId = ?";
+            var res = tx.executeSql(query, [text, categoryId]);
+            result = res.rowsAffected > 0;
+        });
+
+        if (!result) {
+            console.warn("Failed to update category name");
+            return false;
+        }
+    }
 }

@@ -16,9 +16,10 @@ DISTFILES += \
     qml/components/HeaderCategoryComponent.qml \
     qml/components/HeaderComponent.qml \
     qml/components/MainCardComponent.qml \
-    qml/components/PeriodButton.qml \
+    qml/components/OperationDelegate.qml \
     qml/components/SideDrawerComponent.qml \
     qml/models/CategoryModel.qml \
+    qml/models/DateFilterModel.qml \
     qml/models/OperationModel.qml \
     qml/models/SectorsModel.qml \
     qml/models/SideMenuModel.qml \

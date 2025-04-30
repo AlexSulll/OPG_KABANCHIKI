@@ -4,8 +4,12 @@ import "../services" as Services
 ListModel {
     id: operationModel
     objectName: "OperationModel"
+
     property real totalBalance: 0
     property var data: []
+    property string currentPeriod: "All"
+    property var dateFilterModel: null
+
     property var service: Services.OperationService {
         id: internalService
         Component.onCompleted: {
@@ -39,8 +43,8 @@ ListModel {
         }
     }
 
-    function loadByTypeOperation(type, startDate, endDate) {
-            loadOperation(service.getTotalSumByCategory(type, startDate, endDate))
+    function loadByTypeOperation(type) {
+            loadOperation(service.getTotalSumByCategory(type))
     }
 
     function loadByTypeCategory(categoryId, action) {
@@ -49,7 +53,6 @@ ListModel {
 
     function loadOperation(operations) {
         clear();
-        console.log("Загружено операций:", operations.length);
         if (operations) {
             operations.forEach(function(op) {
                 append({
@@ -57,12 +60,14 @@ ListModel {
                     amount: op.amount,
                     action: op.action,
                     categoryId: op.categoryId,
+                    categoryName: op.categoryName,
                     date: op.date,
                     desc: op.desc,
                     total: op.total || 0
                 })
             })
         }
+        console.log("LOADING: ", JSON.stringify(operations))
     }
 
     function getOperationById(id) {
@@ -91,7 +96,69 @@ ListModel {
 
     function loadByTypeOperationForCard(type) {
         data = service.getTotalSumByCategory(type);
+        console.log("Data:", JSON.stringify(data));
         return data
     }
 
+    function loadByTypeOperationForCardAndDateFiltering(type, period) {
+        if (period==="All") {
+            loadByTypeOperationForCard(type)
+        }
+        data = service.getFilteredCategories(type, period);
+        console.log("Data:", JSON.stringify(data));
+        return data
+    }
+
+    function formatDateForSQL(date) {
+        if (!date) return ""
+        return Qt.formatDate(date, "yyyy-MM-dd")
+    }
+
+    function getTotalSum() {
+        var sum = 0
+        if (!operationModel) return 0
+
+        for (var i = 0; i < operationModel.count; i++) {
+            var item = operationModel.get(i)
+            if (item && ((!action && item.action === 0) || (action && item.action === 1))) {
+                sum += item.total || 0
+            }
+        }
+        return sum
+    }
+
+    function updateBalanceText() {
+        if (balanceHidden) {
+            header.headerText = "****** ₽"
+        } else {
+            header.headerText = Number(operationModel.totalBalance).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
+        }
+    }
+
+    function loadOperationsByCategoryAndPeriod(categoryId, action, period) {
+        clear();
+        if (service) {
+            var dateRange = dateFilterModel.getDateRange(period);
+            var operations = service.getOperationsByCategoryAndPeriod(categoryId, action, period, dateRange);
+            if (operations) {
+                operations.forEach(function(op) {
+                    append({
+                        id: op.id,
+                        amount: op.amount,
+                        action: op.action,
+                        categoryId: op.categoryId,
+                        categoryName: op.categoryName,
+                        date: op.date,
+                        desc: op.desc,
+                        total: op.total || 0
+                    });
+                });
+            } else {
+                console.error("Не удалось загрузить операции по категории", categoryId, "и периоду", period);
+            }
+        } else {
+            console.error("Сервис операций не инициализирован или dateFilterModel не передан");
+        }
+        console.log("LOADED OPERATIONS BY CATEGORY AND PERIOD:", categoryId, period, JSON.stringify(operations));
+    }
 }

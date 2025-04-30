@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../services" as Services
+import "../components"
 
 ListModel {
     id: sectorModel
@@ -9,6 +10,7 @@ ListModel {
 
     property var sectors:  []
     property real total: 0
+    property string currentPeriod: "All"
 
     function getTotalByCategory(categoryId) {
         var total = 0
@@ -32,9 +34,11 @@ ListModel {
     }
 
 
-    function calculateChartData(operationModel, action, startDate, endDate) {
+    function calculateChartData(operationModel, action) {
         var data = [];
-        var filtered = operationModel.loadByTypeOperationForCard(action, startDate, endDate);
+        var currentPeriod = operationModel.currentPeriod
+        var filtered = operationModel.loadByTypeOperationForCardAndDateFiltering(action, currentPeriod);
+        console.log("Filtered data:", JSON.stringify(filtered));
 
         // Рассчитываем общую сумму для текущего типа операций
         var totalForType = 0;
@@ -51,11 +55,12 @@ ListModel {
                     percentage: totalForType > 0 ? (item.total / totalForType * 100) : 0,
                     color: getColorForCategory(item.categoryId),
                     categoryId: item.categoryId,
-                    name: item.name,
+                    name: item.categoryName || item.name,
                     isExpense: action === 0
                 });
             }
         }
+
 
         data.sort(function(a, b) { return b.value - a.value; });
 
@@ -64,7 +69,7 @@ ListModel {
                 value: 0,
                 percentage: 0,
                 color: "",
-                categoryId: "",
+                categoryId: -1,
                 name: "Нет данных",
                 isExpense: action === 0
             });

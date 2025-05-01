@@ -41,13 +41,13 @@ BasePage {
         sectorModel.calculateChartData(operationModel, 0)
     }
 
-    onVisibleChanged: {
-        if (visible) {
-            operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1);
-            operationModel.calculateTotalBalance();
-            sectorModel.calculateChartData(operationModel, mainpage.action);
-        }
-    }
+//    onVisibleChanged: {
+//        if (visible) {
+//            operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1);
+//            operationModel.calculateTotalBalance();
+//            sectorModel.calculateChartData(operationModel, mainpage.action);
+//        }
+//    }
 
     HeaderComponent {
         id: header

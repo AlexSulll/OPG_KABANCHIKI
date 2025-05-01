@@ -211,7 +211,7 @@ QtObject {
                 console.log("SQL Query:", query);
                 console.log("SQL Params:", params);
             }
-            query += ' ORDER BY date DESC';
+            query += ' ORDER BY date ASC';
 
             var rs = tx.executeSql(query, params);
             for (var i = 0; i < rs.rows.length; i++) {

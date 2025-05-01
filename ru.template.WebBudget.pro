@@ -13,6 +13,7 @@ HEADERS += \
 DISTFILES += \
     qml/components/CategoryDelegate.qml \
     qml/components/CategoryDisplay.qml \
+    qml/components/GoalItemDelegate.qml \
     qml/components/HeaderCategoryComponent.qml \
     qml/components/HeaderComponent.qml \
     qml/components/MainCardComponent.qml \
@@ -20,15 +21,19 @@ DISTFILES += \
     qml/components/SideDrawerComponent.qml \
     qml/models/CategoryModel.qml \
     qml/models/DateFilterModel.qml \
+    qml/models/GoalModel.qml \
     qml/models/OperationModel.qml \
     qml/models/SectorsModel.qml \
     qml/models/SideMenuModel.qml \
     qml/pages/AddCategoryPage.qml \
+    qml/pages/AddGoalPage.qml \
     qml/pages/BasePage.qml \
     qml/pages/CategoryDetailsPage.qml \
+    qml/pages/GoalsPage.qml \
     qml/pages/OperationDetailsPage.qml \
     qml/pages/OperationPage.qml \
     qml/services/CategoryService.qml \
+    qml/services/GoalService.qml \
     qml/services/OperationService.qml \
     rpm/ru.template.WebBudget.spec \
 

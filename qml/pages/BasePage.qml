@@ -22,6 +22,10 @@ Page {
         }
     }
 
+    Models.GoalModel {
+        id: goalModel
+    }
+
     default property alias pageContent: contentContainer.data
 
     Rectangle {

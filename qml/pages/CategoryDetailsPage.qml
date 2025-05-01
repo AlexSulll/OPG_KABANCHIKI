@@ -182,12 +182,12 @@ Page {
                         }
 
                         onClicked: {
-                                    pageStack.push(Qt.resolvedUrl("../pages/OperationDetailsPage.qml"), {
-                                        operationId: model.id,
-                                        operationModel: operationModel,
-                                        categoryModel: categoryModel
-                                    });
-                                }
+                             pageStack.push(Qt.resolvedUrl("../pages/OperationDetailsPage.qml"), {
+                                 operationId: model.id,
+                                 operationModel: operationModel,
+                                 categoryModel: categoryModel
+                             });
+                        }
                     }
                 }
 

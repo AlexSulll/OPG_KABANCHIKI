@@ -41,14 +41,6 @@ BasePage {
         sectorModel.calculateChartData(operationModel, 0)
     }
 
-//    onVisibleChanged: {
-//        if (visible) {
-//            operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1);
-//            operationModel.calculateTotalBalance();
-//            sectorModel.calculateChartData(operationModel, mainpage.action);
-//        }
-//    }
-
     HeaderComponent {
         id: header
         headerText: Number(operationModel.totalBalance).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
@@ -157,7 +149,6 @@ BasePage {
                         action: mainpage.action,
                         categoryModel: categoryModel,
                         currentPeriod: dateFilter.currentPeriod,
-//                        operationModel: operationModel,
                         dateFilterModel: dateFilter
                     });
                 }

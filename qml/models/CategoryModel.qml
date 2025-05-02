@@ -18,9 +18,14 @@ ListModel {
         updateModel();
     }
 
+    function loadCategoriesByTypeWithGoals(type) {
+        categories = service.loadCategoriesWithGoals(type);
+        updateModel();
+    }
+
     function loadAllCategories() {
-        var expenses = service.loadCategories(0);
-        var revenues = service.loadCategories(1);
+        var expenses = service.loadCategoriesWithGoals(0);
+        var revenues = service.loadCategoriesWithGoals(1);
         categories = expenses.concat(revenues);
         updateModel();
     }

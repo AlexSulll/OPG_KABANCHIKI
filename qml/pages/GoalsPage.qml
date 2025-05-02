@@ -8,7 +8,7 @@ BasePage {
     property var goalModel
 
     Component.onCompleted: {
-            goalModel.refresh();
+        goalModel.refresh();
     }
 
     SilicaFlickable {

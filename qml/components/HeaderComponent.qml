@@ -8,10 +8,7 @@ Rectangle {
     id: headerRoot
     width: parent.width
     height: parent.height / 7
-    gradient: Gradient {
-        GradientStop { position: 0.0; color: "#24224f" }
-        GradientStop { position: 1.0; color: "#1a1a3a" }
-    }
+    color: "#24224f"
 
     property string headerText: ""
     property int fontSize: Theme.fontSizeExtraLarge*2

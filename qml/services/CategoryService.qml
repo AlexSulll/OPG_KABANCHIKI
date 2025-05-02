@@ -6,6 +6,8 @@ import "../icons/Expense/"
 QtObject {
     objectName: "categoryService"
 
+    Component.onCompleted: initialize()
+
     function getDatabase() {
         return LocalStorage.openDatabaseSync("WebBudgetDB", "1.0", "WebBudget storage", 1000000)
     }
@@ -40,6 +42,21 @@ QtObject {
     }
 
     function loadCategories(typeCategory) {
+        var db = getDatabase();
+        var result = [];
+        db.readTransaction(function(tx) {
+            var rs = tx.executeSql("SELECT c.categoryId AS categoryId, c.nameCategory, c.typeCategory, c.pathToIcon
+                                    FROM categories c
+                                    LEFT JOIN goals g ON c.categoryId = g.categoryId
+                                    WHERE (g.isCompleted IS NULL OR g.isCompleted = 0) AND typeCategory = ? ORDER BY categoryId", [typeCategory]);
+            for (var i = 0; i < rs.rows.length; ++i) {
+                result.push(rs.rows.item(i));
+            }
+        });
+        return result;
+    }
+
+    function loadCategoriesWithGoals(typeCategory) {
         var db = getDatabase();
         var result = [];
         db.readTransaction(function(tx) {

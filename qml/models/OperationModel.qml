@@ -68,7 +68,6 @@ ListModel {
                 })
             })
         }
-        console.log("LOADING: ", JSON.stringify(operations))
     }
 
     function getOperationById(id) {

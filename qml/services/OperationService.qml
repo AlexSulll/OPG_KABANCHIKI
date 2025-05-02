@@ -44,33 +44,87 @@ QtObject {
     function addOperation(operation) {
         var db = getDatabase()
         db.transaction(function(tx) {
-            // 1. Добавляем операцию
+            // Проверка активных целей для категории
+            var goal = tx.executeSql(
+                "SELECT * FROM goals
+                WHERE categoryId = ? AND isCompleted = 0",
+                [operation.categoryId]
+            ).rows.item(0)
+
+            if(goal) {
+                // Рассчет доступной суммы
+                var remaining = goal.targetAmount - goal.currentAmount
+                operation.amount = Math.min(operation.amount, remaining)
+
+                // Обновление прогресса цели
+                tx.executeSql(
+                    "UPDATE goals SET currentAmount = currentAmount + ?
+                    WHERE id = ?",
+                    [operation.amount, goal.id]
+                )
+
+                // Проверка выполнения цели
+                if((goal.currentAmount + operation.amount) >= goal.targetAmount) {
+                    // Помечаем цель как выполненную
+                    tx.executeSql(
+                        "UPDATE goals SET isCompleted = 1
+                        WHERE id = ?",
+                        [goal.id]
+                    )
+                }
+            }
+
+            // Добавление операции
             tx.executeSql(
                 'INSERT INTO operations (amount, action, categoryId, date, desc)
                 VALUES (?, ?, ?, ?, ?)',
                 [operation.amount, operation.action, operation.categoryId, operation.date, operation.desc]
             )
-
-            // 2. Проверяем, связана ли категория с целью
-            var goalCheck = tx.executeSql(
-                "SELECT id FROM goals WHERE categoryId = ?",
-                [operation.categoryId]
-            )
-
-            // 3. Если цель найдена - обновляем currentAmount
-            if(goalCheck.rows.length > 0) {
-                var goalId = goalCheck.rows.item(0).id
-                tx.executeSql(
-                    "UPDATE goals SET currentAmount = currentAmount + ? WHERE id = ?",
-                    [operation.amount, goalId]
-                )
-            }
         })
     }
+
     function deleteOperation(operationId) {
         var db = getDatabase()
         db.transaction(function(tx) {
-            tx.executeSql('DELETE FROM operations WHERE id = ?', [operationId])
+            // 1. Получаем данные операции
+            var op = tx.executeSql(
+                "SELECT * FROM operations WHERE id = ?",
+                [operationId]
+            ).rows.item(0)
+
+            // 2. Находим связанные цели
+            var goals = tx.executeSql(
+                "SELECT * FROM goals WHERE categoryId = ?",
+                [op.categoryId]
+            ).rows
+
+            // 3. Обновляем цели
+            for(var i = 0; i < goals.length; i++) {
+                var goal = goals.item(i)
+                var newAmount = goal.currentAmount - op.amount
+
+                tx.executeSql(
+                    "UPDATE goals SET currentAmount = ? WHERE id = ?",
+                    [newAmount, goal.id]
+                )
+
+                // 4. Проверяем статус цели
+                if(newAmount < goal.targetAmount && goal.isCompleted) {
+                    // Возвращаем категорию
+                    tx.executeSql(
+                        "UPDATE categories SET isActive = 1 WHERE categoryId = ?",
+                        [op.categoryId]
+                    )
+                    // Снимаем флаг выполнения
+                    tx.executeSql(
+                        "UPDATE goals SET isCompleted = 0 WHERE id = ?",
+                        [goal.id]
+                    )
+                }
+            }
+
+            // 5. Удаляем операцию
+            tx.executeSql("DELETE FROM operations WHERE id = ?", [operationId])
         })
     }
 

@@ -3,6 +3,8 @@ import QtQuick.LocalStorage 2.0
 
 QtObject {
 
+    Component.onCompleted: initialize()
+
     function getDatabase() {
         return LocalStorage.openDatabaseSync("WebBudgetDB", "1.0", "WebBudget storage", 1000000)
     }
@@ -13,6 +15,7 @@ QtObject {
             tx.executeSql('CREATE TABLE IF NOT EXISTS goals (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 categoryId INTEGER,
+                isCompleted BOOLEAN DEFAULT 0,
                 title TEXT,
                 targetAmount REAL,
                 currentAmount REAL,
@@ -40,9 +43,9 @@ QtObject {
         // Создаем цель с привязкой к категории
         db.transaction(function(tx) {
             tx.executeSql(
-                'INSERT INTO goals (categoryId, title, targetAmount, currentAmount, startDate, endDate)
-                VALUES (?, ?, ?, ?, ?, ?)',
-                [categoryId, goal.title, goal.targetAmount, goal.currentAmount, goal.startDate, goal.endDate]
+                'INSERT INTO goals (categoryId, isCompleted, title, targetAmount, currentAmount, startDate, endDate)
+                VALUES (?, ?, ?, ?, ?, ?, ?)',
+                [categoryId, 0, goal.title, goal.targetAmount, goal.currentAmount, goal.startDate, goal.endDate]
             )
         })
     }

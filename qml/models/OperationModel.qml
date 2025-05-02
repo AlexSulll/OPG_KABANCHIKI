@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import "../services" as Services
+import "../models"
 
 ListModel {
     id: operationModel

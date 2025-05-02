@@ -3,8 +3,11 @@ import QtQuick.LocalStorage 2.0
 import "../components"
 
 QtObject {
+
     id: service
+
     Component.onCompleted: initialize()
+
     property var range: []
     property string currentPeriod: "All"
 
@@ -41,16 +44,29 @@ QtObject {
     function addOperation(operation) {
         var db = getDatabase()
         db.transaction(function(tx) {
-            tx.executeSql('INSERT INTO operations (amount, action, categoryId, date, desc) VALUES (?, ?, ?, ?, ?)', [
-                operation.amount,
-                operation.action,
-                operation.categoryId,
-                operation.date,
-                operation.desc
-            ])
+            // 1. Добавляем операцию
+            tx.executeSql(
+                'INSERT INTO operations (amount, action, categoryId, date, desc)
+                VALUES (?, ?, ?, ?, ?)',
+                [operation.amount, operation.action, operation.categoryId, operation.date, operation.desc]
+            )
+
+            // 2. Проверяем, связана ли категория с целью
+            var goalCheck = tx.executeSql(
+                "SELECT id FROM goals WHERE categoryId = ?",
+                [operation.categoryId]
+            )
+
+            // 3. Если цель найдена - обновляем currentAmount
+            if(goalCheck.rows.length > 0) {
+                var goalId = goalCheck.rows.item(0).id
+                tx.executeSql(
+                    "UPDATE goals SET currentAmount = currentAmount + ? WHERE id = ?",
+                    [operation.amount, goalId]
+                )
+            }
         })
     }
-
     function deleteOperation(operationId) {
         var db = getDatabase()
         db.transaction(function(tx) {

@@ -12,28 +12,38 @@ QtObject {
         db.transaction(function(tx) {
             tx.executeSql('CREATE TABLE IF NOT EXISTS goals (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                categoryId INTEGER,
                 title TEXT,
                 targetAmount REAL,
                 currentAmount REAL,
                 startDate TEXT,
-                endDate TEXT
+                endDate TEXT,
+                FOREIGN KEY(categoryId) REFERENCES categories(categoryId)
             )')
         })
     }
 
     function addGoal(goal) {
         var db = getDatabase()
+        var categoryId = -1
+
+        // Создаем категорию и получаем ее ID
         db.transaction(function(tx) {
-            tx.executeSql('INSERT INTO goals (title, targetAmount, currentAmount, startDate, endDate)
-                VALUES (?, ?, ?, ?, ?)',
-                [goal.title, goal.targetAmount, goal.currentAmount, goal.startDate, goal.endDate])
+            tx.executeSql(
+                "INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES (?, ?, ?)",
+                [goal.title, 0, "../icons/Expense/GoalsIcon.svg"]
+            )
+            var res = tx.executeSql("SELECT last_insert_rowid() as id")
+            categoryId = res.rows.item(0).id
         })
+
+        // Создаем цель с привязкой к категории
         db.transaction(function(tx) {
-            tx.executeSql("INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES (?, ?, ?)", [
-                goal.title,
-                0,
-                "../icons/Expense/GoalsIcon.svg"
-            ])
+            tx.executeSql(
+                'INSERT INTO goals (categoryId, title, targetAmount, currentAmount, startDate, endDate)
+                VALUES (?, ?, ?, ?, ?, ?)',
+                [categoryId, goal.title, goal.targetAmount, goal.currentAmount, goal.startDate, goal.endDate]
+            )
         })
     }
 

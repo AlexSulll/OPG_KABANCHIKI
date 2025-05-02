@@ -188,4 +188,37 @@ QtObject {
 
         return categories
     }
+
+    function getOperationsByCategoryAndPeriod(categoryId, type, period, dateRange) {
+        var db = getDatabase();
+        var operations = [];
+        var fromDateSQL = dateRange ? dateRange.fromDate : null;
+        var toDateSQL = dateRange ? dateRange.toDate : null;
+
+        console.log("Fetching operations for category:", categoryId, "type:", type, "period:", period, "range:", fromDateSQL, toDateSQL);
+
+        db.readTransaction(function(tx) {
+            var query = 'SELECT * FROM operations WHERE categoryId = ? AND action = ?';
+            var params = [categoryId, type];
+
+            if (period !== "All" && fromDateSQL && toDateSQL) {
+                query += ' AND substr(date, 7, 4) || "-" || substr(date, 4, 2) || "-" || substr(date, 1, 2) BETWEEN ? AND ?';
+                params.push(fromDateSQL);
+                params.push(toDateSQL);
+                console.log("SQL Query:", query);
+                console.log("SQL Params:", params);
+            } else {
+                console.log("SQL Query:", query);
+                console.log("SQL Params:", params);
+            }
+            query += ' ORDER BY date ASC';
+
+            var rs = tx.executeSql(query, params);
+            for (var i = 0; i < rs.rows.length; i++) {
+                operations.push(rs.rows.item(i));
+            }
+            console.log("Found operations:", JSON.stringify(operations));
+        });
+        return operations;
+    }
 }

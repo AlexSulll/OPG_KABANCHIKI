@@ -13,10 +13,12 @@ HEADERS +=
 DISTFILES += \
     qml/components/CategoryDelegate.qml \
     qml/components/MainCardComponent.qml \
+    qml/components/TimeSeriesGraph.qml \
     qml/models/DateFilterModel.qml \
     qml/models/SectorsModel.qml \
     qml/models/SideDrawer.qml \
     qml/models/SideMenuModel.qml \
+    qml/pages/AnalyticsPage.qml \
     qml/pages/BasePage.qml \
     rpm/ru.template.test.spec \
 

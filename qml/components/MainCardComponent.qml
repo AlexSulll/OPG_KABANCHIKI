@@ -58,6 +58,7 @@ Item {
                     onClicked: {
                         selectedPeriod = dateId;
                         operationModel.currentPeriod = selectedPeriod
+                        dateFilter.currentPeriod = selectedPeriod
                         selectedSector = -1
 
                         var filteredOps = operationModel.service.getFilteredCategories(mainpage.action, selectedPeriod)

@@ -24,13 +24,14 @@ BasePage {
         id: sectorModel
     }
 
-    Models.OperationModel {
-            id: operationModel
-    }
-
     Models.DateFilterModel {
         id: dateFilter
         operationModel: operationModel
+    }
+
+    Models.OperationModel {
+        id: operationModel
+        dateFilterModel: dateFilter
     }
 
     Component.onCompleted: {
@@ -39,7 +40,6 @@ BasePage {
         operationModel.calculateTotalBalance();
         sectorModel.calculateChartData(operationModel, 0)
     }
-
 
     HeaderComponent {
         id: header
@@ -143,10 +143,13 @@ BasePage {
                 }
 
                 onClicked: {
+                    console.log(dateFilter.currentPeriod);
                     pageStack.push(Qt.resolvedUrl("../pages/CategoryDetailsPage.qml"), {
                         categoryId: model.categoryId,
                         action: mainpage.action,
-                        categoryModel: categoryModel
+                        categoryModel: categoryModel,
+                        currentPeriod: dateFilter.currentPeriod,
+                        dateFilterModel: dateFilter
                     });
                 }
             }

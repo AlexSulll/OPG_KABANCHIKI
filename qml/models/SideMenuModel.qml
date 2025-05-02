@@ -16,6 +16,11 @@ ListModel {
         icon: "icon-m-edit"
         page: "../pages/CategoryPage.qml"
     }
+    ListElement {
+        text: "Цели"
+        icon: "icon-m-whereami"
+        page: "../pages/GoalsPage.qml"
+    }
     // заглушка - не указан точный путь
     ListElement {
         text: "О программе"

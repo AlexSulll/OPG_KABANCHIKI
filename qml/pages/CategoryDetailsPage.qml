@@ -10,12 +10,68 @@ Page {
     property var categoryModel
     property int categoryId
     property int action
+    property string currentPeriod: "All"
+    property var operationModel
+    property var dateFilterModel
+
+    property ListModel groupedModel: ListModel {}
 
     Models.OperationModel {
-            id: operationModel
+        id: operationModel
     }
 
-    Component.onCompleted: operationModel.loadByTypeCategory(categoryId, action);
+    function groupOperationsByDate() {
+        groupedModel.clear()
+        var operationsByDate = {}
+
+        // Фильтрация операций
+        for(var i = 0; i < operationModel.count; i++) {
+            var op = operationModel.get(i)
+            if(op.categoryId !== categoryId || op.action !== action) continue
+
+            // Проверка формата даты
+            var dateParts = op.date.split('.')
+            if(dateParts.length !== 3) {
+                console.error("Некорректная дата:", op.date)
+                continue
+            }
+
+            // Преобразование в Date
+            var jsDate = new Date(dateParts[2], dateParts[1]-1, dateParts[0])
+            if(isNaN(jsDate.getTime())) {
+                console.error("Невалидная дата:", op.date)
+                continue
+            }
+
+            var dateKey = Qt.formatDate(jsDate, "yyyy-MM-dd")
+
+            // Инициализация массива
+            if(!operationsByDate[dateKey]) {
+                operationsByDate[dateKey] = []
+            }
+            operationsByDate[dateKey].push(op)
+        }
+
+        // Сортировка
+        var sortedDates = Object.keys(operationsByDate).sort().reverse()
+
+        // Заполнение модели
+        sortedDates.forEach(function(dateKey) {
+            var opsArray = operationsByDate[dateKey] || []
+            groupedModel.append({
+                date: Qt.formatDate(new Date(dateKey), "dd.MM.yyyy"),
+                operations: opsArray.slice() // Гарантированный новый массив
+            })
+        })
+    }
+
+    Component.onCompleted: {
+        if (operationModel && dateFilterModel) {
+            operationModel.dateFilterModel = dateFilterModel;
+            operationModel.loadOperationsByCategoryAndPeriod(categoryId, action, currentPeriod);
+            groupOperationsByDate();
+        }
+    }
 
     Models.CategoryModel {
         id: categoryModel
@@ -27,6 +83,7 @@ Page {
     HeaderCategoryComponent {
         id: header
         fontSize: Theme.fontSizeExtraLarge*1.2
+        color: "transparent"
         headerText: {
             if (categoryModel) {
                 var category = categoryModel.getCategoryById(categoryId)
@@ -43,81 +100,98 @@ Page {
                 bottom: parent.bottom
                 margins: Theme.paddingMedium
             }
-            model: operationModel
+            model: groupedModel
             spacing: Theme.paddingSmall
             clip: true
 
-            delegate: ListItem {
+            delegate: Column {
                 width: parent.width
-                contentHeight: Theme.itemSizeMedium
+                spacing: Theme.paddingSmall
 
-                property var categoryData: categoryModel.getCategoryById(model.categoryId);
+                readonly property var ops: model && model.operations ? model.operations : []
 
-                Rectangle {
-                    anchors.fill: parent
-                    radius: Theme.paddingMedium
-                    color: Theme.rgba("#24224f", 0.9)
+                SectionHeader {
+                     text: model.date
+                     font.pixelSize: Theme.fontSizeMedium
+                }
 
-                    Row {
-                        anchors.fill: parent
-                        anchors.margins: Theme.paddingMedium
-                        spacing: Theme.paddingMedium
+                Repeater {
+                    model: ops
 
-                        Image {
-                            id:icon
-                            asynchronous: true
-                            width: Theme.iconSizeMedium
-                            height: width
-                            anchors.verticalCenter: parent.verticalCenter
-                            source: categoryData ? categoryData.pathToIcon : ""
-                            sourceSize: Qt.size(width, height)
-                            fillMode: Image.PreserveAspectFit
-                        }
+                    delegate: ListItem {
+                        width: parent.width
+                        contentHeight: Theme.itemSizeMedium
 
-                        Column {
-                            width: parent.width * 0.6
-                            anchors.verticalCenter: parent.verticalCenter
-                            anchors.left: icon.right
-                            anchors.leftMargin: Theme.paddingLarge
-                            spacing: Theme.paddingSmall
+                        property var categoryData: categoryModel.getCategoryById(model.categoryId);
 
-                            Label {
-                                text: categoryData ? categoryData.nameCategory : "Без категории"
-                                color: Theme.primaryColor
-                                font.pixelSize: Theme.fontSizeLarge
-                                truncationMode: TruncationMode.Fade
+                        Rectangle {
+                            anchors.fill: parent
+                            radius: Theme.paddingMedium
+                            color: Theme.rgba("#24224f", 0.9)
+
+                            Row {
+                                anchors.fill: parent
+                                anchors.margins: Theme.paddingMedium
+                                spacing: Theme.paddingMedium
+
+                                Image {
+                                    id: icon
+                                    asynchronous: true
+                                    width: Theme.iconSizeMedium
+                                    height: width
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    source: categoryData ? categoryData.pathToIcon : ""
+                                    sourceSize: Qt.size(width, height)
+                                    fillMode: Image.PreserveAspectFit
+                                }
+
+                                Column {
+                                    width: parent.width * 0.6
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    anchors.left: icon.right
+                                    anchors.leftMargin: Theme.paddingLarge
+                                    spacing: Theme.paddingSmall
+
+                                    Label {
+                                        text: categoryData ? categoryData.nameCategory : "Без категории"
+                                        color: Theme.primaryColor
+                                        font.pixelSize: Theme.fontSizeLarge
+                                        truncationMode: TruncationMode.Fade
+                                    }
+                                }
+
+
+                                Label {
+                                    id: amountLabel
+                                    width: Math.min(implicitWidth, parent.width * 0.35)
+                                    anchors {
+                                        verticalCenter: parent.verticalCenter
+                                        right: parent.right
+                                        rightMargin: Theme.paddingSmall
+                                    }
+                                    horizontalAlignment: Text.AlignRight
+                                    text: Number(model.amount).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
+                                    color: model.action === 0 ? "#FF6384" : Theme.highlightColor
+                                    font {
+                                        pixelSize: Theme.fontSizeLarge
+                                        family: Theme.fontFamilyHeading
+                                        bold: true
+                                    }
+                                    elide: Text.ElideRight
+                                }
                             }
                         }
 
-
-                        Label {
-                            id: amountLabel
-                            width: Math.min(implicitWidth, parent.width * 0.35)
-                            anchors {
-                                verticalCenter: parent.verticalCenter
-                                right: parent.right
-                                rightMargin: Theme.paddingSmall
-                            }
-                            horizontalAlignment: Text.AlignRight
-                            text: Number(model.amount).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
-                            color: model.action === 0 ? "#FF6384" : Theme.highlightColor
-                            font {
-                                pixelSize: Theme.fontSizeLarge
-                                family: Theme.fontFamilyHeading
-                                bold: true
-                            }
-                            elide: Text.ElideRight
+                        onClicked: {
+                             pageStack.push(Qt.resolvedUrl("../pages/OperationDetailsPage.qml"), {
+                                 operationId: model.id,
+                                 operationModel: operationModel,
+                                 categoryModel: categoryModel
+                             });
                         }
                     }
                 }
 
-                onClicked: {
-                        pageStack.push(Qt.resolvedUrl("../pages/OperationDetailsPage.qml"), {
-                            operationId: model.id,
-                            operationModel: operationModel,
-                            categoryModel: categoryModel
-                        });
-                }
             }
 
             VerticalScrollDecorator {}

@@ -167,10 +167,28 @@ Page {
         id: dateDialog2
 
         Column {
+            width: parent.width
+            spacing: Theme.paddingLarge
+
             DialogHeader {
                 title: "Выберите дату"
                 acceptText: "ОК"
                 cancelText: "Отмена"
+            }
+
+            Label {
+                width: parent.width
+                horizontalAlignment: Text.AlignHCenter
+                text: {
+                    if (datePicker.date) {
+                        var locale = Qt.locale("ru_RU")
+                        var monthName = locale.standaloneMonthName(datePicker.date.getMonth())
+                        monthName = monthName.charAt(0).toUpperCase() + monthName.slice(1)
+                        return monthName + " " + datePicker.date.getFullYear()
+                     }
+                     return ""
+                }
+                font.pixelSize: Theme.fontSizeLarge
             }
 
             DatePicker {
@@ -180,6 +198,9 @@ Page {
                     operationDetailsPage.date = Qt.formatDate(date, "dd.MM.yyyy");
                 }
             }
+        }
+        onOpened: {
+                datePicker.date = new Date()
         }
     }
 }

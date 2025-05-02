@@ -55,33 +55,74 @@
 <context>
     <name>AnalyticsPage</name>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="42"/>
-        <source>Financial Analytics</source>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="17"/>
+        <source>JAN</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="43"/>
-        <source>Track your money flow</source>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="17"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="18"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="19"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="20"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="21"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="22"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="23"/>
+        <source>2025</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="63"/>
-        <source>Expenses</source>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="18"/>
+        <source>FEB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="71"/>
-        <source>Income</source>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="19"/>
+        <source>MAR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="95"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="20"/>
+        <source>APR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="21"/>
+        <source>MAY</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="22"/>
+        <source>JUN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="23"/>
+        <source>JUL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="108"/>
         <source>Total</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="124"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="139"/>
         <source>Average</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="189"/>
+        <source>Количество операций: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="208"/>
+        <source>Самая популярная категория: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="228"/>
+        <source>Целей достигнуто: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -90,6 +131,14 @@
     <message>
         <location filename="../qml/cover/DefaultCoverPage.qml" line="10"/>
         <source>WebBudget</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>FullscreenGraph</name>
+    <message>
+        <location filename="../qml/components/FullscreenGraph.qml" line="19"/>
+        <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -75,6 +75,10 @@ Item {
 
                     onClicked: {
                         sideDrawer.close();
+                        if (page === "../pages/MainPage.qml"){
+                            pageStack.replaceAbove(null, Qt.resolvedUrl(page))
+                        }
+
                         if (page === "../pages/OperationPage.qml") {
                             pageStack.push(Qt.resolvedUrl(page));
                         }

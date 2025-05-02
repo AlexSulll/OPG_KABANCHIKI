@@ -12,6 +12,8 @@ HEADERS +=
 
 DISTFILES += \
     qml/components/CategoryDelegate.qml \
+    qml/components/FullscreenGraph.qml \
+    qml/components/GraphicContainerComponent.qml \
     qml/components/MainCardComponent.qml \
     qml/components/TimeSeriesGraph.qml \
     qml/models/DateFilterModel.qml \

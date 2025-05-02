@@ -71,7 +71,7 @@ Page {
                 }
 
                 IconButton {
-                    icon.source: "image://theme/icon-m-menu"
+                    icon.source: "image://theme/icon-l-menu"
                     anchors.centerIn: parent
                     onClicked: sideDrawer.toggle()
                 }
@@ -88,14 +88,12 @@ Page {
                 }
 
                 IconButton {
-                    icon.source: "image://theme/icon-m-storage"
+                    icon.source: "image://theme/icon-l-storage"
                     anchors.centerIn: parent
                     onClicked: {
                         pageStack.push(Qt.resolvedUrl("AnalyticsPage.qml"), {
                             operationModel: operationModel,
-                            categoryModel: categoryModel,
-                            action: selectedTab === "expenses" ? 0 : 1,
-                            selectedTab: mainpage.selectedTab
+                            categoryModel: categoryModel
                         })
                     }
                 }
@@ -104,6 +102,7 @@ Page {
             Row {
                 anchors.centerIn: parent
                 spacing: Theme.paddingLarge * 2
+                z: 10
 
                 Rectangle {
                     id: mainButton
@@ -131,6 +130,49 @@ Page {
                                 action: root.selectedAction
                             })
                         }
+                    }
+                }
+            }
+            Rectangle {
+                id: goals
+                width: Theme.itemSizeExtraLarge
+                height: Theme.itemSizeExtraLarge
+                color: "#24224f"
+                anchors {
+                    right: others.left
+                    top: burger.top
+                }
+
+                IconButton {
+                    icon.source: "image://theme/icon-l-whereami"
+                    anchors.centerIn: parent
+                    onClicked: {
+                        pageStack.push(Qt.resolvedUrl("../pages/GoalsPage.qml"), {
+                                  goalModel: goalModel
+                        })
+                    }
+                }
+            }
+            Rectangle {
+                id: others
+                width: Theme.itemSizeExtraLarge
+                height: Theme.itemSizeExtraLarge
+                color: "#24224f"
+                anchors {
+                    right: parent.right
+                    top: burger.top
+                }
+
+                IconButton {
+                    icon.source: "image://theme/icon-l-file-apk"
+                    anchors.centerIn: parent
+                    onClicked: {
+                        pageStack.push(Qt.resolvedUrl("AnalyticsPage.qml"), {
+                            operationModel: operationModel,
+                            categoryModel: categoryModel,
+                            action: selectedTab === "expenses" ? 0 : 1,
+                            selectedTab: mainpage.selectedTab
+                        })
                     }
                 }
             }

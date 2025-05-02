@@ -18,7 +18,7 @@ ListModel {
     }
     ListElement {
         text: "Цели"
-        icon: "icon-m-edit"
+        icon: "icon-m-whereami"
         page: "../pages/GoalsPage.qml"
     }
     // заглушка - не указан точный путь

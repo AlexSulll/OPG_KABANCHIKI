@@ -2,10 +2,14 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../components"
 
-Page {
+BasePage {
     id: goalsPage
 
     property var goalModel
+
+    Component.onCompleted: {
+            goalModel.refresh();
+    }
 
     SilicaFlickable {
         anchors.fill: parent
@@ -17,10 +21,12 @@ Page {
 
             PageHeader {
                 title: "Финансовые цели"
+                titleColor: "#24224f"
             }
 
             Button {
                 text: "Добавить цель"
+                color: "#24224f"
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClicked: pageStack.push(addGoalComponent)
             }

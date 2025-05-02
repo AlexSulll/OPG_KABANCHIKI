@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.LocalStorage 2.0
 
 QtObject {
+
     function getDatabase() {
         return LocalStorage.openDatabaseSync("WebBudgetDB", "1.0", "WebBudget storage", 1000000)
     }
@@ -27,6 +28,13 @@ QtObject {
                 VALUES (?, ?, ?, ?, ?)',
                 [goal.title, goal.targetAmount, goal.currentAmount, goal.startDate, goal.endDate])
         })
+        db.transaction(function(tx) {
+            tx.executeSql("INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES (?, ?, ?)", [
+                goal.title,
+                0,
+                "../icons/Expense/GoalsIcon.svg"
+            ])
+        })
     }
 
     function updateGoal(goal) {
@@ -41,6 +49,13 @@ QtObject {
                 [goal.title, goal.targetAmount, goal.currentAmount, goal.endDate, goal.id])
         })
     }
+
+//    function updateCurrentAmount(goal) {
+//        var db = getDatabase()
+//        db.readTransaction(function(tx) {
+//            var rs = tx.executeSql('SELECT currentAmount FROM goals WHERE id = ?', [goal.id])
+//        })
+//    }
 
     function getGoals() {
         var goals = []

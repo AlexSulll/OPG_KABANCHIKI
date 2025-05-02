@@ -19,6 +19,7 @@ DISTFILES += \
     qml/components/MainCardComponent.qml \
     qml/components/OperationDelegate.qml \
     qml/components/SideDrawerComponent.qml \
+    qml/components/TimeSeriesGraph.qml \
     qml/models/CategoryModel.qml \
     qml/models/DateFilterModel.qml \
     qml/models/GoalModel.qml \
@@ -27,8 +28,10 @@ DISTFILES += \
     qml/models/SideMenuModel.qml \
     qml/pages/AddCategoryPage.qml \
     qml/pages/AddGoalPage.qml \
+    qml/pages/AnalyticsPage.qml \
     qml/pages/BasePage.qml \
     qml/pages/CategoryDetailsPage.qml \
+    qml/pages/EditGoalPage.qml \
     qml/pages/GoalsPage.qml \
     qml/pages/OperationDetailsPage.qml \
     qml/pages/OperationPage.qml \

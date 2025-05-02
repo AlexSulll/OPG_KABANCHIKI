@@ -30,7 +30,6 @@ QtObject {
         var db = getDatabase()
         var categoryId = -1
 
-        // Создаем категорию и получаем ее ID
         db.transaction(function(tx) {
             tx.executeSql(
                 "INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES (?, ?, ?)",
@@ -40,7 +39,6 @@ QtObject {
             categoryId = res.rows.item(0).id
         })
 
-        // Создаем цель с привязкой к категории
         db.transaction(function(tx) {
             tx.executeSql(
                 'INSERT INTO goals (categoryId, isCompleted, title, targetAmount, currentAmount, startDate, endDate)
@@ -53,22 +51,20 @@ QtObject {
     function updateGoal(goal) {
         var db = getDatabase()
         db.transaction(function(tx) {
-            tx.executeSql('UPDATE goals SET
-                title = ?,
-                targetAmount = ?,
-                currentAmount = ?,
-                endDate = ?
-                WHERE id = ?',
-                [goal.title, goal.targetAmount, goal.currentAmount, goal.endDate, goal.id])
+            tx.executeSql(
+                "UPDATE goals SET
+                    title = ?,
+                    targetAmount = ?,
+                    endDate = ?,
+                    isCompleted = CASE
+                        WHEN currentAmount < ? THEN 0
+                        ELSE isCompleted
+                    END
+                 WHERE id = ?",
+                [goal.title, goal.targetAmount, goal.endDate, goal.targetAmount, goal.id]
+            )
         })
     }
-
-//    function updateCurrentAmount(goal) {
-//        var db = getDatabase()
-//        db.readTransaction(function(tx) {
-//            var rs = tx.executeSql('SELECT currentAmount FROM goals WHERE id = ?', [goal.id])
-//        })
-//    }
 
     function getGoals() {
         var goals = []

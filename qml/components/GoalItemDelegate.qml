@@ -174,6 +174,9 @@ ListItem {
     }
 
     onClicked: {
-        pageStack.push("../pages/EditGoalPage.qml", {goal: model})
+        pageStack.push(Qt.resolvedUrl("../pages/EditGoalPage.qml"), {
+            goal: model, // Передаем всю модель цели
+            goalModel: goalModel
+        })
     }
 }

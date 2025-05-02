@@ -12,6 +12,7 @@ Dialog {
         DialogHeader {
             title: "Новая цель"
             acceptText: "Сохранить"
+            cancelText: "Отмена"
         }
 
         TextField {
@@ -29,11 +30,16 @@ Dialog {
             validator: DoubleValidator { bottom: 1 }
         }
 
-        DatePicker {
-            id: datePicker
+        TextField {
+            id: dateField
             width: parent.width
-            date: new Date()
-//            title: "Планируемая дата достижения"
+            label: "Дата завершения"
+            text: Qt.formatDate(selectedDate, "dd.MM.yyyy")
+            readOnly: true
+
+            onClicked: {
+                 dateDialog.open()
+            }
         }
     }
 
@@ -46,5 +52,48 @@ Dialog {
             endDate: datePicker.date.toISOString()
         }
         goalModel.addGoal(newGoal)
+    }
+
+    Dialog {
+            id: dateDialog
+
+            Column {
+                width: parent.width
+                spacing: Theme.paddingLarge
+
+                DialogHeader {
+                    title: "Выберите дату"
+                    acceptText: "ОК"
+                    cancelText: "Отмена"
+                }
+
+                Label {
+                    width: parent.width
+                    horizontalAlignment: Text.AlignHCenter
+                    text: {
+                        if (datePicker.date) {
+                            var locale = Qt.locale("ru_RU")
+                            var monthName = locale.standaloneMonthName(datePicker.date.getMonth())
+                            monthName = monthName.charAt(0).toUpperCase() + monthName.slice(1)
+                            return monthName + " " + datePicker.date.getFullYear()
+                        }
+                        return ""
+                    }
+                    font.pixelSize: Theme.fontSizeLarge
+                }
+
+                DatePicker {
+                    id: datePicker
+                    width: parent.width
+                    date: new Date()
+                    onDateChanged: {
+                        addGoalPage.date = Qt.formatDate(date, "dd.MM.yyyy");
+                    }
+                }
+            }
+
+            onOpened: {
+                    datePicker.date = new Date()
+            }
     }
 }

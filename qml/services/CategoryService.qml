@@ -19,8 +19,7 @@ QtObject {
                 categoryId INTEGER PRIMARY KEY AUTOINCREMENT,
                 nameCategory TEXT,
                 typeCategory INTEGER,
-                pathToIcon TEXT,
-                isActive BOOLEAN DEFAULT 1
+                pathToIcon TEXT
             )');
 
             var check = tx.executeSql('SELECT COUNT(*) as count FROM categories');

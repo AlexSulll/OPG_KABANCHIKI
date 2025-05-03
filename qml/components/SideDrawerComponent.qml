@@ -98,6 +98,14 @@ Item {
 //                                    fromMainButton: false
                             });
                         }
+                        if (page === "../pages/LimitCategoryPage.qml") {
+                            pageStack.push(Qt.resolvedUrl("../pages/LimitCategoryPage.qml"), {
+//                                      goalModel: goalModel
+//                                    categoryModel: categoryModel,
+//                                    action: 0,
+//                                    fromMainButton: false
+                            });
+                        }
                         /*
                             Тут надо доработать логику - скорее всего через стек
                             чтобы при нахождении на целевой станицы и перехода на неё же

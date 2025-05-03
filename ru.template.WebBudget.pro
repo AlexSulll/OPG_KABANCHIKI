@@ -36,6 +36,7 @@ DISTFILES += \
     qml/pages/CategoryDetailsPage.qml \
     qml/pages/EditGoalPage.qml \
     qml/pages/GoalsPage.qml \
+    qml/pages/LimitCategoryPage.qml \
     qml/pages/OperationDetailsPage.qml \
     qml/pages/OperationPage.qml \
     qml/services/CategoryService.qml \

@@ -43,7 +43,32 @@ BasePage {
 
     HeaderComponent {
         id: header
-        headerText: Number(operationModel.totalBalance).toLocaleString(Qt.locale(), 'f', 0) + " ₽"
+        headerText: {
+            function formatBalance(value) {
+                var absValue = Math.abs(value);
+                var suffix = "";
+                var formattedValue = 0;
+
+                if (absValue >= 1000000000000) { // Триллионы (1 000 000 000 000+)
+                    formattedValue = (value / 1000000000000).toFixed(1);
+                    suffix = " трлн";
+                } else if (absValue >= 1000000000) { // Миллиарды (1 000 000 000+)
+                    formattedValue = (value / 1000000000).toFixed(1);
+                    suffix = " млрд";
+                } else if (absValue >= 1000000) { // Миллионы (1 000 000+)
+                    formattedValue = (value / 1000000).toFixed(1);
+                    suffix = " млн";
+                } else {
+                    return Number(value).toLocaleString(Qt.locale(), 'f', 0) + " ₽";
+                }
+
+                // Форматирование числа
+                formattedValue = formattedValue.replace(".", ",").replace(",0", "");
+                return formattedValue + suffix + " ₽";
+            }
+
+            return formatBalance(operationModel.totalBalance);
+        }
         selectedTab: mainpage.selectedTab
         onSelectedTabChanged: {
             mainpage.selectedTab = header.selectedTab

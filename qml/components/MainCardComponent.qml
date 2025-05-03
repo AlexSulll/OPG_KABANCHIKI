@@ -255,18 +255,41 @@ Item {
                     width: parent.width
                     horizontalAlignment: Text.AlignHCenter
                     text: {
+                        function formatMoney(value) {
+                            var absValue = Math.abs(value);
+                            var suffix = "";
+                            var formattedValue = 0;
+
+                            if (absValue >= 1000000000000) { // Триллионы (1 000 000 000 000+)
+                                formattedValue = (value / 1000000000000).toFixed(1);
+                                suffix = " трлн";
+                            } else if (absValue >= 1000000000) { // Миллиарды (1 000 000 000+)
+                                formattedValue = (value / 1000000000).toFixed(1);
+                                suffix = " млрд";
+                            } else if (absValue >= 1000000) { // Миллионы (1 000 000+)
+                                formattedValue = (value / 1000000).toFixed(1);
+                                suffix = " млн";
+                            } else {
+                                return Number(value).toLocaleString(Qt.locale(), 'f', 2) + " ₽";
+                            }
+
+                            // Заменяем точку на запятую и убираем .0
+                            formattedValue = formattedValue.replace(".", ",").replace(",0", "");
+                            return formattedValue + suffix + " ₽";
+                        }
+
                         if (selectedSector >= 0 && selectedSector < sectors.length) {
                             // Показываем значение выбранного сектора
-                            return Number(sectors[selectedSector].value).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
+                            return formatMoney(sectors[selectedSector].value);
                         } else {
                             // Показываем общую сумму
-                            var sum = 0
+                            var sum = 0;
                             for (var i = 0; i < sectors.length; i++) {
                                 if ((isExpense && sectors[i].isExpense) || (!isExpense && !sectors[i].isExpense)) {
-                                    sum += sectors[i].value
+                                    sum += sectors[i].value;
                                 }
                             }
-                            return Number(sum).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
+                            return formatMoney(sum);
                         }
                     }
                     color: isExpense ? "#FF6384" : Theme.highlightColor

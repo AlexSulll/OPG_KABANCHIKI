@@ -36,7 +36,7 @@ Page {
             right: parent.right
             bottom: bottomPanel.top
         }
-        color: "white"
+//        color: "white"
 
         Item {
             id: contentContainer

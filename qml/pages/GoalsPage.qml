@@ -30,7 +30,7 @@ Page {
             }
             Button {
                 text: "Добавить цель"
-                color: Theme.secondaryColor
+                color: "white"
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClicked: pageStack.push(addGoalComponent)
             }

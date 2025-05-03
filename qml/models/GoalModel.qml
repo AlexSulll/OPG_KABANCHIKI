@@ -35,4 +35,20 @@ ListModel {
         goalService.updateGoal(goal)
         refresh()
     }
+
+    function getCountisCompleted() {
+        var completedGoals = goalService.getCountisCompleted();
+        if (Array.isArray(completedGoals)) {
+            return completedGoals.length;
+        }
+        return 0;
+    }
+
+    function getCount() {
+        var completedGoals = goalService.getGoals();
+        if (Array.isArray(completedGoals)) {
+            return completedGoals.length;
+        }
+        return 0;
+    }
 }

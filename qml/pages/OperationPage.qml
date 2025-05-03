@@ -18,6 +18,10 @@ Page {
     property var operationModel
     property var categoryModel
 
+    Models.OperationModel {
+        id: operationModel
+    }
+
     onActionChanged: {
         if (categoryModel) {
             categoryModel.loadCategoriesByType(action);

@@ -41,6 +41,18 @@ QtObject {
         return operations
     }
 
+    function loadExpOperations() {
+        var operations = []
+        var db = getDatabase()
+        db.readTransaction(function(tx) {
+            var rs = tx.executeSql('SELECT * FROM operations WHERE action = 0 ORDER BY id DESC')
+            for (var i = 0; i < rs.rows.length; i++) {
+                operations.push(rs.rows.item(i))
+            }
+        })
+        return operations
+    }
+
     function addOperation(operation) {
         var db = getDatabase()
         db.transaction(function(tx) {
@@ -290,5 +302,56 @@ QtObject {
             console.log("Found operations:", JSON.stringify(operations));
         });
         return operations;
+    }
+
+    function getOperationsByPeriod(period) {
+        var db = getDatabase();
+        var operations = [];
+
+        db.readTransaction(function(tx) {
+            var query = 'SELECT * FROM operations';
+            var params = [];
+
+            if (period && period !== "All") {
+                var dateRange = getDateRange(period);
+                query += ' WHERE date BETWEEN ? AND ?';
+                params.push(Qt.formatDate(dateRange.fromDate, "dd.MM.yyyy"));
+                params.push(Qt.formatDate(dateRange.toDate, "dd.MM.yyyy"));
+            }
+
+            query += ' ORDER BY date ASC';
+
+            var rs = tx.executeSql(query, params);
+            for (var i = 0; i < rs.rows.length; i++) {
+                operations.push(rs.rows.item(i));
+            }
+        });
+
+        console.log("Loaded operations:", operations.length, "for period:", period);
+        return operations;
+    }
+
+    function getDateRange(period) {
+        var now = new Date();
+        var fromDate = new Date();
+        var toDate = new Date();
+
+        switch(period) {
+            case "Week":
+                fromDate.setDate(now.getDate() - 7);
+                break;
+            case "Month":
+                fromDate.setMonth(now.getMonth() - 1);
+                break;
+            case "Year":
+                fromDate.setFullYear(now.getFullYear() - 1);
+                break;
+            default: // "All"
+                fromDate = new Date(0); // Начало эпохи Unix
+                toDate = new Date(8640000000000000); // Максимальная дата
+                break;
+        }
+
+        return { fromDate: fromDate, toDate: toDate };
     }
 }

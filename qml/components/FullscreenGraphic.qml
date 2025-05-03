@@ -22,12 +22,12 @@ Page {
 
         Item {
             id: chartContainer
-            width: Math.max(parent.width, timeSeriesData.length * 120 + 80) // Увеличил ширину на 40px
+            width: Math.max(parent.width, timeSeriesData ? (timeSeriesData.length * 120 + 160) : parent.width) // Увеличил отступы
             height: parent.height
             scale: fullscreenGraphPage.scaleFactor
             transformOrigin: Item.Center
             anchors.left: parent.left
-            anchors.leftMargin: Theme.paddingLarge*3
+            anchors.leftMargin: Theme.paddingLarge * 2 // Уменьшил отступ слева
 
             Canvas {
                 id: fullscreenChartCanvas
@@ -57,9 +57,12 @@ Page {
                     // Добавляем 10% сверху для лучшего отображения
                     maxValue *= 1.1;
 
-                    var availableWidth = width - 80; // Оставляем отступы по 40px с каждой стороны
+                    var leftMargin = 80; // Увеличил отступ слева для подписей
+                    var rightMargin = 80; // Увеличил отступ справа
+                    var availableWidth = width - leftMargin - rightMargin;
                     var xStep = availableWidth / (timeSeriesData.length - 1);
                     var chartHeight = height * 0.7;
+                    var bottomMargin = 70; // Увеличил отступ снизу для подписей
 
                     // Рисуем сетку и оси
                     ctx.strokeStyle = "#e0e0e0";
@@ -68,23 +71,23 @@ Page {
                     // Горизонтальные линии
                     var gridLines = 5;
                     for (var g = 0; g <= gridLines; g++) {
-                        var gy = height - 50 - (g/gridLines * chartHeight);
+                        var gy = height - bottomMargin - (g/gridLines * chartHeight);
                         ctx.beginPath();
-                        ctx.moveTo(40, gy);
-                        ctx.lineTo(width - 40, gy);
+                        ctx.moveTo(leftMargin, gy);
+                        ctx.lineTo(width - rightMargin, gy);
                         ctx.stroke();
 
                         // Подписи значений
                         ctx.fillStyle = textColor;
-                        ctx.font = Theme.fontSizeExtraSmall + "px sans-serif";
+                        ctx.font = Theme.fontSizeExtraSmall * 0.75 + "px sans-serif";
                         ctx.textAlign = "right";
-                        ctx.fillText((maxValue * (g/gridLines)/1000).toFixed(1) + "k", 35, gy + 4);
+                        ctx.fillText((maxValue * (g/gridLines)/1000).toFixed(1) + "k", leftMargin - 10, gy + 4);
                     }
 
                     // Ось X
                     ctx.beginPath();
-                    ctx.moveTo(40, height - 50);
-                    ctx.lineTo(width - 40, height - 50);
+                    ctx.moveTo(leftMargin, height - bottomMargin);
+                    ctx.lineTo(width - rightMargin, height - bottomMargin);
                     ctx.stroke();
 
                     // Рисуем линию графика
@@ -95,8 +98,8 @@ Page {
                     ctx.beginPath();
 
                     for (var i = 0; i < timeSeriesData.length; i++) {
-                        var x = 40 + i * xStep;
-                        var y = height - 50 - (timeSeriesData[i].value / maxValue * chartHeight);
+                        var x = leftMargin + i * xStep;
+                        var y = height - bottomMargin - (timeSeriesData[i].value / maxValue * chartHeight);
 
                         if (i === 0) {
                             ctx.moveTo(x, y);
@@ -111,8 +114,8 @@ Page {
 
                     // Рисуем точки и подписи
                     for (var j = 0; j < timeSeriesData.length; j++) {
-                        x = 40 + j * xStep;
-                        y = height - 50 - (timeSeriesData[j].value / maxValue * chartHeight);
+                        x = leftMargin + j * xStep;
+                        y = height - bottomMargin - (timeSeriesData[j].value / maxValue * chartHeight);
 
                         // Эффект свечения
                         ctx.shadowColor = glowColor;
@@ -135,7 +138,7 @@ Page {
                         ctx.textAlign = "center";
 
                         var monthText = timeSeriesData[j].month + (timeSeriesData[j].year ? "," + timeSeriesData[j].year : "");
-                        ctx.fillText(monthText, x, height - 20);
+                        ctx.fillText(monthText, x, height - (bottomMargin / 2));
 
                         // Подпись значения
                         var valueY = y - 25;

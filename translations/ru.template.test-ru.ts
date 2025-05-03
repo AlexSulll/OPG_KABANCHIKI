@@ -147,12 +147,12 @@
 <context>
     <name>FullscreenGraphic</name>
     <message>
-        <location filename="../qml/components/FullscreenGraphic.qml" line="204"/>
+        <location filename="../qml/components/FullscreenGraphic.qml" line="205"/>
         <source>No data available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/components/FullscreenGraphic.qml" line="204"/>
+        <location filename="../qml/components/FullscreenGraphic.qml" line="205"/>
         <source>Loading...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -209,7 +209,7 @@
 <context>
     <name>OperationPage</name>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="71"/>
+        <location filename="../qml/pages/OperationPage.qml" line="75"/>
         <source>Комментарий</source>
         <translation type="unfinished"></translation>
     </message>

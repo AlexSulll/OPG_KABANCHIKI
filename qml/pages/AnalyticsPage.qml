@@ -1,35 +1,67 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../components"
+import "../models" as Models
 
 BasePage {
     id: analyticsPage
     allowedOrientations: Orientation.All
-    // Цвета для графика
     readonly property color expenseColor: Theme.errorColor
     readonly property color incomeColor: Theme.highlightColor
     property bool isExpense: true
+    property int countisCompleted
+    property int allGoals
     property color currentColor: isExpense ? expenseColor : incomeColor
     property bool fullscreenGraph: false
 
-    // Тестовые данные за 6 месяцев
-    property var timeSeriesData: [
-        { month: qsTr("JAN"), year: qsTr("2025"), value: 8500, target: 10000 },
-        { month: qsTr("FEB"), year: qsTr("2025"), value: 9200, target: 10000 },
-        { month: qsTr("MAR"), year: qsTr("2025"), value: 11000, target: 10000 },
-        { month: qsTr("APR"), year: qsTr("2025"), value: 12500, target: 10000 },
-        { month: qsTr("MAY"), year: qsTr("2025"), value: 9800, target: 10000 },
-        { month: qsTr("JUN"), year: qsTr("2025"), value: 13600, target: 10000 },
-        { month: qsTr("JUL"), year: qsTr("2025"), value: 9800, target: 10000 }
-    ]
+    property var operationModel: Models.OperationModel {
+        onDataChanged: updateChartData()
+        Component.onCompleted: {
+            refresh();
+            updateChartData();
+        }
+    }
 
-    // Для всплывающего окна
+    property var goalModel: Models.GoalModel {
+        onDataChanged: refresh()
+        Component.onCompleted: {
+            refresh();
+            allGoals = getCount()
+            countisCompleted = getCountisCompleted();
+            console.log("Получена длина ", countisCompleted)
+        }
+    }
+
+    property var chartCanvas: graphic.children[1].children[0].children[0]
+    property var timeSeriesData: []
     property var selectedMonthData: ({})
     property bool showMonthPopup: false
-
-    // Анимация пульсации
     property bool pulsing: true
     property real pulseSize: 1.0
+
+
+    function updateChartData() {
+        console.log("Updating chart data...");
+        var chartData = operationModel.getTimeSeriesData("All");
+
+        if (chartData && chartData.length > 0) {
+            timeSeriesData = chartData;
+            console.log("Chart data updated with", timeSeriesData.length, "data points");
+        } else {
+            timeSeriesData = [
+                { month: "JAN", year: "2024", value: 0, target: 10000 },
+                { month: "FEB", year: "2024", value: 0, target: 10000 }
+            ];
+            console.log("Using default chart data");
+        }
+
+        if (chartCanvas) {
+            chartCanvas.requestPaint();
+        } else {
+            console.log("Chart canvas not found");
+        }
+    }
+
     SequentialAnimation {
         running: pulsing
         loops: Animation.Infinite
@@ -89,9 +121,9 @@ BasePage {
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: Theme.paddingSmall
                         Label {
-                            text: qsTr("Total")
+                            text: qsTr("За время использования\nприложения потрачено")
                             color: Theme.secondaryColor
-                            font.pixelSize: Theme.fontSizeExtraLarge
+                            font.pixelSize: Theme.fontSizeMedium
                         }
                         Label {
                             text: {
@@ -103,7 +135,7 @@ BasePage {
                             }
                             color: Theme.primaryColor
                             font {
-                                pixelSize: Theme.fontSizeHuge*1.5
+                                pixelSize: Theme.fontSizeExtraLarge
                                 bold: true
                             }
                         }
@@ -120,9 +152,9 @@ BasePage {
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: Theme.paddingSmall
                         Label {
-                            text: qsTr("Average")
+                            text: qsTr("В среднем вы\nтратили в месяц")
                             color: Theme.secondaryColor
-                            font.pixelSize: Theme.fontSizeExtraLarge
+                            font.pixelSize: Theme.fontSizeMedium
                         }
                         Label {
                             text: {
@@ -134,7 +166,7 @@ BasePage {
                             }
                             color: Theme.primaryColor
                             font {
-                                pixelSize: Theme.fontSizeHuge*1.5
+                                pixelSize: Theme.fontSizeExtraLarge
                                 bold: true
                             }
                         }
@@ -189,7 +221,7 @@ BasePage {
                         }
 
                         Label {
-                            text: "Shopping"
+                            text: "Пусто"
                             color: "#24224f"
                             font {
                                 pixelSize: Theme.fontSizeLarge
@@ -209,15 +241,7 @@ BasePage {
                         }
 
                         Label {
-                            text: {
-                                var achieved = 0;
-                                for (var i = 0; i < timeSeriesData.length; i++) {
-                                    if (timeSeriesData[i].value >= timeSeriesData[i].target) {
-                                        achieved++;
-                                    }
-                                }
-                                return achieved + "/" + timeSeriesData.length
-                            }
+                            text: countisCompleted+ "/" + allGoals
                             color: "#24224f"
                             font {
                                 pixelSize: Theme.fontSizeLarge

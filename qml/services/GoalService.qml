@@ -77,4 +77,17 @@ QtObject {
         })
         return goals
     }
+
+    function getCountisCompleted() {
+        var goals = []
+        var db = getDatabase()
+        db.readTransaction(function(tx) {
+            var rs = tx.executeSql('SELECT * FROM goals WHERE isCompleted = 1')
+            for(var i = 0; i < rs.rows.length; i++) {
+                goals.push(rs.rows.item(i))
+            }
+        })
+        return goals
+    }
+
 }

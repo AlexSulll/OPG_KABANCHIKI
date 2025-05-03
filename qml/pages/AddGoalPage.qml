@@ -4,6 +4,8 @@ import Sailfish.Silica 1.0
 Dialog {
     id: addGoalPage
 
+    property string date: Qt.formatDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), "dd.MM.yyyy")
+
     property var goalModel
 
     Column {
@@ -34,7 +36,7 @@ Dialog {
             id: dateField
             width: parent.width
             label: "Дата завершения"
-            text: Qt.formatDate(selectedDate, "dd.MM.yyyy")
+            text: date
             readOnly: true
 
             onClicked: {
@@ -85,7 +87,7 @@ Dialog {
                 DatePicker {
                     id: datePicker
                     width: parent.width
-                    date: new Date()
+                    date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
                     onDateChanged: {
                         addGoalPage.date = Qt.formatDate(date, "dd.MM.yyyy");
                     }
@@ -93,7 +95,7 @@ Dialog {
             }
 
             onOpened: {
-                    datePicker.date = new Date()
+                    datePicker.date = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
             }
     }
 }

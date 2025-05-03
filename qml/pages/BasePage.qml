@@ -57,13 +57,19 @@ Page {
 
         Rectangle {
             anchors.fill: parent
-            color: "#24224f"
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "#24224f" }
+                GradientStop { position: 1.0; color: "#1a1a3a" }
+            }
 
             Rectangle {
                 id: burger
                 width: Theme.itemSizeLarge
                 height: Theme.itemSizeExtraLarge
-                color: "#24224f"
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: "#24224f" }
+                    GradientStop { position: 1.0; color: "#1a1a3a" }
+                }
                 anchors {
                     left: parent.left
                     bottom: parent.bottom
@@ -81,7 +87,10 @@ Page {
                 id: grah
                 width: Theme.itemSizeExtraLarge
                 height: Theme.itemSizeExtraLarge
-                color: "#24224f"
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: "#24224f" }
+                    GradientStop { position: 1.0; color: "#1a1a3a" }
+                }
                 anchors {
                     left: burger.right
                     top: burger.top
@@ -137,7 +146,10 @@ Page {
                 id: goals
                 width: Theme.itemSizeExtraLarge
                 height: Theme.itemSizeExtraLarge
-                color: "#24224f"
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: "#24224f" }
+                    GradientStop { position: 1.0; color: "#1a1a3a" }
+                }
                 anchors {
                     right: others.left
                     top: burger.top
@@ -157,7 +169,10 @@ Page {
                 id: others
                 width: Theme.itemSizeExtraLarge
                 height: Theme.itemSizeExtraLarge
-                color: "#24224f"
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: "#24224f" }
+                    GradientStop { position: 1.0; color: "#1a1a3a" }
+                }
                 anchors {
                     right: parent.right
                     top: burger.top
@@ -167,7 +182,7 @@ Page {
                     icon.source: "image://theme/icon-l-file-apk"
                     anchors.centerIn: parent
                     onClicked: {
-                        pageStack.push(Qt.resolvedUrl("AnalyticsPage.qml"), {
+                        pageStack.push(Qt.resolvedUrl("....qml"), {
                             operationModel: operationModel,
                             categoryModel: categoryModel,
                             action: selectedTab === "expenses" ? 0 : 1,

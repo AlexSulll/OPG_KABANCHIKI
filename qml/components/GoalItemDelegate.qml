@@ -48,8 +48,9 @@ ListItem {
                     font {
                         pixelSize: Theme.fontSizeMedium
                         bold: true
+                        strikeout: isCompleted === 1 // Зачёркивание
                     }
-                    color: Theme.primaryColor
+                    color: isCompleted === 1 ? Theme.secondaryColor : Theme.primaryColor
                     truncationMode: TruncationMode.Fade
                     maximumLineCount: 1
                 }
@@ -138,7 +139,7 @@ ListItem {
                     color: Theme.secondaryColor
                 }
                 Label {
-                    text: (targetAmount - currentAmount).toFixed(2) + " ₽"
+                    text: isCompleted === 0 ? (targetAmount - currentAmount).toFixed(2) + " ₽" : "-"
                     font.pixelSize: Theme.fontSizeExtraSmall
                     color: Theme.primaryColor
                     horizontalAlignment: Text.AlignRight
@@ -151,9 +152,9 @@ ListItem {
                     color: Theme.secondaryColor
                 }
                 Label {
-                    text: monthlyPayment + " ₽"
+                    text: isCompleted === 0 ? monthlyPayment + " ₽" : "-"
                     font.pixelSize: Theme.fontSizeExtraSmall
-                    color: monthlyPayment > 0 ? Theme.primaryColor : Theme.errorColor
+                    color: monthlyPayment > 0 ? Theme.primaryColor : (isCompleted === 1 ? Theme.primaryColor : Theme.errorColor )
                     horizontalAlignment: Text.AlignRight
                 }
 
@@ -164,7 +165,7 @@ ListItem {
                     color: Theme.secondaryColor
                 }
                 Label {
-                    text: daysLeft
+                    text: isCompleted === 0 ? daysLeft : "-"
                     font.pixelSize: Theme.fontSizeExtraSmall
                     color: daysLeft === qsTr("Срок истёк") ? Theme.errorColor : Theme.primaryColor
                     horizontalAlignment: Text.AlignRight

@@ -12,18 +12,84 @@
 <context>
     <name>AnalyticsPage</name>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="41"/>
-        <source>Financial Analytics</source>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="17"/>
+        <source>JAN</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="69"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="17"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="18"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="19"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="20"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="21"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="22"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="23"/>
+        <source>2025</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="18"/>
+        <source>FEB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="19"/>
+        <source>MAR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="20"/>
+        <source>APR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="21"/>
+        <source>MAY</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="22"/>
+        <source>JUN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="23"/>
+        <source>JUL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="92"/>
         <source>Total</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="98"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="123"/>
         <source>Average</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="167"/>
+        <source>Количество операций: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="186"/>
+        <source>Самая популярная категория: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="206"/>
+        <source>Целей достигнуто: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="283"/>
+        <source>No data available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="283"/>
+        <source>Loading...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -33,6 +99,19 @@
         <location filename="../qml/cover/DefaultCoverPage.qml" line="10"/>
         <source>WebBudget</source>
         <translation>WebBudget</translation>
+    </message>
+</context>
+<context>
+    <name>FullscreenGraphic</name>
+    <message>
+        <location filename="../qml/components/FullscreenGraphic.qml" line="204"/>
+        <source>No data available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/components/FullscreenGraphic.qml" line="204"/>
+        <source>Loading...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -54,32 +133,32 @@
     </message>
     <message>
         <location filename="../qml/components/GoalItemDelegate.qml" line="21"/>
-        <location filename="../qml/components/GoalItemDelegate.qml" line="169"/>
+        <location filename="../qml/components/GoalItemDelegate.qml" line="170"/>
         <source>Срок истёк</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/components/GoalItemDelegate.qml" line="109"/>
+        <location filename="../qml/components/GoalItemDelegate.qml" line="110"/>
         <source>Цель:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/components/GoalItemDelegate.qml" line="123"/>
+        <location filename="../qml/components/GoalItemDelegate.qml" line="124"/>
         <source>Накоплено:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/components/GoalItemDelegate.qml" line="136"/>
+        <location filename="../qml/components/GoalItemDelegate.qml" line="137"/>
         <source>Осталось:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/components/GoalItemDelegate.qml" line="149"/>
+        <location filename="../qml/components/GoalItemDelegate.qml" line="150"/>
         <source>Ежемесячно:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/components/GoalItemDelegate.qml" line="162"/>
+        <location filename="../qml/components/GoalItemDelegate.qml" line="163"/>
         <source>Дней:</source>
         <translation type="unfinished"></translation>
     </message>

@@ -2,7 +2,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../components"
 
-BasePage {
+Page {
     id: goalsPage
 
     property var goalModel
@@ -21,19 +21,18 @@ BasePage {
 
             PageHeader {
                 title: "Финансовые цели"
-                titleColor: "#24224f"
-            }
-
-            Button {
-                text: "Добавить цель"
-                color: "#24224f"
-                anchors.horizontalCenter: parent.horizontalCenter
-                onClicked: pageStack.push(addGoalComponent)
+                titleColor: Theme.primaryColor
             }
 
             Repeater {
                 model: goalModel
                 delegate: GoalItemDelegate {}
+            }
+            Button {
+                text: "Добавить цель"
+                color: "white"
+                anchors.horizontalCenter: parent.horizontalCenter
+                onClicked: pageStack.push(addGoalComponent)
             }
         }
     }

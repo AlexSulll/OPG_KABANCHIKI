@@ -70,7 +70,7 @@ QtObject {
         var goals = []
         var db = getDatabase()
         db.readTransaction(function(tx) {
-            var rs = tx.executeSql('SELECT * FROM goals ORDER BY endDate ASC')
+            var rs = tx.executeSql('SELECT * FROM goals ORDER BY isCompleted, endDate ASC')
             for(var i = 0; i < rs.rows.length; i++) {
                 goals.push(rs.rows.item(i))
             }

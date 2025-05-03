@@ -16,6 +16,7 @@ ListModel {
         goals.forEach(function(goal) {
             append({
                 id: goal.id,
+                isCompleted: goal.isCompleted,
                 title: goal.title,
                 targetAmount: goal.targetAmount,
                 currentAmount: goal.currentAmount,

@@ -43,7 +43,7 @@ BasePage {
 
     HeaderComponent {
         id: header
-        headerText: Number(operationModel.totalBalance).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
+        headerText: Number(operationModel.totalBalance).toLocaleString(Qt.locale(), 'f', 0) + " ₽"
         selectedTab: mainpage.selectedTab
         onSelectedTabChanged: {
             mainpage.selectedTab = header.selectedTab
@@ -129,7 +129,7 @@ BasePage {
                                 right: parent.right
                                 rightMargin: Theme.paddingSmall
                             }
-                            text: isNaN(model.total) ? "0 ₽" : Number(model.total).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
+                            text: isNaN(model.total) ? "0 ₽" : Number(model.total).toLocaleString(Qt.locale(), 'f', 0) + " ₽"
                             color: selectedTab === "expenses" ? "#FF6384" : Theme.highlightColor
                             font {
                                 pixelSize: Theme.fontSizeLarge

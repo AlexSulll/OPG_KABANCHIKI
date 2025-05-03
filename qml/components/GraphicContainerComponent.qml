@@ -23,15 +23,17 @@ Item {
         id: graphSettingsButton
         icon.source: "image://theme/icon-l-gesture"
         icon.color: "#24224f"
+        z: 50
         anchors {
             top: parent.top
             left: parent.left
             margins: Theme.paddingMedium
         }
         onClicked: {
-//            analyticsPage.fullscreenGraph = true
-            console.log("Clicked!")
-            pageStack.replaceAbove(null, Qt.resolvedUrl("FullscreenGraphic.qml"))
+            pageStack.push(Qt.resolvedUrl("FullscreenGraphic.qml"), {
+                "timeSeriesData": timeSeriesData,
+                "selectedMonthData": selectedMonthData
+            });
         }
     }
 
@@ -67,6 +69,7 @@ Item {
                     }));
                     var availableWidth = width - 80; // Оставляем отступы по бокам
                     var xStep = availableWidth / (timeSeriesData.length - 1);
+
 
                     // Рисуем линию графика
                     ctx.strokeStyle = "#24224f";

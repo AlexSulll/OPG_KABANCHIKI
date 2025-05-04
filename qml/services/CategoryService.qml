@@ -19,7 +19,8 @@ QtObject {
                 categoryId INTEGER PRIMARY KEY AUTOINCREMENT,
                 nameCategory TEXT,
                 typeCategory INTEGER,
-                pathToIcon TEXT
+                pathToIcon TEXT,
+                limitAmount INTEGER DEFAULT NULL
             )');
 
             var check = tx.executeSql('SELECT COUNT(*) as count FROM categories');
@@ -113,4 +114,33 @@ QtObject {
             return false;
         }
     }
+
+    function setCategoryLimit(categoryId, limit) {
+        var db = getDatabase();
+        db.transaction(function(tx) {
+            tx.executeSql("UPDATE categories SET limitAmount = ? WHERE categoryId = ?", [limit, categoryId]);
+        });
+    }
+
+    function getCategoryLimit(categoryId) {
+        var db = getDatabase();
+        var limit = null;
+        db.readTransaction(function(tx) {
+            var rs = tx.executeSql("SELECT limitAmount FROM categories WHERE categoryId = ?", [categoryId]);
+
+            if (rs.rows.length > 0) {
+                limit = rs.rows.item(0).limitAmount;
+            }
+        });
+
+        return limit;
+    }
+
+    function removeCategoryLimit(categoryId) {
+        var db = getDatabase();
+        db.transaction(function(tx) {
+            tx.executeSql("UPDATE categories SET limitAmount = NULL WHERE categoryId = ?", [categoryId]);
+        });
+    }
+
 }

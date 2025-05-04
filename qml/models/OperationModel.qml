@@ -161,4 +161,15 @@ ListModel {
         }
         console.log("LOADED OPERATIONS BY CATEGORY AND PERIOD:", categoryId, period, JSON.stringify(operations));
     }
+
+    function getTotalSpentByCategory(categoryId) {
+        var total = 0;
+        if (service) {
+            var operations = service.getOperationByCategory(categoryId, 0); // 0 - расходы
+            for (var i = 0; i < operations.length; i++) {
+                total += operations[i].amount;
+            }
+        }
+        return total;
+    }
 }

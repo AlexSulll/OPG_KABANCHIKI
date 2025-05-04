@@ -26,6 +26,7 @@ DISTFILES += \
     qml/models/CategoryModel.qml \
     qml/models/DateFilterModel.qml \
     qml/models/GoalModel.qml \
+    qml/models/LimitModel.qml \
     qml/models/OperationModel.qml \
     qml/models/SectorsModel.qml \
     qml/models/SideMenuModel.qml \

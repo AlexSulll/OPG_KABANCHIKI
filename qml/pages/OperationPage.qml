@@ -17,6 +17,12 @@ Page {
     property var selectedCategory: null
     property var operationModel
     property var categoryModel
+    property var limitModel: Models.LimitModel {}
+
+    // Свойства для хранения данных о лимите
+    property real categoryLimit: 0
+    property real currentSpent: 0
+    property real operationAmount: 0
 
     onActionChanged: {
         if (categoryModel) {
@@ -25,90 +31,73 @@ Page {
     }
 
     Component.onCompleted: {
-            if (selectedCategoryId !== -1) {
-                var categories = categoryModel.loadCategoriesByCategoryId(selectedCategoryId);
-                if (categories.length > 0) {
-                    selectedCategory = categories[0];
-                }
+        if (selectedCategoryId !== -1) {
+            var categories = categoryModel.loadCategoriesByCategoryId(selectedCategoryId);
+            if (categories.length > 0) {
+                selectedCategory = categories[0];
             }
+        }
     }
 
     SilicaFlickable {
-            anchors.fill: parent
-            contentHeight: column.height
+        anchors.fill: parent
+        contentHeight: column.height
 
-            Column {
-                id: column
+        Column {
+            id: column
+            width: parent.width
+            spacing: Theme.paddingLarge
+            anchors.top: parent.top
+            anchors.topMargin: Theme.paddingLarge
+
+            TextField {
+                id: sumInput
                 width: parent.width
-                spacing: Theme.paddingLarge
-                anchors.top: parent.top
-                anchors.topMargin: Theme.paddingLarge
+                placeholderText: "Сумма (руб)"
+                inputMethodHints: Qt.ImhDigitsOnly
+                validator: IntValidator { bottom: 1 }
+                onTextChanged: amount = text
+            }
 
-                TextField {
-                    id: sumInput
-                    width: parent.width
-                    placeholderText: "Сумма (руб)"
-                    inputMethodHints: Qt.ImhDigitsOnly
-                    validator: IntValidator { bottom: 1 }
-                    onTextChanged: amount = text
-                }
+            Components.CategoryDisplay {
+                width: parent.width
+                categoryData: selectedCategory
+            }
 
-                Components.CategoryDisplay {
-                    width: parent.width
-                    categoryData: selectedCategory
-                }
+            TextField {
+                width: parent.width
+                placeholderText: "Дата"
+                text: date
+                onClicked: dateDialog.open()
+            }
 
-                TextField {
-                    width: parent.width
-                    placeholderText: "Дата"
-                    text: date
-                    onClicked: dateDialog.open()
-                }
+            TextArea {
+                width: parent.width
+                height: Theme.itemSizeLarge
+                placeholderText: qsTr("Комментарий")
+                inputMethodHints: Qt.ImhNoPredictiveText
+                onTextChanged: operationPage.desc = text
+            }
 
-                TextArea {
-                    width: parent.width
-                    height: Theme.itemSizeLarge
-                    placeholderText: qsTr("Комментарий")
-                    inputMethodHints: Qt.ImhNoPredictiveText
-                    onTextChanged: operationPage.desc = text
-                }
-
-                Button {
-                    text: "Сохранить"
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    enabled: amount !== "" && selectedCategoryId !== -1
-                    onClicked: {
-                        console.log(amount, action, selectedCategoryId, date, desc)
-                        var operationAmount = parseInt(amount);
-                        operationModel.add({
-                                    amount: operationAmount,
-                                    action: action,
-                                    categoryId: selectedCategoryId,
-                                    date: date,
-                                    desc: desc
-                        });
-                            amount = "";
-                            selectedCategoryId = -1;
-                            desc = "";
-                            pageStack.replaceAbove(null, Qt.resolvedUrl("MainPage.qml"))
-                        }
-                    }
-                }
+            Button {
+                text: "Сохранить"
+                anchors.horizontalCenter: parent.horizontalCenter
+                enabled: amount !== "" && selectedCategoryId !== -1
+                onClicked: checkAndSaveOperation()
+            }
+        }
     }
 
     Dialog {
         id: dateDialog
-
         Column {
             width: parent.width
             spacing: Theme.paddingLarge
-
             DialogHeader {
                 title: "Выберите дату"
                 acceptText: "ОК"
                 cancelText: "Отмена"
             }
-
             Label {
                 width: parent.width
                 horizontalAlignment: Text.AlignHCenter
@@ -123,19 +112,90 @@ Page {
                 }
                 font.pixelSize: Theme.fontSizeLarge
             }
-
             DatePicker {
                 id: datePicker
                 width: parent.width
                 date: new Date()
-                onDateChanged: {
-                    operationPage.date = Qt.formatDate(date, "dd.MM.yyyy");
-                }
+                onDateChanged: operationPage.date = Qt.formatDate(date, "dd.MM.yyyy")
+            }
+        }
+        onOpened: datePicker.date = new Date()
+    }
+
+    Dialog {
+        id: limitExceededDialog
+        allowedOrientations: Orientation.All
+
+        Column {
+            width: parent.width
+            spacing: Theme.paddingLarge
+
+            DialogHeader {
+                title: qsTr("Превышение лимита")
+                acceptText: qsTr("Все равно сохранить")
+                cancelText: qsTr("Отменить")
+            }
+
+            Label {
+                width: parent.width
+                wrapMode: Text.Wrap
+                horizontalAlignment: Text.AlignHCenter
+                text: qsTr("Вы превысите лимит на %1 руб.").arg((operationPage.currentSpent + operationPage.operationAmount - operationPage.categoryLimit).toFixed(2))
+                color: Theme.errorColor
+                font.pixelSize: Theme.fontSizeMedium
+            }
+
+            Label {
+                width: parent.width
+                wrapMode: Text.Wrap
+                horizontalAlignment: Text.AlignHCenter
+                text: qsTr("Лимит: %1 руб.").arg(operationPage.categoryLimit.toFixed(2))
+            }
+
+            Label {
+                width: parent.width
+                wrapMode: Text.Wrap
+                horizontalAlignment: Text.AlignHCenter
+                text: qsTr("Уже потрачено: %1 руб.").arg(operationPage.currentSpent.toFixed(2))
+            }
+
+            Label {
+                width: parent.width
+                wrapMode: Text.Wrap
+                horizontalAlignment: Text.AlignHCenter
+                text: qsTr("Новая операция: %1 руб.").arg(operationPage.operationAmount.toFixed(2))
             }
         }
 
-        onOpened: {
-                datePicker.date = new Date()
+        onAccepted: saveOperation()
+    }
+
+    function checkAndSaveOperation() {
+        operationAmount = parseInt(amount);
+        if (isNaN(operationAmount)) return;
+
+        categoryLimit = limitModel.getLimit(selectedCategoryId);
+        if (categoryLimit === null || categoryLimit === undefined || categoryLimit === 0) {
+            saveOperation();
+            return;
         }
+
+        currentSpent = operationModel.getTotalSpentByCategory(selectedCategoryId);
+        if (currentSpent + operationAmount > categoryLimit) {
+            limitExceededDialog.open();
+        } else {
+            saveOperation();
+        }
+    }
+
+    function saveOperation() {
+        operationModel.add({
+            amount: operationAmount,
+            action: action,
+            categoryId: selectedCategoryId,
+            date: date,
+            desc: desc
+        });
+        pageStack.replaceAbove(null, Qt.resolvedUrl("MainPage.qml"));
     }
 }

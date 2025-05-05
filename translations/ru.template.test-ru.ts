@@ -55,83 +55,39 @@
 <context>
     <name>AnalyticsPage</name>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="17"/>
-        <source>JAN</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="17"/>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="18"/>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="19"/>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="20"/>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="21"/>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="22"/>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="23"/>
-        <source>2025</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="18"/>
-        <source>FEB</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="19"/>
-        <source>MAR</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="20"/>
-        <source>APR</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="21"/>
-        <source>MAY</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="22"/>
-        <source>JUN</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="23"/>
-        <source>JUL</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="92"/>
-        <source>Total</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qml/pages/AnalyticsPage.qml" line="123"/>
-        <source>Average</source>
+        <source>За время использования
+приложения потрачено</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="167"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="154"/>
+        <source>В среднем вы
+тратили в месяц</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="198"/>
         <source>Количество операций: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="186"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="217"/>
         <source>Самая популярная категория: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="206"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="237"/>
         <source>Целей достигнуто: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="283"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="306"/>
         <source>No data available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="283"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="306"/>
         <source>Loading...</source>
         <translation type="unfinished"></translation>
     </message>

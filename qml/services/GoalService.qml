@@ -70,6 +70,13 @@ QtObject {
         var db = getDatabase()
         db.transaction(function(tx) {
             tx.executeSql(
+                "DELETE FROM categories
+                 WHERE CategoryId = (SELECT CategoryId from goals where id = ?)",
+                [goal]
+            )
+        })
+        db.transaction(function(tx) {
+            tx.executeSql(
                 "DELETE FROM goals
                  WHERE id = ?",
                 [goal]

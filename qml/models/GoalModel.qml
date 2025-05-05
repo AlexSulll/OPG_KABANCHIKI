@@ -54,6 +54,6 @@ ListModel {
 
     function removeGoal(goalId) {
         goalService.deleteGoal(goalId)
-        refresh()
+        pageStack.replaceAbove(null, Qt.resolvedUrl("../pages/MainPage.qml"))
     }
 }

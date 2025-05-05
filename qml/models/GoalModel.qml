@@ -51,4 +51,9 @@ ListModel {
         }
         return 0;
     }
+
+    function removeGoal(goalId) {
+        goalService.deleteGoal(goalId)
+        refresh()
+    }
 }

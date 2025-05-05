@@ -66,6 +66,17 @@ QtObject {
         })
     }
 
+    function deleteGoal(goal) {
+        var db = getDatabase()
+        db.transaction(function(tx) {
+            tx.executeSql(
+                "DELETE FROM goals
+                 WHERE id = ?",
+                [goal]
+            )
+        })
+    }
+
     function getGoals() {
         var goals = []
         var db = getDatabase()

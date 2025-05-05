@@ -57,39 +57,44 @@ QtObject {
         var db = getDatabase()
         db.transaction(function(tx) {
             // Проверка активных целей для категории
-            var goal = tx.executeSql(
-                "SELECT * FROM goals
-                WHERE categoryId = ? AND isCompleted = 0",
+            var goalResult = tx.executeSql(
+                "SELECT * FROM goals WHERE categoryId = ? AND isCompleted = 0",
                 [operation.categoryId]
-            ).rows.item(0)
+            )
 
-            if(goal) {
+            if (goalResult.rows.length > 0) {
+                var goal = goalResult.rows.item(0)
+
                 // Рассчет доступной суммы
                 var remaining = goal.targetAmount - goal.currentAmount
                 operation.amount = Math.min(operation.amount, remaining)
 
                 // Обновление прогресса цели
                 tx.executeSql(
-                    "UPDATE goals SET currentAmount = currentAmount + ?
-                    WHERE id = ?",
+                    "UPDATE goals SET currentAmount = currentAmount + ? WHERE id = ?",
                     [operation.amount, goal.id]
                 )
 
                 // Проверка выполнения цели
-                if((goal.currentAmount + operation.amount) >= goal.targetAmount) {
+                var newAmount = goal.currentAmount + operation.amount
+                if (newAmount >= goal.targetAmount) {
                     // Помечаем цель как выполненную
                     tx.executeSql(
-                        "UPDATE goals SET isCompleted = 1
-                        WHERE id = ?",
+                        "UPDATE goals SET isCompleted = 1 WHERE id = ?",
                         [goal.id]
+                    )
+
+                    // Деактивируем категорию цели
+                    tx.executeSql(
+                        "UPDATE categories SET isActive = 0 WHERE categoryId = ?",
+                        [operation.categoryId]
                     )
                 }
             }
 
             // Добавление операции
             tx.executeSql(
-                'INSERT INTO operations (amount, action, categoryId, date, desc)
-                VALUES (?, ?, ?, ?, ?)',
+                'INSERT INTO operations (amount, action, categoryId, date, desc) VALUES (?, ?, ?, ?, ?)',
                 [operation.amount, operation.action, operation.categoryId, operation.date, operation.desc]
             )
         })

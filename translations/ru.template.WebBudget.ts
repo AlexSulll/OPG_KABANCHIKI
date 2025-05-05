@@ -12,83 +12,39 @@
 <context>
     <name>AnalyticsPage</name>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="17"/>
-        <source>JAN</source>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="121"/>
+        <source>За время использования
+приложения потрачено</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="17"/>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="18"/>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="19"/>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="20"/>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="21"/>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="22"/>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="23"/>
-        <source>2025</source>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="152"/>
+        <source>В среднем вы
+тратили в месяц</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="18"/>
-        <source>FEB</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="19"/>
-        <source>MAR</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="20"/>
-        <source>APR</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="21"/>
-        <source>MAY</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="22"/>
-        <source>JUN</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="23"/>
-        <source>JUL</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="92"/>
-        <source>Total</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="123"/>
-        <source>Average</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="167"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="196"/>
         <source>Количество операций: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="186"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="215"/>
         <source>Самая популярная категория: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="206"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="235"/>
         <source>Целей достигнуто: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="283"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="304"/>
         <source>No data available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="283"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="304"/>
         <source>Loading...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -104,12 +60,12 @@
 <context>
     <name>FullscreenGraphic</name>
     <message>
-        <location filename="../qml/components/FullscreenGraphic.qml" line="204"/>
+        <location filename="../qml/components/FullscreenGraphic.qml" line="96"/>
         <source>No data available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/components/FullscreenGraphic.qml" line="204"/>
+        <location filename="../qml/components/FullscreenGraphic.qml" line="96"/>
         <source>Loading...</source>
         <translation type="unfinished"></translation>
     </message>

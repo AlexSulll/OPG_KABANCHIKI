@@ -13,6 +13,8 @@ Page {
     property int selectedCategoryId: -1
     property int editingCategoryId: -1
 
+    property var sectorModel
+
     onActionChanged: {
         categoryModel.loadCategoriesByType(action);
     }

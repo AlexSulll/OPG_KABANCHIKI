@@ -1,10 +1,7 @@
 import QtQuick 2.0
-import Sailfish.Silica 1.0
 import QtQuick.LocalStorage 2.0
-import "../icons/Expense/"
 
 QtObject {
-    objectName: "categoryService"
 
     Component.onCompleted: initialize()
 
@@ -13,134 +10,106 @@ QtObject {
     }
 
     function initialize() {
-        var db = getDatabase();
+        var db = getDatabase()
         db.transaction(function(tx) {
-            tx.executeSql('CREATE TABLE IF NOT EXISTS categories (
-                categoryId INTEGER PRIMARY KEY AUTOINCREMENT,
-                nameCategory TEXT,
-                typeCategory INTEGER,
-                pathToIcon TEXT,
-                limitAmount INTEGER DEFAULT NULL
-            )');
-
-            var check = tx.executeSql('SELECT COUNT(*) as count FROM categories');
-            if (check.rows.item(0).count === 0) {
-                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Кафе", 0, "../icons/Expense/CafeIcon.svg")');
-                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Досуг", 0, "../icons/Expense/FreeTimeIcon.svg")');
-                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Образование", 0, "../icons/Expense/EducationIcon.svg")');
-                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Подарки", 0, "../icons/Expense/GiftIcon.svg")');
-                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Дом", 0, "../icons/Expense/HouseIcon.svg")');
-                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Продукты", 0, "../icons/Expense/ProductsIcon.svg")');
-                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Здоровье", 0, "../icons/Expense/HealthIcon.svg")');
-                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Добавить", 0, "../icons/Expense/addIcon.svg")');
-                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Зарплата", 1, "../icons/Revenue/SalaryIcon.svg")');
-                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Проценты по вкладу", 1, "../icons/Revenue/BankIcon.svg")');
-                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Подарок", 1, "../icons/Expense/GiftIcon.svg")');
-                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Другое", 1, "../icons/Revenue/OtherIcon.svg")');
-                tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Добавить", 1, "../icons/Expense/addIcon.svg")');
-            }
-        });
+            tx.executeSql('CREATE TABLE IF NOT EXISTS goals (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                categoryId INTEGER,
+                isCompleted BOOLEAN DEFAULT 0,
+                title TEXT,
+                targetAmount REAL,
+                currentAmount REAL,
+                startDate TEXT,
+                endDate TEXT,
+                FOREIGN KEY(categoryId) REFERENCES categories(categoryId)
+            )')
+        })
     }
 
-    function loadCategories(typeCategory) {
-        var db = getDatabase();
-        var result = [];
-        db.readTransaction(function(tx) {
-            var rs = tx.executeSql("SELECT c.categoryId AS categoryId, c.nameCategory, c.typeCategory, c.pathToIcon
-                                    FROM categories c
-                                    LEFT JOIN goals g ON c.categoryId = g.categoryId
-                                    WHERE (g.isCompleted IS NULL OR g.isCompleted = 0) AND typeCategory = ? ORDER BY categoryId", [typeCategory]);
-            for (var i = 0; i < rs.rows.length; ++i) {
-                result.push(rs.rows.item(i));
-            }
-        });
-        return result;
-    }
+    function addGoal(goal) {
+        var db = getDatabase()
+        var categoryId = -1
 
-    function loadCategoriesWithGoals(typeCategory) {
-        var db = getDatabase();
-        var result = [];
-        db.readTransaction(function(tx) {
-            var rs = tx.executeSql("SELECT * FROM categories WHERE typeCategory = ? ORDER BY categoryId", [typeCategory]);
-            for (var i = 0; i < rs.rows.length; ++i) {
-                result.push(rs.rows.item(i));
-            }
-        });
-        return result;
-    }
-
-    function addCategory(category) {
-        var db = getDatabase();
         db.transaction(function(tx) {
-            tx.executeSql("INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES (?, ?, ?)", [
-                category.nameCategory,
-                category.typeCategory,
-                category.pathToIcon
-            ]);
-        });
-    }
+            tx.executeSql(
+                "INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES (?, ?, ?)",
+                [goal.title, 0, "../icons/Expense/GoalsIcon.svg"]
+            )
+            var res = tx.executeSql("SELECT last_insert_rowid() as id")
+            categoryId = res.rows.item(0).id
+        })
 
-    function dropCategories() {
-        var db = getDatabase();
         db.transaction(function(tx) {
-            tx.executeSql("DELETE FROM categories");
-            tx.executeSql("DELETE FROM sqlite_sequence WHERE name='categories'");
-        });
+            tx.executeSql(
+                'INSERT INTO goals (categoryId, isCompleted, title, targetAmount, currentAmount, startDate, endDate)
+                VALUES (?, ?, ?, ?, ?, ?, ?)',
+                [categoryId, 0, goal.title, goal.targetAmount, goal.currentAmount, goal.startDate, goal.endDate]
+            )
+        })
     }
 
-    function loadCategoriesByCategoryId(categoryId) {
-        var db = getDatabase();
-        var result = [];
-        db.readTransaction(function(tx) {
-            var rs = tx.executeSql("SELECT * FROM categories WHERE categoryId = ?", [categoryId]);
-            for (var i = 0; i < rs.rows.length; ++i) {
-                result.push(rs.rows.item(i));
-            }
-        });
-        return result;
-    }
-
-    function updateCategory(categoryId, text) {
-        var db = getDatabase();
-        var result = false;
+    function updateGoal(goal) {
+        var db = getDatabase()
         db.transaction(function(tx) {
-            var query = "UPDATE categories SET nameCategory = ? WHERE categoryId = ?";
-            var res = tx.executeSql(query, [text, categoryId]);
-            result = res.rowsAffected > 0;
-        });
-
-        if (!result) {
-            console.warn("Failed to update category name");
-            return false;
-        }
+            tx.executeSql(
+                "UPDATE goals SET
+                    title = ?,
+                    targetAmount = ?,
+                    endDate = ?,
+                    isCompleted = CASE
+                        WHEN currentAmount < ? THEN 0
+                        ELSE isCompleted
+                    END
+                 WHERE id = ?",
+                [goal.title, goal.targetAmount, goal.endDate, goal.targetAmount, goal.id]
+            )
+        })
     }
 
-    function setCategoryLimit(categoryId, limit) {
-        var db = getDatabase();
+    function deleteGoal(goal) {
+        var db = getDatabase()
         db.transaction(function(tx) {
-            tx.executeSql("UPDATE categories SET limitAmount = ? WHERE categoryId = ?", [limit, categoryId]);
-        });
-    }
-
-    function getCategoryLimit(categoryId) {
-        var db = getDatabase();
-        var limit = null;
-        db.readTransaction(function(tx) {
-            var rs = tx.executeSql("SELECT limitAmount FROM categories WHERE categoryId = ?", [categoryId]);
+            var rs = tx.executeSql("SELECT categoryId FROM goals WHERE id = ?", [goal]);
 
             if (rs.rows.length > 0) {
-                limit = rs.rows.item(0).limitAmount;
+                var categoryId = rs.rows.item(0).categoryId;
+
+                tx.executeSql(
+                    "UPDATE categories SET isActive = 0 WHERE categoryId = ?",
+                    [categoryId]
+                );
             }
-        });
-
-        return limit;
-    }
-
-    function removeCategoryLimit(categoryId) {
-        var db = getDatabase();
+        })
         db.transaction(function(tx) {
-            tx.executeSql("UPDATE categories SET limitAmount = NULL WHERE categoryId = ?", [categoryId]);
-        });
+            tx.executeSql(
+                "DELETE FROM goals
+                 WHERE id = ?",
+                [goal]
+            )
+        })
     }
 
+    function getGoals() {
+        var goals = []
+        var db = getDatabase()
+        db.readTransaction(function(tx) {
+            var rs = tx.executeSql('SELECT * FROM goals ORDER BY isCompleted, endDate ASC')
+            for(var i = 0; i < rs.rows.length; i++) {
+                goals.push(rs.rows.item(i))
+            }
+        })
+        return goals
+    }
+
+    function getCountisCompleted() {
+        var goals = []
+        var db = getDatabase()
+        db.readTransaction(function(tx) {
+            var rs = tx.executeSql('SELECT * FROM goals WHERE isCompleted = 1')
+            for(var i = 0; i < rs.rows.length; i++) {
+                goals.push(rs.rows.item(i))
+            }
+        })
+        return goals
+    }
 }

@@ -147,12 +147,12 @@
 <context>
     <name>FullscreenGraphic</name>
     <message>
-        <location filename="../qml/components/FullscreenGraphic.qml" line="205"/>
+        <location filename="../qml/components/FullscreenGraphic.qml" line="204"/>
         <source>No data available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/components/FullscreenGraphic.qml" line="205"/>
+        <location filename="../qml/components/FullscreenGraphic.qml" line="204"/>
         <source>Loading...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -207,10 +207,98 @@
     </message>
 </context>
 <context>
+    <name>LimitCategoryPage</name>
+    <message>
+        <location filename="../qml/pages/LimitCategoryPage.qml" line="29"/>
+        <source>Лимиты расходов</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/LimitCategoryPage.qml" line="79"/>
+        <source>Лимит (руб)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/LimitCategoryPage.qml" line="80"/>
+        <source>Введите сумму лимита</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/LimitCategoryPage.qml" line="95"/>
+        <source>Установить лимит</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/LimitCategoryPage.qml" line="103"/>
+        <source>Сбросить лимит</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/LimitCategoryPage.qml" line="113"/>
+        <source>Выберите категорию для установки лимита</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/LimitCategoryPage.qml" line="127"/>
+        <source>Текущий лимит: %1 руб</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/LimitCategoryPage.qml" line="130"/>
+        <source>Лимит не установлен</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/LimitCategoryPage.qml" line="142"/>
+        <source>Лимит для &apos;%1&apos; установлен</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/LimitCategoryPage.qml" line="150"/>
+        <source>Лимит для &apos;%1&apos; сброшен</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>OperationPage</name>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="75"/>
+        <location filename="../qml/pages/OperationPage.qml" line="77"/>
         <source>Комментарий</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/OperationPage.qml" line="134"/>
+        <source>Превышение лимита</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/OperationPage.qml" line="135"/>
+        <source>Все равно сохранить</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/OperationPage.qml" line="136"/>
+        <source>Отменить</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/OperationPage.qml" line="143"/>
+        <source>Вы превысите лимит на %1 руб.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/OperationPage.qml" line="152"/>
+        <source>Лимит: %1 руб.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/OperationPage.qml" line="159"/>
+        <source>Уже потрачено: %1 руб.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/OperationPage.qml" line="166"/>
+        <source>Новая операция: %1 руб.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

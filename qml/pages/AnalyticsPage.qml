@@ -45,20 +45,19 @@ BasePage {
         var chartData = operationModel.getTimeSeriesData("All");
 
         if (chartData && chartData.length > 0) {
-            timeSeriesData = chartData;
+            timeSeriesData = chartData; // Используем оригинальные данные без изменений
             console.log("Chart data updated with", timeSeriesData.length, "data points");
         } else {
+            // Если данных нет вообще, создаем минимальный набор
             timeSeriesData = [
-                { month: "JAN", year: "2024", value: 0, target: 10000 },
-                { month: "FEB", year: "2024", value: 0, target: 10000 }
+                { month: "JAN", year: "2024", value: 0, target: 10000 }
             ];
-            console.log("Using default chart data");
+            console.log("Using default chart data (single point)");
         }
 
-        if (chartCanvas) {
-            chartCanvas.requestPaint();
-        } else {
-            console.log("Chart canvas not found");
+        // Принудительная отрисовка
+        if (graphic.chartCanvas) {
+            graphic.chartCanvas.requestPaint();
         }
     }
 

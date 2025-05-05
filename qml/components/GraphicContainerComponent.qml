@@ -111,109 +111,100 @@ Item {
                     var ctx = getContext("2d");
                     ctx.reset();
 
-                    if (timeSeriesData.length < 2) return;
+                    // Если нет данных, ничего не рисуем
+                    if (!timeSeriesData || timeSeriesData.length === 0) return;
 
-                    // Рассчитываем масштаб
-                    var maxValue = Math.max.apply(null, timeSeriesData.map(function(d) {
-                        return Math.max(d.value, d.target);
-                    }));
+                    // Рассчитываем масштаб с учетом минимального диапазона
+                    var maxValue = Math.max(
+                        10000, // Минимальное значение для оси Y
+                        Math.max.apply(null, timeSeriesData.map(function(d) {
+                            return Math.max(d.value, d.target || 0);
+                        })
+                    ));
+
+                    // Для одной точки центрируем ее по горизонтали
                     var availableWidth = width - 80;
-                    var xStep = availableWidth / (timeSeriesData.length - 1);
+                    var xStep = timeSeriesData.length > 1 ?
+                               availableWidth / (timeSeriesData.length - 1) :
+                               0;
                     var chartBottom = height - 50;
                     var chartTop = 50;
 
-                    // Современная заливка под графиком с многослойным градиентом
-                    ctx.beginPath();
-                    ctx.moveTo(40, chartBottom);
-
-                    // Создаем массив точек для плавного графика
+                    // Создаем массив точек
                     var points = [];
                     for (var i = 0; i < timeSeriesData.length; i++) {
-                        var x = 40 + i * xStep;
-                        var y = chartBottom - (timeSeriesData[i].value / maxValue * (height * 0.6));
+                        var x = timeSeriesData.length > 1 ?
+                              40 + i * xStep :
+                              width / 2; // Центрируем единственную точку
+                        var y = chartBottom - ((timeSeriesData[i].value || 0.0001) / maxValue * (height * 0.6));
                         points.push({x: x, y: y});
-                        ctx.lineTo(x, y);
                     }
 
-                    ctx.lineTo(40 + (timeSeriesData.length - 1) * xStep, chartBottom);
-                    ctx.closePath();
+                    // Рисуем заливку под графиком (только если больше одной точки)
+                    if (timeSeriesData.length > 1) {
+                        ctx.beginPath();
+                        ctx.moveTo(40, chartBottom);
+                        for (var j = 0; j < points.length; j++) {
+                            ctx.lineTo(points[j].x, points[j].y);
+                        }
+                        ctx.lineTo(40 + (timeSeriesData.length - 1) * xStep, chartBottom);
+                        ctx.closePath();
 
-                    // Основной градиент с прозрачностью
-                    var gradient = ctx.createLinearGradient(0, chartTop, 0, chartBottom);
-                    gradient.addColorStop(0, Theme.rgba("#3a3a8f", 0.25));
-                    gradient.addColorStop(0.5, Theme.rgba("#3a3a8f", 0.15));
-                    gradient.addColorStop(1, Theme.rgba("#3a3a8f", 0.05));
+                        // Градиент для заливки
+                        var gradient = ctx.createLinearGradient(0, chartTop, 0, chartBottom);
+                        gradient.addColorStop(0, Theme.rgba("#3a3a8f", 0.25));
+                        gradient.addColorStop(0.5, Theme.rgba("#3a3a8f", 0.15));
+                        gradient.addColorStop(1, Theme.rgba("#3a3a8f", 0.05));
+                        ctx.fillStyle = gradient;
+                        ctx.fill();
 
-                    // Второй градиент для эффекта свечения
-                    var glowGradient = ctx.createLinearGradient(0, chartTop, 0, chartBottom);
-                    glowGradient.addColorStop(0, Theme.rgba("#6a6acf", 0.1));
-                    glowGradient.addColorStop(1, "transparent");
-
-                    // Рисуем основную заливку
-                    ctx.fillStyle = gradient;
-                    ctx.fill();
-
-                    // Добавляем эффект свечения сверху
-                    ctx.beginPath();
-                    ctx.moveTo(40, chartBottom);
-                    for (var j = 0; j < points.length; j++) {
-                        ctx.lineTo(points[j].x, points[j].y);
-                    }
-                    ctx.lineTo(40 + (timeSeriesData.length - 1) * xStep, chartBottom);
-                    ctx.closePath();
-
-                    ctx.fillStyle = glowGradient;
-                    ctx.fill();
-
-                    // Добавляем тонкую белую подсветку вверху графика
-                    ctx.beginPath();
-                    ctx.moveTo(points[0].x, points[0].y);
-                    for (var k = 1; k < points.length; k++) {
-                        ctx.lineTo(points[k].x, points[k].y);
-                    }
-                    ctx.strokeStyle = Theme.rgba("white", 0.15);
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-
-                    // Рисуем линию графика с градиентом
-                    ctx.beginPath();
-                    ctx.moveTo(points[0].x, points[0].y);
-
-                    var lineGradient = ctx.createLinearGradient(0, chartTop, 0, chartBottom);
-                    lineGradient.addColorStop(0, "#6a6acf");
-                    lineGradient.addColorStop(1, "#24224f");
-
-                    for (var l = 1; l < points.length; l++) {
-                        ctx.lineTo(points[l].x, points[l].y);
+                        // Эффект свечения
+                        var glowGradient = ctx.createLinearGradient(0, chartTop, 0, chartBottom);
+                        glowGradient.addColorStop(0, Theme.rgba("#6a6acf", 0.1));
+                        glowGradient.addColorStop(1, "transparent");
+                        ctx.fillStyle = glowGradient;
+                        ctx.fill();
                     }
 
-                    ctx.strokeStyle = lineGradient;
-                    ctx.lineWidth = 4;
-                    ctx.lineJoin = "round";
-                    ctx.shadowColor = Theme.rgba("#6a6acf", 0.4);
-                    ctx.shadowBlur = 10;
-                    ctx.stroke();
-                    ctx.shadowBlur = 0;
+                    // Рисуем линию графика (только если больше одной точки)
+                    if (timeSeriesData.length > 1) {
+                        ctx.beginPath();
+                        ctx.moveTo(points[0].x, points[0].y);
+                        for (var l = 1; l < points.length; l++) {
+                            ctx.lineTo(points[l].x, points[l].y);
+                        }
+
+                        var lineGradient = ctx.createLinearGradient(0, chartTop, 0, chartBottom);
+                        lineGradient.addColorStop(0, "#6a6acf");
+                        lineGradient.addColorStop(1, "#24224f");
+
+                        ctx.strokeStyle = lineGradient;
+                        ctx.lineWidth = 4;
+                        ctx.lineJoin = "round";
+                        ctx.shadowColor = Theme.rgba("#6a6acf", 0.4);
+                        ctx.shadowBlur = 10;
+                        ctx.stroke();
+                        ctx.shadowBlur = 0;
+                    }
 
                     // Очищаем области кликов
                     clickAreas = {};
 
                     // Рисуем точки и подписи
                     for (var k = 0; k < timeSeriesData.length; k++) {
-                        x = 40 + k * xStep;
-                        y = chartBottom - (timeSeriesData[k].value / maxValue * (height * 0.6));
+                        var x = points[k].x;
+                        var y = points[k].y;
 
-                        // Эффект пульсации (внешнее свечение) - усиленный
+                        // Эффект пульсации
                         if (k === highlightedPoint || highlightedPoint === -1) {
                             ctx.shadowColor = Theme.rgba("#24224f", pulseOpacity);
-                            ctx.shadowBlur = 15 * pulseSize; // Увеличиваем размытие
+                            ctx.shadowBlur = 15 * pulseSize;
                             ctx.beginPath();
-                            ctx.arc(x, y, 20 * pulseSize, 0, Math.PI * 2); // Увеличиваем радиус
+                            ctx.arc(x, y, 20 * pulseSize, 0, Math.PI * 2);
                             ctx.fillStyle = Theme.rgba("#24224f", pulseOpacity * 0.7);
                             ctx.fill();
                             ctx.shadowBlur = 0;
 
-                            // Добавляем второй слой пульсации для большего эффекта
                             ctx.shadowColor = Theme.rgba("#24224f", pulseOpacity * 0.5);
                             ctx.shadowBlur = 25 * (pulseSize * 0.7);
                             ctx.beginPath();
@@ -223,16 +214,16 @@ Item {
                             ctx.shadowBlur = 0;
                         }
 
-                        // Белый кружок с тенью для точки - увеличенный
+                        // Белый кружок с тенью
                         ctx.shadowColor = Theme.rgba("#24224f", 0.3);
-                        ctx.shadowBlur = 8; // Увеличиваем тень
+                        ctx.shadowBlur = 8;
                         ctx.beginPath();
                         ctx.arc(x, y, 12 * (k === highlightedPoint ? pulseSize * 1.2 : 1), 0, Math.PI * 2);
                         ctx.fillStyle = "white";
                         ctx.fill();
                         ctx.shadowBlur = 0;
 
-                        // Цветной кружок точки с пульсацией - более выраженный
+                        // Цветной кружок точки
                         var pointSize = 10 * (k === highlightedPoint ? pulseSize * 1.1 : 1);
                         ctx.beginPath();
                         ctx.arc(x, y, pointSize, 0, Math.PI * 2);
@@ -245,29 +236,23 @@ Item {
                         ctx.textAlign = "center";
                         ctx.fillText(timeSeriesData[k].month+","+timeSeriesData[k].year, x, height - 20);
 
-                        // Подпись значения в кружке с пульсацией - усиленная
+                        // Подпись значения
                         var valueText = (timeSeriesData[k].value/1000).toFixed(1) + "k";
-                        var textWidth = ctx.measureText(valueText).width;
-                        var circleRadius = Math.max(textWidth, 20) + 15;
-
-                        // Фон для значения с эффектом пульсации - более выраженный
                         if (k === highlightedPoint || highlightedPoint === -1) {
                             ctx.beginPath();
-                            ctx.arc(x, y - 30, (circleRadius/2) * (k === highlightedPoint ? pulseSize * 1.1 : 1), 0, Math.PI * 2);
+                            ctx.arc(x, y - 30, 20 * (k === highlightedPoint ? pulseSize * 1.1 : 1), 0, Math.PI * 2);
                             ctx.fillStyle = "white";
                             ctx.fill();
                             ctx.strokeStyle = "#24224f";
-                            ctx.lineWidth = 1.5; // Более толстая граница
+                            ctx.lineWidth = 1.5;
                             ctx.stroke();
 
-                            // Добавляем тень для плавающего эффекта
                             ctx.shadowColor = Theme.rgba("#24224f", 0.2);
                             ctx.shadowBlur = 5 * (k === highlightedPoint ? pulseSize : 1);
                             ctx.fill();
                             ctx.shadowBlur = 0;
                         }
 
-                        // Текст значения - более крупный и контрастный
                         ctx.fillStyle = "#24224f";
                         ctx.font = "bold " + Theme.fontSizeExtraSmall * 0.8 + "px sans-serif";
                         ctx.textAlign = "center";
@@ -277,7 +262,7 @@ Item {
                         clickAreas[k] = {
                             x: x,
                             y: y,
-                            radius: 50, // Увеличиваем область клика
+                            radius: 50,
                             data: timeSeriesData[k]
                         };
                     }

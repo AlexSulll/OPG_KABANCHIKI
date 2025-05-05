@@ -14,11 +14,11 @@ Page {
     property int editingCategoryId: -1
 
     onActionChanged: {
-            categoryModel.loadCategoriesByType(action);
+        categoryModel.loadCategoriesByType(action);
     }
 
     Component.onCompleted: {
-            categoryModel.loadCategoriesByType(action);
+        categoryModel.loadCategoriesByType(action);
     }
 
     SilicaFlickable {

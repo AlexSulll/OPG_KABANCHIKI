@@ -61,12 +61,15 @@ ListModel {
     }
 
     function filteredCategories(action) {
+        console.log("Filtering categories for action:АААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААА", action);
         loadAllCategories();
-        return categories.filter(function(cat) {
+        var filtered = categories.filter(function(cat) {
             return cat.categoryId !== 8 &&
                    cat.categoryId !== 13 &&
                    cat.typeCategory === action;
         });
+        console.log("Filtered categories:", JSON.stringify(filtered));
+        return filtered;
     }
 
     function getIndexById(categoryId) {

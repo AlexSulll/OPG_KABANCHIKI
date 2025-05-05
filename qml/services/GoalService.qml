@@ -89,5 +89,4 @@ QtObject {
         })
         return goals
     }
-
 }

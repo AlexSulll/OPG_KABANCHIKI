@@ -21,6 +21,11 @@ ListModel {
         icon: "icon-m-whereami"
         page: "../pages/GoalsPage.qml"
     }
+    ListElement {
+        text: "Лимиты категорий"
+        icon: "icon-m-warning"
+        page: "../pages/LimitCategoryPage.qml"
+    }
     // заглушка - не указан точный путь
     ListElement {
         text: "О программе"

@@ -136,6 +136,7 @@ Page {
                             pageStack.push(Qt.resolvedUrl("CategoryPage.qml"), {
                                 categoryModel: categoryModel,
                                 operationModel: operationModel,
+                                sectorModel: sectorModel,
                                 action: root.selectedAction
                             })
                         }

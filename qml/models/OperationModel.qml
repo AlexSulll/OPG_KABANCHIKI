@@ -172,4 +172,72 @@ ListModel {
         }
         return total;
     }
+
+    function getTimeSeriesData(period) {
+        console.log("Getting time series data for period:", period);
+        var result = [];
+        var operations = service.loadExpOperations(); // Используем существующий метод
+
+        if (!operations || operations.length === 0) {
+            console.log("No operations found in database");
+            return [
+                { month: "JAN", year: "2024", value: 0, target: 10000 },
+                { month: "FEB", year: "2024", value: 0, target: 10000 }
+            ];
+        }
+
+        // Группируем операции по месяцам
+        var monthlyData = {};
+        var monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+
+        operations.forEach(function(op) {
+            if (!op.date) {
+                console.log("Operation missing date:", op);
+                return;
+            }
+
+            var dateParts = op.date.split(".");
+            if (dateParts.length !== 3) {
+                console.log("Invalid date format:", op.date);
+                return;
+            }
+
+            var monthIndex = parseInt(dateParts[1]) - 1;
+            if (isNaN(monthIndex) || monthIndex < 0 || monthIndex > 11) {
+                console.log("Invalid month in date:", op.date);
+                return;
+            }
+
+            var monthKey = monthNames[monthIndex] + "," + dateParts[2];
+
+            if (!monthlyData[monthKey]) {
+                monthlyData[monthKey] = {
+                    month: monthNames[monthIndex],
+                    year: dateParts[2],
+                    value: 0,
+                    target: 10000
+                };
+            }
+
+            monthlyData[monthKey].value += op.amount;
+        });
+
+        // Преобразуем в массив
+        for (var key in monthlyData) {
+            result.push(monthlyData[key]);
+        }
+
+        // Сортируем по дате
+        result.sort(function(a, b) {
+            var aDate = new Date(a.year, monthNames.indexOf(a.month));
+            var bDate = new Date(b.year, monthNames.indexOf(b.month));
+            return aDate - bDate;
+        });
+
+        console.log("Generated time series data with", result.length, "months");
+        return result.length > 0 ? result : [
+            { month: "JAN", year: "2024", value: 0, target: 10000 },
+            { month: "FEB", year: "2024", value: 0, target: 10000 }
+        ];
+    }
 }

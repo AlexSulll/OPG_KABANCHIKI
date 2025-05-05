@@ -111,12 +111,10 @@ Page {
         pageStack.pop()
     }
 
-//    function deleteGoal() {
-//        RemorsePopup {
-//            onTriggered: {
-//                goalModel.removeGoal(goal.id)
-//                pageStack.pop()
-//            }
-//        }.execute("Удаление цели", "Удаляем цель...", 2000)
-//    }
-}
+    function deleteGoal() {
+            onTriggered: {
+                goalModel.removeGoal(goal.id)
+                pageStack.pop()
+            }
+        }
+    }

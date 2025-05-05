@@ -13,7 +13,6 @@ HEADERS += \
 DISTFILES += \
     qml/components/CategoryDelegate.qml \
     qml/components/CategoryDisplay.qml \
-    qml/components/FullscreenGraph.qml \
     qml/components/FullscreenGraphic.qml \
     qml/components/GoalItemDelegate.qml \
     qml/components/GraphicContainerComponent.qml \

@@ -45,17 +45,15 @@ BasePage {
         var chartData = operationModel.getTimeSeriesData("All");
 
         if (chartData && chartData.length > 0) {
-            timeSeriesData = chartData; // Используем оригинальные данные без изменений
-            console.log("Chart data updated with", timeSeriesData.length, "data points");
+            // Фильтруем записи с value = 0
+            timeSeriesData = chartData.filter(function(item) {
+                return item.value > 0;
+            });
+            console.log("Filtered data points:", timeSeriesData.length);
         } else {
-            // Если данных нет вообще, создаем минимальный набор
-            timeSeriesData = [
-                { month: "JAN", year: "2024", value: 0, target: 10000 }
-            ];
-            console.log("Using default chart data (single point)");
+            timeSeriesData = [];
         }
 
-        // Принудительная отрисовка
         if (graphic.chartCanvas) {
             graphic.chartCanvas.requestPaint();
         }

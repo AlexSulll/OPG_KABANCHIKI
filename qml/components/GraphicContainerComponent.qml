@@ -14,49 +14,12 @@ Item {
     }
     property real pulseSize: 1.0
     property real pulseOpacity: 0.3
-    SequentialAnimation {
-        running: true
-        loops: Animation.Infinite
-        ParallelAnimation {
-            NumberAnimation {
-                target: graphic
-                property: "pulseSize"
-                from: 1.0
-                to: 1.4 // Увеличиваем масштаб пульсации
-                duration: 1000 // Увеличиваем длительность для плавности
-                easing.type: Easing.InOutQuad
-            }
-            NumberAnimation {
-                target: graphic
-                property: "pulseOpacity"
-                from: 0.3
-                to: 0.7 // Увеличиваем изменение прозрачности
-                duration: 1000
-                easing.type: Easing.InOutQuad
-            }
-        }
-        ParallelAnimation {
-            NumberAnimation {
-                target: graphic
-                property: "pulseSize"
-                from: 1.4
-                to: 1.0
-                duration: 1000
-                easing.type: Easing.InOutQuad
-            }
-            NumberAnimation {
-                target: graphic
-                property: "pulseOpacity"
-                from: 0.7
-                to: 0.3
-                duration: 1000
-                easing.type: Easing.InOutQuad
-            }
-        }
-    }
+    property var availableYears: [] // Массив доступных годов
+    property int selectedYear: new Date().getFullYear() // Текущий выбранный год
 
     Component.onCompleted: {
         chartCanvas.requestPaint();
+        availableYears = [2020, 2021, 2022, 2023, 2024];
     }
 
     Rectangle {
@@ -67,28 +30,73 @@ Item {
         radius: Theme.paddingMedium
     }
 
-    IconButton {
-        id: graphSettingsButton
-        icon.source: "image://theme/icon-l-gesture"
-        icon.color: "#24224f"
-        z: 50
+    Row {
+        id: topPanel
         anchors {
             top: parent.top
             left: parent.left
+            right: parent.right
             margins: Theme.paddingMedium
         }
-        onClicked: {
-            pageStack.push(Qt.resolvedUrl("FullscreenGraphic.qml"), {
-                "timeSeriesData": timeSeriesData,
-                "selectedMonthData": selectedMonthData
-            });
+        spacing: Theme.paddingMedium
+
+        IconButton {
+            id: graphSettingsButton
+            icon.source: allowedOrientations === Orientation.All ? "image://theme/icon-l-gesture" : ""
+            icon.color: "#24224f"
+            z: 50
+            visible: true
+            enabled: true
+
+            onClicked: {
+                pageStack.push(Qt.resolvedUrl("FullscreenGraphic.qml"), {
+                    "timeSeriesData": timeSeriesData,
+                    "selectedMonthData": selectedMonthData
+                });
+            }
+        }
+
+        ComboBox {
+            id: yearSelector
+            width: parent.width * 0.25
+            anchors.leftMargin: Theme.paddingLarge*3
+            currentIndex: availableYears.indexOf(selectedYear)
+            highlightedColor: "#24224f"
+
+            value: selectedYear.toString()
+
+            menu: ContextMenu {
+                Repeater {
+                    model: availableYears
+                    MenuItem {
+                        text: modelData
+                        onClicked: {
+                            selectedYear = modelData;
+                            chartCanvas.requestPaint();
+                        }
+                    }
+                }
+            }
+
+            // Декоратор для лучшей видимости
+            Rectangle {
+                anchors.fill: parent
+                color: "transparent"
+                border.color: Theme.rgba("#24224f", 0.4)
+                border.width: 1
+                radius: Theme.paddingSmall
+                z: -1
+            }
         }
     }
 
     SilicaFlickable {
         id: chartFlickable
         anchors {
-            fill: parent
+            top: topPanel.bottom
+            bottom: parent.bottom
+            left: parent.left
+            right: parent.right
             margins: Theme.paddingMedium
         }
         contentWidth: chartContainer.width
@@ -99,7 +107,6 @@ Item {
             width: Math.max(chartFlickable.width, timeSeriesData.length * 200 + 40)
             height: parent.height
 
-
             Canvas {
                 id: chartCanvas
                 anchors.fill: parent
@@ -109,6 +116,7 @@ Item {
 
                 onPaint: {
                     var ctx = getContext("2d");
+                    ctx.clearRect(0, 0, width, height)
                     ctx.reset();
 
                     // Если нет данных, ничего не рисуем

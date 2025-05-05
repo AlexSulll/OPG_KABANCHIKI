@@ -15,188 +15,80 @@ Page {
 
     SilicaFlickable {
         anchors.fill: parent
-        contentWidth: chartContainer.width
+        contentWidth: Math.max(parent.width, timeSeriesData ? timeSeriesData.length * 150 : 0)
         contentHeight: parent.height
-        interactive: contentWidth > width
         clip: true
 
         Item {
-            id: chartContainer
-            width: Math.max(parent.width, timeSeriesData.length * 120 + 80) // Увеличил ширину на 40px
+            id: container
+            width: Math.max(parent.width, timeSeriesData ? timeSeriesData.length * 150 : 0)
             height: parent.height
             scale: fullscreenGraphPage.scaleFactor
             transformOrigin: Item.Center
-            anchors.left: parent.left
-            anchors.leftMargin: Theme.paddingLarge*3
 
-            Canvas {
-                id: fullscreenChartCanvas
-                anchors.fill: parent
-
-                property var clickAreas: ({})
-                property color lineColor: "#24224f"
-                property color pointColor: "#24224f"
-                property color glowColor: Theme.secondaryColor
-                property color textColor: "#24224f"
-                property real lineWidth: 7
-                property real pointRadius: 10
-                property real glowRadius: 16
-
-                onPaint: {
-                    var ctx = getContext("2d");
-                    ctx.reset();
-                    ctx.clearRect(0, 0, width, height);
-
-                    if (!timeSeriesData || timeSeriesData.length < 2) return;
-
-                    // Рассчитываем масштаб
-                    var maxValue = Math.max.apply(null, timeSeriesData.map(function(d) {
-                        return d.value;
-                    }));
-
-                    // Добавляем 10% сверху для лучшего отображения
-                    maxValue *= 1.1;
-
-                    var availableWidth = width - 80; // Оставляем отступы по 40px с каждой стороны
-                    var xStep = availableWidth / (timeSeriesData.length - 1);
-                    var chartHeight = height * 0.7;
-
-                    // Рисуем сетку и оси
-                    ctx.strokeStyle = "#e0e0e0";
-                    ctx.lineWidth = 2;
-
-                    // Горизонтальные линии
-                    var gridLines = 5;
-                    for (var g = 0; g <= gridLines; g++) {
-                        var gy = height - 50 - (g/gridLines * chartHeight);
-                        ctx.beginPath();
-                        ctx.moveTo(40, gy);
-                        ctx.lineTo(width - 40, gy);
-                        ctx.stroke();
-
-                        // Подписи значений
-                        ctx.fillStyle = textColor;
-                        ctx.font = Theme.fontSizeExtraSmall + "px sans-serif";
-                        ctx.textAlign = "right";
-                        ctx.fillText((maxValue * (g/gridLines)/1000).toFixed(1) + "k", 35, gy + 4);
-                    }
-
-                    // Ось X
-                    ctx.beginPath();
-                    ctx.moveTo(40, height - 50);
-                    ctx.lineTo(width - 40, height - 50);
-                    ctx.stroke();
-
-                    // Рисуем линию графика
-                    ctx.strokeStyle = lineColor;
-                    ctx.lineWidth = lineWidth;
-                    ctx.lineJoin = "round";
-                    ctx.lineCap = "round";
-                    ctx.beginPath();
-
-                    for (var i = 0; i < timeSeriesData.length; i++) {
-                        var x = 40 + i * xStep;
-                        var y = height - 50 - (timeSeriesData[i].value / maxValue * chartHeight);
-
-                        if (i === 0) {
-                            ctx.moveTo(x, y);
-                        } else {
-                            ctx.lineTo(x, y);
-                        }
-                    }
-                    ctx.stroke();
-
-                    // Очищаем области кликов
-                    clickAreas = {};
-
-                    // Рисуем точки и подписи
-                    for (var j = 0; j < timeSeriesData.length; j++) {
-                        x = 40 + j * xStep;
-                        y = height - 50 - (timeSeriesData[j].value / maxValue * chartHeight);
-
-                        // Эффект свечения
-                        ctx.shadowColor = glowColor;
-                        ctx.shadowBlur = 10;
-                        ctx.beginPath();
-                        ctx.arc(x, y, glowRadius, 0, Math.PI * 2);
-                        ctx.fillStyle = glowColor;
-                        ctx.fill();
-                        ctx.shadowColor = "transparent";
-
-                        // Точка
-                        ctx.beginPath();
-                        ctx.arc(x, y, pointRadius, 0, Math.PI * 2);
-                        ctx.fillStyle = pointColor;
-                        ctx.fill();
-
-                        // Подпись месяца
-                        ctx.fillStyle = textColor;
-                        ctx.font = "bold " + Theme.fontSizeExtraSmall * 0.7 + "px sans-serif";
-                        ctx.textAlign = "center";
-
-                        var monthText = timeSeriesData[j].month + (timeSeriesData[j].year ? "," + timeSeriesData[j].year : "");
-                        ctx.fillText(monthText, x, height - 20);
-
-                        // Подпись значения
-                        var valueY = y - 25;
-                        if (valueY < 30) valueY = y + 30;
-
-                        ctx.fillStyle = pointColor;
-                        ctx.font = "bold " + Theme.fontSizeExtraSmall + "px sans-serif";
-                        ctx.textAlign = "center";
-
-                        var valueText = (timeSeriesData[j].value/1000).toFixed(1) + "k";
-                        ctx.fillText(valueText, x, valueY);
-
-                        // Сохраняем область клика
-                        clickAreas[j] = {
-                            x: x,
-                            y: y,
-                            radius: 50,
-                            data: timeSeriesData[j]
-                        };
-                    }
+            GraphicContainerComponent {
+                id: graphicComponent
+                width: parent.width * 0.93
+                height: parent.height - Theme.paddingLarge * 2
+                anchors {
+                    centerIn: parent
+                    verticalCenterOffset: -Theme.paddingMedium
                 }
 
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        for (var i in fullscreenChartCanvas.clickAreas) {
-                            var area = fullscreenChartCanvas.clickAreas[i];
-                            var dx = mouse.x - area.x;
-                            var dy = mouse.y - area.y;
-                            if (Math.sqrt(dx*dx + dy*dy) <= area.radius) {
-                                selectedMonthData = area.data;
-                                break;
-                            }
+                // Настройки для полноэкранного режима
+                pulseSize: 1.1
+                pulseOpacity: 0.4
+
+                Canvas {
+                    id: chartCanvas
+                    anchors {
+                        fill: parent
+                        margins: Theme.paddingMedium
+                    }
+
+                    property var highlightedPoint: -1
+
+                    onPaint: {
+                        var ctx = getContext("2d");
+                        ctx.reset();
+
+                        if (!timeSeriesData || timeSeriesData.length === 0) return;
+
+                        // Рассчитываем масштаб
+                        var maxValue = Math.max(
+                            10000,
+                            Math.max.apply(null, timeSeriesData.map(function(d) {
+                                return Math.max(d.value, d.target || 0);
+                            }))
+                        );
+
+                        // Автоматический расчет шага между точками
+                        var minStep = 150; // Увеличили минимальный шаг
+                        var availableWidth = Math.max(width - 80, timeSeriesData.length * minStep);
+                        var xStep = timeSeriesData.length > 1 ?
+                                   availableWidth / (timeSeriesData.length - 1) :
+                                   0;
+
+                        // Увеличиваем область для подписей
+                        var chartBottom = height - 80; // Больше места снизу
+                        var chartTop = 70; // Больше места сверху
+
+                        // Создаем массив точек
+                        var points = [];
+                        for (var i = 0; i < timeSeriesData.length; i++) {
+                            var x = timeSeriesData.length > 1 ?
+                                  40 + i * xStep :
+                                  width / 2;
+                            var y = chartBottom - ((timeSeriesData[i].value || 0.0001) / maxValue * (chartBottom - chartTop));
+                            points.push({x: x, y: y});
                         }
                     }
                 }
             }
+            VerticalScrollDecorator {}
         }
     }
 
-    Rectangle {
-        anchors.fill: parent
-        color: "transparent"
-        border.color: Theme.rgba("#24224f", 0.4)
-        border.width: 0.5
-        radius: Theme.paddingMedium
-        z: -1
-    }
-
-    IconButton {
-        icon.source: "image://theme/icon-m-close"
-        anchors {
-            top: parent.top
-            right: parent.right
-            margins: Theme.paddingLarge
-        }
-        onClicked: {
-            fullscreenGraphPage.scaleFactor = 0.9;
-            pageStack.pop();
-        }
-    }
 
     Label {
         anchors.centerIn: parent

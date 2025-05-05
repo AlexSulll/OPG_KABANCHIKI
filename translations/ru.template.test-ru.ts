@@ -103,12 +103,12 @@
 <context>
     <name>FullscreenGraphic</name>
     <message>
-        <location filename="../qml/components/FullscreenGraphic.qml" line="204"/>
+        <location filename="../qml/components/FullscreenGraphic.qml" line="96"/>
         <source>No data available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/components/FullscreenGraphic.qml" line="204"/>
+        <location filename="../qml/components/FullscreenGraphic.qml" line="96"/>
         <source>Loading...</source>
         <translation type="unfinished"></translation>
     </message>

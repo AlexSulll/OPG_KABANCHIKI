@@ -69,11 +69,16 @@ QtObject {
     function deleteGoal(goal) {
         var db = getDatabase()
         db.transaction(function(tx) {
-            tx.executeSql(
-                "DELETE FROM categories
-                 WHERE CategoryId = (SELECT CategoryId from goals where id = ?)",
-                [goal]
-            )
+            var rs = tx.executeSql("SELECT categoryId FROM goals WHERE id = ?", [goal]);
+
+            if (rs.rows.length > 0) {
+                var categoryId = rs.rows.item(0).categoryId;
+
+                tx.executeSql(
+                    "UPDATE categories SET isActive = 0 WHERE categoryId = ?",
+                    [categoryId]
+                );
+            }
         })
         db.transaction(function(tx) {
             tx.executeSql(

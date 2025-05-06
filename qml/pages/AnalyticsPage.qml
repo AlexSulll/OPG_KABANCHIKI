@@ -11,13 +11,21 @@ BasePage {
     property bool isExpense: true
     property int countisCompleted
     property int allGoals
+    property bool showMonthPopup: false
+    property var categoryModel: Models.CategoryModel {}
+    property var sectorModel: Models.SectorsModel {}
     property color currentColor: isExpense ? expenseColor : incomeColor
     property bool fullscreenGraph: false
+    property int countOperations
+    property string favoriteCaregory
 
     property var operationModel: Models.OperationModel {
         onDataChanged: updateChartData()
         Component.onCompleted: {
-            refresh();
+            var data = operationModel.service. getOperationCountByCategory(0)
+            favoriteCaregory = data[0]["name"]
+            data = operationModel.service.loadExpOperations()
+            countOperations = data.length
             updateChartData();
         }
     }
@@ -35,7 +43,6 @@ BasePage {
     property var chartCanvas: graphic.children[1].children[0].children[0]
     property var timeSeriesData: []
     property var selectedMonthData: ({})
-    property bool showMonthPopup: false
     property bool pulsing: true
     property real pulseSize: 1.0
 
@@ -83,6 +90,17 @@ BasePage {
     Rectangle {
         anchors.fill: parent
     }
+
+    MonthPopup {
+        id: monthPopupComponent
+        visible: showMonthPopup
+        monthData: selectedMonthData
+
+        onVisibleChanged: {
+            monthCategories= operationModel.getAnalyticsDataForPopup(monthData.month)
+        }
+    }
+
     SilicaFlickable {
         anchors.fill: parent
         contentHeight: contentColumn.height
@@ -156,6 +174,7 @@ BasePage {
                         Label {
                             text: {
                                 var avg = 0;
+                                if (timeSeriesData.length===0) { return "-" }
                                 for (var i = 0; i < timeSeriesData.length; i++) {
                                     avg += timeSeriesData[i].value;
                                 }
@@ -199,7 +218,7 @@ BasePage {
                         }
 
                         Label {
-                            text: timeSeriesData.length
+                            text: countOperations
                             color: "#24224f"
                             font {
                                 pixelSize: Theme.fontSizeLarge
@@ -207,6 +226,7 @@ BasePage {
                             }
                         }
                     }
+
                     Row {
                         spacing: Theme.paddingSmall
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -218,7 +238,7 @@ BasePage {
                         }
 
                         Label {
-                            text: "Пусто"
+                            text: favoriteCaregory
                             color: "#24224f"
                             font {
                                 pixelSize: Theme.fontSizeLarge
@@ -249,60 +269,5 @@ BasePage {
                 }
             }
         }
-    }
-
-
-    Rectangle {
-        id: monthPopup
-        visible: showMonthPopup
-        width: parent.width * 0.8
-        height: parent.height * 0.6
-        gradient: Gradient {
-            GradientStop { position: 0.0; color: "#24224f" }
-            GradientStop { position: 1.0; color: "#1a1a3a" }
-        }
-        radius: Theme.paddingLarge
-        x: (parent.width - width) / 2
-        y: (parent.height - height) / 2
-
-        Column {
-            id: column
-            width: parent.width - 2*Theme.paddingLarge
-            anchors {
-                top: parent.top
-                topMargin: Theme.paddingLarge
-                horizontalCenter: parent.horizontalCenter
-            }
-            spacing: Theme.paddingMedium
-
-            Label {
-                text: selectedMonthData.month+","+selectedMonthData.year || ""
-                color: Theme.highlightColor
-                font.pixelSize: Theme.fontSizeExtraLarge
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-
-            Label {
-                text: (selectedMonthData.value/1000).toFixed(1) + "k ₽"
-                color: Theme.primaryColor
-                font {
-                    pixelSize: Theme.fontSizeHuge
-                    bold: true
-                }
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            onClicked: showMonthPopup = false
-        }
-    }
-    Label {
-        anchors.centerIn: parent
-        visible: !timeSeriesData || timeSeriesData.length === 0
-        text: timeSeriesData ? qsTr("No data available") : qsTr("Loading...")
-        color: "#24224f"
-        font.pixelSize: Theme.fontSizeLarge
     }
 }

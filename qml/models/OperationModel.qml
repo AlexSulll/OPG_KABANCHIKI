@@ -240,4 +240,8 @@ ListModel {
             { month: "FEB", year: "2024", value: 0, target: 10000 }
         ];
     }
+
+    function getAnalyticsDataForPopup(month) {
+        return service.getExpensesByMonth(month)
+    }
 }

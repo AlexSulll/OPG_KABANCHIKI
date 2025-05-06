@@ -15,6 +15,7 @@ DISTFILES += \
     qml/components/FullscreenGraphic.qml \
     qml/components/GraphicContainerComponent.qml \
     qml/components/MainCardComponent.qml \
+    qml/components/MonthPopup.qml \
     qml/components/TimeSeriesGraph.qml \
     qml/models/DateFilterModel.qml \
     qml/models/SectorsModel.qml \

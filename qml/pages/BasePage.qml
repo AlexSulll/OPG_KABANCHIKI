@@ -102,7 +102,8 @@ Page {
                     onClicked: {
                         pageStack.push(Qt.resolvedUrl("AnalyticsPage.qml"), {
                             operationModel: operationModel,
-                            categoryModel: categoryModel
+                            categoryModel: categoryModel,
+                            sectorModel: sectorModel
                         })
                     }
                 }

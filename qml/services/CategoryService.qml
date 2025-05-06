@@ -20,7 +20,8 @@ QtObject {
                 nameCategory TEXT,
                 typeCategory INTEGER,
                 pathToIcon TEXT,
-                limitAmount INTEGER DEFAULT NULL
+                limitAmount INTEGER DEFAULT 0,
+                isActive BOOLEAN DEFAULT 1
             )');
 
             var check = tx.executeSql('SELECT COUNT(*) as count FROM categories');
@@ -48,8 +49,7 @@ QtObject {
         db.readTransaction(function(tx) {
             var rs = tx.executeSql("SELECT c.categoryId AS categoryId, c.nameCategory, c.typeCategory, c.pathToIcon
                                     FROM categories c
-                                    LEFT JOIN goals g ON c.categoryId = g.categoryId
-                                    WHERE (g.isCompleted IS NULL OR g.isCompleted = 0) AND typeCategory = ? ORDER BY categoryId", [typeCategory]);
+                                    WHERE isActive = 1 AND c.typeCategory = ? ORDER BY categoryId", [typeCategory]);
             for (var i = 0; i < rs.rows.length; ++i) {
                 result.push(rs.rows.item(i));
             }
@@ -139,7 +139,7 @@ QtObject {
     function removeCategoryLimit(categoryId) {
         var db = getDatabase();
         db.transaction(function(tx) {
-            tx.executeSql("UPDATE categories SET limitAmount = NULL WHERE categoryId = ?", [categoryId]);
+            tx.executeSql("UPDATE categories SET limitAmount = 0 WHERE categoryId = ?", [categoryId]);
         });
     }
 

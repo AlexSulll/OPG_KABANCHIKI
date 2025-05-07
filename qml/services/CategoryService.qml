@@ -101,19 +101,54 @@ QtObject {
         return result;
     }
 
-    function updateCategory(categoryId, text) {
-        var db = getDatabase();
-        var result = false;
-        
-        db.transaction(function(tx) {
-            var query = "UPDATE categories SET nameCategory = ? WHERE categoryId = ?";
-            var res = tx.executeSql(query, [text, categoryId]);
-            result = res.rowsAffected > 0;
-        });
-
-        if (!result) {
+    function updateCategory(updatedCategory) {
+        if (!updatedCategory || !updatedCategory.categoryId) {
+            console.error("Invalid category data or missing categoryId");
             return false;
         }
+
+        var db = getDatabase();
+        var result = false;
+
+        db.transaction(function(tx) {
+            try {
+                var query = "UPDATE categories SET " +
+                           "nameCategory = ?, " +
+                           "typeCategory = ?, " +
+                           "pathToIcon = ? " +
+                           "WHERE categoryId = ?";
+
+                var res = tx.executeSql(query, [
+                    updatedCategory.nameCategory,
+                    updatedCategory.typeCategory,
+                    updatedCategory.pathToIcon,
+                    updatedCategory.categoryId
+                ]);
+
+                result = res.rowsAffected > 0;
+
+                if (result) {
+                    console.log("Category updated successfully:", updatedCategory.categoryId);
+                } else {
+                    console.warn("No rows affected, category may not exist:", updatedCategory.categoryId);
+                }
+            } catch (err) {
+                console.error("Error updating category:", err);
+                result = false;
+            }
+        });
+
+        if (result) {
+            // Обновляем данные в модели
+            for (var i = 0; i < categories.length; i++) {
+                if (categories[i].categoryId === updatedCategory.categoryId) {
+                    categories[i] = updatedCategory;
+                    break;
+                }
+            }
+        }
+
+        return result;
     }
 
     function setCategoryLimit(categoryId, limit) {
@@ -145,5 +180,52 @@ QtObject {
         db.transaction(function(tx) {
             tx.executeSql("UPDATE categories SET limitAmount = 0 WHERE categoryId = ?", [categoryId]);
         });
+    }
+
+    function removeCategory(categoryId) {
+        if (!categoryId) {
+            console.error("Invalid categoryId");
+            return false;
+        }
+
+        var db = getDatabase();
+        var result = false;
+
+        db.transaction(function(tx) {
+            try {
+                // 1. Обновляем связанные операции (если нужно)
+                var updateQuery = "UPDATE operations SET categoryId = NULL WHERE categoryId = ?";
+                tx.executeSql(updateQuery, [categoryId]);
+
+                // 2. Удаляем саму категорию
+                var deleteQuery = "DELETE FROM categories WHERE categoryId = ?";
+                var res = tx.executeSql(deleteQuery, [categoryId]);
+
+                result = res.rowsAffected > 0;
+
+                if (result) {
+                    console.log("Category deleted successfully:", categoryId);
+                } else {
+                    console.warn("No rows affected, category may not exist:", categoryId);
+                }
+            } catch (err) {
+                console.error("Error deleting category:", err);
+                result = false;
+            }
+        });
+
+        if (result) {
+            // Обновляем локальную модель
+            for (var i = 0; i < categories.length; i++) {
+                if (categories[i].categoryId === categoryId) {
+                    categories.splice(i, 1);
+                    break;
+                }
+            }
+            // Можно добавить сигнал для обновления UI
+            // categoryRemoved(categoryId);
+        }
+
+        return result;
     }
 }

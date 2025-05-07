@@ -4,6 +4,7 @@ import "../components"
 import "../models" as Models
 
 BasePage {
+
     id: mainpage
     objectName: "MainPage"
 

@@ -23,7 +23,7 @@ Item {
 
     Models.DateFilterModel {
         id: dateModel
-        operationModel: operationModel
+//        operationModel: operationModel
     }
 
     Rectangle {

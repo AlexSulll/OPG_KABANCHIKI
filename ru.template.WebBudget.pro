@@ -35,6 +35,7 @@ DISTFILES += \
     qml/pages/AnalyticsPage.qml \
     qml/pages/BasePage.qml \
     qml/pages/CategoryDetailsPage.qml \
+    qml/pages/EditCategoryPage.qml \
     qml/pages/EditGoalPage.qml \
     qml/pages/GoalsPage.qml \
     qml/pages/LimitCategoryPage.qml \

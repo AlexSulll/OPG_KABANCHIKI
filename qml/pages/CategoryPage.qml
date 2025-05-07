@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import "../models" as Models
 import "../components" as Components
 
 Page {
@@ -16,6 +17,10 @@ Page {
     property var sectorModel
     property var categoryModel
     property var operationModel
+
+    Models.CategoryModel {
+        id: categoryModel
+    }
 
     onActionChanged: {
         categoryModel.loadCategoriesByType(action);
@@ -94,26 +99,13 @@ Page {
                                             });
                                         }
                                     } else {
-                                        editingCategoryId = categoryId
-                                        editField.text = nameCategory
-                                        editField.forceActiveFocus()
+                                        var category = categoryModel.getCategoryById(categoryId);
+                                        pageStack.push(Qt.resolvedUrl("EditCategoryPage.qml"), {
+                                                categoryModel: categoryModel,
+                                                categoryData: category
+                                        });
                                     }
                                 }
-                            }
-
-                            TextField {
-                                id: editField
-                                visible: editingCategoryId === model.categoryId
-                                width: parent.width - Theme.paddingMedium
-                                anchors.centerIn: parent
-                                text: model.nameCategory
-                                label: "Название категории"
-                                EnterKey.onClicked: {
-                                    editingCategoryId = -1
-                                    focus = false
-                                    pageStack.replaceAbove(null, Qt.resolvedUrl("MainPage.qml"))
-                                }
-                                EnterKey.iconSource: "image://theme/icon-m-enter-accept"
                             }
                         }
 

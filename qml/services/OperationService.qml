@@ -228,44 +228,45 @@ QtObject {
     }
 
     function getFilteredCategories(type, period) {
-        var db = getDatabase()
-        var categories = []
-        currentPeriod = period
-        var range = dateFilter.getDateRange(currentPeriod)
+            var db = getDatabase()
+            var categories = []
+            currentPeriod = period
+            var range = dateFilter.getDateRange(currentPeriod)
 
-        if (period === "All") {
-            return getTotalSumByCategory(type)
-        }
-
-        db.readTransaction(function(tx) {
-            var fromDateStr = Qt.formatDateTime(range.fromDate, "dd-MM-yyyy")
-            var toDateStr = Qt.formatDateTime(range.toDate, "dd-MM-yyyy")
-            var query = "SELECT operations.action, operations.categoryId, " +
-                   "SUM(operations.amount) as total, categories.nameCategory as nameCategory " +
-                   "FROM operations " +
-                   "JOIN categories ON categories.categoryId = operations.categoryId " +
-                   "WHERE operations.action = ? " +
-                   "AND (substr(date, 7, 4) || "-" || substr(date, 4, 2) || "-" || substr(date, 1, 2)) " +
-                   "BETWEEN ? AND ? " +
-                   "GROUP BY operations.categoryId ORDER BY total DESC"
-
-            var sqlFromDate = Qt.formatDateTime(range.fromDate, "yyyy-MM-dd")
-            var sqlToDate = Qt.formatDateTime(range.toDate, "yyyy-MM-dd")
-
-            var rs = tx.executeSql(query, [type, sqlFromDate, sqlToDate])
-
-            for (var i = 0; i < rs.rows.length; i++) {
-                var item = rs.rows.item(i)
-                categories.push({
-                    categoryId: item.categoryId,
-                    categoryName: item.nameCategory,
-                    total: item.total || 0,
-                    action: item.action
-                })
+            if (period === "All") {
+                return getTotalSumByCategory(type)
             }
-        })
 
-        return categories
+            db.readTransaction(function(tx) {
+                var fromDateStr = Qt.formatDateTime(range.fromDate, "dd-MM-yyyy")
+                var toDateStr = Qt.formatDateTime(range.toDate, "dd-MM-yyyy")
+
+                var query = 'SELECT operations.action, operations.categoryId, ' +
+                       'SUM(operations.amount) as total, categories.nameCategory as nameCategory ' +
+                       'FROM operations ' +
+                       'JOIN categories ON categories.categoryId = operations.categoryId ' +
+                       'WHERE operations.action = ? ' +
+                       'AND (substr(date, 7, 4) || "-" || substr(date, 4, 2) || "-" || substr(date, 1, 2)) ' +
+                       'BETWEEN ? AND ? ' +
+                       'GROUP BY operations.categoryId ORDER BY total DESC'
+
+                var sqlFromDate = Qt.formatDateTime(range.fromDate, "yyyy-MM-dd")
+                var sqlToDate = Qt.formatDateTime(range.toDate, "yyyy-MM-dd")
+
+                var rs = tx.executeSql(query, [type, sqlFromDate, sqlToDate])
+
+                for (var i = 0; i < rs.rows.length; i++) {
+                    var item = rs.rows.item(i)
+                    categories.push({
+                        categoryId: item.categoryId,
+                        categoryName: item.nameCategory,
+                        total: item.total || 0,
+                        action: item.action
+                    })
+                }
+            })
+
+            return categories
     }
 
     function getOperationsByCategoryAndPeriod(categoryId, type, period, dateRange) {

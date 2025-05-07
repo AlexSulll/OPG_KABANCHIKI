@@ -41,6 +41,7 @@ DISTFILES += \
     qml/pages/LimitCategoryPage.qml \
     qml/pages/OperationDetailsPage.qml \
     qml/pages/OperationPage.qml \
+    qml/pages/RegularOperationPage.qml \
     qml/services/CategoryService.qml \
     qml/services/GoalService.qml \
     qml/services/OperationService.qml \

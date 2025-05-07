@@ -33,6 +33,12 @@ ListModel {
     }
     
     ListElement {
+        text: "Регулярные платежи"
+        icon: "icon-m-sync"
+        page: "../pages/RegularOperationPage.qml"
+    }
+
+    ListElement {
         text: "О программе"
         icon: "icon-m-about"
         page: "MainPage.qml"     // заглушка - не указан точный путь

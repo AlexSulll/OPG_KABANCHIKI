@@ -100,6 +100,10 @@ Item {
                         if (page === "../pages/LimitCategoryPage.qml") {
                             pageStack.push(Qt.resolvedUrl("../pages/LimitCategoryPage.qml"));
                         }
+
+                        if (page === "../pages/RegularOperationPage.qml") {
+                            pageStack.push(Qt.resolvedUrl("../pages/RegularOperationPage.qml"));
+                        }
                     }
                 }
             }

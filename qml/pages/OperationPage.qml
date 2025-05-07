@@ -18,6 +18,7 @@ Page {
     property var operationModel
     property var categoryModel
     property var limitModel: Models.LimitModel {}
+    property bool fromMainButton: true
 
     // Свойства для хранения данных о лимите
     property real categoryLimit: 0
@@ -39,16 +40,28 @@ Page {
         }
     }
 
+    Components.HeaderCategoryComponent {
+        id: header
+        fontSize: Theme.fontSizeExtraLarge*2
+        color: "transparent"
+        headerText: fromMainButton ? "Добавление" : "Категории"
+        anchors {
+            top: parent.top
+            left: parent.left
+            right: parent.right
+        }
+    }
+
     SilicaFlickable {
         anchors.fill: parent
         contentHeight: column.height
+        anchors.topMargin: header.height + Theme.paddingLarge
 
         Column {
             id: column
             width: parent.width
             spacing: Theme.paddingLarge
-            anchors.top: parent.top
-            anchors.topMargin: Theme.paddingLarge
+            anchors.top: header.bottom
 
             TextField {
                 id: sumInput
@@ -79,11 +92,24 @@ Page {
                 onTextChanged: operationPage.desc = text
             }
 
-            Button {
-                text: "Сохранить"
+            Row {
+                width: parent.width
+                spacing: Theme.paddingLarge
                 anchors.horizontalCenter: parent.horizontalCenter
-                enabled: amount !== "" && selectedCategoryId !== -1
-                onClicked: checkAndSaveOperation()
+
+                Button {
+                    text: "Отмена"
+                    width: (parent.width - parent.spacing) / 2
+                    color: "red"
+                    onClicked: pageStack.pop()
+                }
+
+                Button {
+                    text: "Сохранить"
+                    width: (parent.width - parent.spacing) / 2
+                    enabled: amount !== "" && selectedCategoryId !== -1
+                    onClicked: checkAndSaveOperation()
+                }
             }
         }
     }

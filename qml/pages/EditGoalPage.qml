@@ -10,9 +10,6 @@ Page {
 
     // Вычисляемые свойства
     property real monthlyPayment: calculateMonthlyPayment()
-//    property bool isValid: titleField.text.length > 0 &&
-//                         targetAmountField.valid &&
-//                         datePicker.date > new Date()
 
     function calculateMonthlyPayment() {
         if(!goal) return 0

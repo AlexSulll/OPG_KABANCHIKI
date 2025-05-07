@@ -34,9 +34,9 @@ Page {
             Components.HeaderComponent {
                 id: header
                 headerText: fromMainButton ? "Добавление" : "Категории"
-                fontSize: Theme.fontSizeExtraLarge
+                fontSize: Theme.fontSizeExtraLarge*2
                 color: "transparent"
-                showIcon: false
+                showIcon: true
             }
 
             Item {
@@ -86,7 +86,8 @@ Page {
                                                 action: action,
                                                 selectedCategoryId: categoryId,
                                                 operationModel: operationModel,
-                                                categoryModel: categoryModel
+                                                categoryModel: categoryModel,
+                                                fromMainButton: fromMainButton
                                             });
                                         }
                                     } else {

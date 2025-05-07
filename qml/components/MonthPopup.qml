@@ -21,6 +21,32 @@ Rectangle {
 
     property var monthCategories
 
+    // Крестик для закрытия
+    Rectangle {
+        id: closeButton
+        width: Theme.itemSizeSmall
+        height: width
+        radius: width/2
+        color: Theme.rgba(Theme.highlightBackgroundColor, 0.1)
+        anchors {
+            top: parent.top
+            topMargin: Theme.paddingMedium
+            right: parent.right
+            rightMargin: Theme.paddingMedium
+        }
+
+        Icon {
+            source: "image://theme/icon-m-close"
+            anchors.centerIn: parent
+            color: Theme.primaryColor
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: showMonthPopup = false
+        }
+    }
+
     Column {
         id: column
         width: parent.width - 2*Theme.paddingLarge
@@ -111,10 +137,5 @@ Rectangle {
                 VerticalScrollDecorator {}
             }
         }
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        onClicked: showMonthPopup = false
     }
 }

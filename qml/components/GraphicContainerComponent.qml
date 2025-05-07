@@ -2,21 +2,25 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 Item {
+    
     id: graphic
+    
     width: parent.width
     height: 600
     clip: true
     anchors.top: fullStaticCard.bottom
+    
+    property real pulseSize: 1.0
+    property real pulseOpacity: 0.3
+    property var availableYears: []
+    property int selectedYear: new Date().getFullYear()
+
     onVisibleChanged: {
         if (visible && chartCanvas) {
             chartCanvas.requestPaint();
         }
     }
-    property real pulseSize: 1.0
-    property real pulseOpacity: 0.3
-    property var availableYears: [] // Массив доступных годов
-    property int selectedYear: new Date().getFullYear() // Текущий выбранный год
-
+    
     Component.onCompleted: {
         chartCanvas.requestPaint();
         availableYears = [2020, 2021, 2022, 2023, 2024];
@@ -78,7 +82,6 @@ Item {
                 }
             }
 
-            // Декоратор для лучшей видимости
             Rectangle {
                 anchors.fill: parent
                 color: "transparent"
@@ -119,46 +122,39 @@ Item {
                     ctx.clearRect(0, 0, width, height)
                     ctx.reset();
 
-                    // Если нет данных, ничего не рисуем
                     if (!timeSeriesData || timeSeriesData.length === 0) return;
 
-                    // Рассчитываем масштаб с учетом минимального диапазона
                     var maxValue = Math.max(
-                        10000, // Минимальное значение для оси Y
+                        10000,
                         Math.max.apply(null, timeSeriesData.map(function(d) {
                             return Math.max(d.value, d.target || 0);
                         })
                     ));
 
-                    // Для одной точки центрируем ее по горизонтали
                     var availableWidth = width - 80;
-                    var xStep = timeSeriesData.length > 1 ?
-                               availableWidth / (timeSeriesData.length - 1) :
-                               0;
+                    var xStep = timeSeriesData.length > 1 ? availableWidth / (timeSeriesData.length - 1) : 0;
                     var chartBottom = height - 50;
                     var chartTop = 50;
 
-                    // Создаем массив точек
                     var points = [];
+                    
                     for (var i = 0; i < timeSeriesData.length; i++) {
-                        var x = timeSeriesData.length > 1 ?
-                              40 + i * xStep :
-                              width / 2; // Центрируем единственную точку
+                        var x = timeSeriesData.length > 1 ? 40 + i * xStep : width / 2;
                         var y = chartBottom - ((timeSeriesData[i].value || 0.0001) / maxValue * (height * 0.6));
                         points.push({x: x, y: y});
                     }
 
-                    // Рисуем заливку под графиком (только если больше одной точки)
                     if (timeSeriesData.length > 1) {
                         ctx.beginPath();
                         ctx.moveTo(40, chartBottom);
+                        
                         for (var j = 0; j < points.length; j++) {
                             ctx.lineTo(points[j].x, points[j].y);
                         }
+                        
                         ctx.lineTo(40 + (timeSeriesData.length - 1) * xStep, chartBottom);
                         ctx.closePath();
 
-                        // Градиент для заливки
                         var gradient = ctx.createLinearGradient(0, chartTop, 0, chartBottom);
                         gradient.addColorStop(0, Theme.rgba("#3a3a8f", 0.25));
                         gradient.addColorStop(0.5, Theme.rgba("#3a3a8f", 0.15));
@@ -166,7 +162,6 @@ Item {
                         ctx.fillStyle = gradient;
                         ctx.fill();
 
-                        // Эффект свечения
                         var glowGradient = ctx.createLinearGradient(0, chartTop, 0, chartBottom);
                         glowGradient.addColorStop(0, Theme.rgba("#6a6acf", 0.1));
                         glowGradient.addColorStop(1, "transparent");
@@ -174,10 +169,10 @@ Item {
                         ctx.fill();
                     }
 
-                    // Рисуем линию графика (только если больше одной точки)
                     if (timeSeriesData.length > 1) {
                         ctx.beginPath();
                         ctx.moveTo(points[0].x, points[0].y);
+                        
                         for (var l = 1; l < points.length; l++) {
                             ctx.lineTo(points[l].x, points[l].y);
                         }
@@ -195,15 +190,12 @@ Item {
                         ctx.shadowBlur = 0;
                     }
 
-                    // Очищаем области кликов
                     clickAreas = {};
 
-                    // Рисуем точки и подписи
                     for (var k = 0; k < timeSeriesData.length; k++) {
                         var x = points[k].x;
                         var y = points[k].y;
 
-                        // Эффект пульсации
                         if (k === highlightedPoint || highlightedPoint === -1) {
                             ctx.shadowColor = Theme.rgba("#24224f", pulseOpacity);
                             ctx.shadowBlur = 15 * pulseSize;
@@ -222,7 +214,6 @@ Item {
                             ctx.shadowBlur = 0;
                         }
 
-                        // Белый кружок с тенью
                         ctx.shadowColor = Theme.rgba("#24224f", 0.3);
                         ctx.shadowBlur = 8;
                         ctx.beginPath();
@@ -231,20 +222,17 @@ Item {
                         ctx.fill();
                         ctx.shadowBlur = 0;
 
-                        // Цветной кружок точки
                         var pointSize = 10 * (k === highlightedPoint ? pulseSize * 1.1 : 1);
                         ctx.beginPath();
                         ctx.arc(x, y, pointSize, 0, Math.PI * 2);
                         ctx.fillStyle = "#24224f";
                         ctx.fill();
 
-                        // Подпись месяца
                         ctx.fillStyle = Theme.rgba("#24224f", 0.8);
                         ctx.font = "bold " + Theme.fontSizeSmall*0.6 + "px sans-serif";
                         ctx.textAlign = "center";
                         ctx.fillText(timeSeriesData[k].month+","+timeSeriesData[k].year, x, height - 20);
 
-                        // Подпись значения
                         var valueText = (timeSeriesData[k].value/1000).toFixed(1) + "k";
                         if (k === highlightedPoint || highlightedPoint === -1) {
                             ctx.beginPath();
@@ -266,7 +254,6 @@ Item {
                         ctx.textAlign = "center";
                         ctx.fillText(valueText, x, y - 28);
 
-                        // Сохраняем область клика
                         clickAreas[k] = {
                             x: x,
                             y: y,
@@ -285,6 +272,7 @@ Item {
                             chartCanvas.requestPaint();
                         }
                     }
+
                     onPositionChanged: {
                         for (var i in chartCanvas.clickAreas) {
                             var area = chartCanvas.clickAreas[i];
@@ -298,16 +286,19 @@ Item {
                                 return;
                             }
                         }
+
                         if (chartCanvas.highlightedPoint != -1) {
                             chartCanvas.highlightedPoint = -1;
                             chartCanvas.requestPaint();
                         }
                     }
+
                     onClicked: {
                         for (var i in chartCanvas.clickAreas) {
                             var area = chartCanvas.clickAreas[i];
                             var dx = mouse.x - area.x;
                             var dy = mouse.y - area.y;
+                            
                             if (Math.sqrt(dx*dx + dy*dy) <= area.radius) {
                                 selectedMonthData = area.data;
                                 showMonthPopup = true;

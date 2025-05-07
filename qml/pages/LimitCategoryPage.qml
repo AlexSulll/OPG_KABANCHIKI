@@ -4,7 +4,9 @@ import "../models" as Models
 import "../components" as Components
 
 Page {
+
     id: limitPage
+    
     allowedOrientations: Orientation.All
 
     property var limitModel: Models.LimitModel {}
@@ -52,6 +54,7 @@ Page {
 
                 model: {
                     var filtered = [];
+                    
                     for (var i = 0; i < categoryModel.count; i++) {
                         var item = categoryModel.get(i);
                         if (item.categoryId !== 8) {
@@ -62,6 +65,7 @@ Page {
                             });
                         }
                     }
+                    
                     return filtered;
                 }
 
@@ -151,6 +155,7 @@ Page {
         if (!isCategorySelected || limitInput.text === "") return;
 
         var limitAmount = parseInt(limitInput.text);
+        
         if (isNaN(limitAmount)) return;
 
         limitModel.setLimit(selectedCategory.categoryId, limitAmount);

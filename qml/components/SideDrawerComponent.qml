@@ -1,12 +1,11 @@
-/*
-  Твой бургер
-*/
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../models"
 
 Item {
+
     id: sideDrawer
+    
     anchors.fill: parent
     visible: false
 
@@ -75,9 +74,11 @@ Item {
 
                     onClicked: {
                         sideDrawer.close();
+
                         if (page==="../pages/MainPage.qml") {
                             pageStack.replaceAbove(null, Qt.resolvedUrl(page))
                         }
+
                         if (page === "../pages/OperationPage.qml") {
                             pageStack.push(Qt.resolvedUrl(page));
                         }
@@ -92,26 +93,13 @@ Item {
 
                         if (page === "../pages/GoalsPage.qml") {
                             pageStack.push(Qt.resolvedUrl("../pages/GoalsPage.qml"), {
-                                      goalModel: goalModel
-//                                    categoryModel: categoryModel,
-//                                    action: 0,
-//                                    fromMainButton: false
+                                    goalModel: goalModel
                             });
                         }
+                        
                         if (page === "../pages/LimitCategoryPage.qml") {
-                            pageStack.push(Qt.resolvedUrl("../pages/LimitCategoryPage.qml"), {
-//                                      goalModel: goalModel
-//                                    categoryModel: categoryModel,
-//                                    action: 0,
-//                                    fromMainButton: false
-                            });
+                            pageStack.push(Qt.resolvedUrl("../pages/LimitCategoryPage.qml"));
                         }
-                        /*
-                            Тут надо доработать логику - скорее всего через стек
-                            чтобы при нахождении на целевой станицы и перехода на неё же
-                            (сейчас через if обрабатывается только MainPage)
-                            не было лишней прокрутки - убери условие - увидишь
-                        */
                     }
                 }
             }

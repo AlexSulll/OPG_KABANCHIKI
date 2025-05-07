@@ -11,8 +11,9 @@ QtObject {
 
     function initialize() {
         var db = getDatabase()
+        
         db.transaction(function(tx) {
-            tx.executeSql('CREATE TABLE IF NOT EXISTS goals (
+            tx.executeSql("CREATE TABLE IF NOT EXISTS goals (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 categoryId INTEGER,
                 isCompleted BOOLEAN DEFAULT 0,
@@ -22,7 +23,7 @@ QtObject {
                 startDate TEXT,
                 endDate TEXT,
                 FOREIGN KEY(categoryId) REFERENCES categories(categoryId)
-            )')
+            )")
         })
     }
 
@@ -41,8 +42,8 @@ QtObject {
 
         db.transaction(function(tx) {
             tx.executeSql(
-                'INSERT INTO goals (categoryId, isCompleted, title, targetAmount, currentAmount, startDate, endDate)
-                VALUES (?, ?, ?, ?, ?, ?, ?)',
+                "INSERT INTO goals (categoryId, isCompleted, title, targetAmount, currentAmount, startDate, endDate) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)",
                 [categoryId, 0, goal.title, goal.targetAmount, goal.currentAmount, goal.startDate, goal.endDate]
             )
         })
@@ -50,6 +51,7 @@ QtObject {
 
     function updateGoal(goal) {
         var db = getDatabase()
+        
         db.transaction(function(tx) {
             tx.executeSql(
                 "UPDATE goals SET
@@ -68,48 +70,49 @@ QtObject {
 
     function deleteGoal(goal) {
         var db = getDatabase()
+        
         db.transaction(function(tx) {
             var rs = tx.executeSql("SELECT categoryId FROM goals WHERE id = ?", [goal]);
 
             if (rs.rows.length > 0) {
                 var categoryId = rs.rows.item(0).categoryId;
 
-                tx.executeSql(
-                    "UPDATE categories SET isActive = 0 WHERE categoryId = ?",
-                    [categoryId]
-                );
+                tx.executeSql("UPDATE categories SET isActive = 0 WHERE categoryId = ?", [categoryId]);
             }
         })
+        
         db.transaction(function(tx) {
-            tx.executeSql(
-                "DELETE FROM goals
-                 WHERE id = ?",
-                [goal]
-            )
+            tx.executeSql("DELETE FROM goals WHERE id = ?", [goal])
         })
     }
 
     function getGoals() {
         var goals = []
         var db = getDatabase()
+        
         db.readTransaction(function(tx) {
-            var rs = tx.executeSql('SELECT * FROM goals ORDER BY isCompleted, endDate ASC')
+            var rs = tx.executeSql("SELECT * FROM goals ORDER BY isCompleted, endDate ASC")
+            
             for(var i = 0; i < rs.rows.length; i++) {
                 goals.push(rs.rows.item(i))
             }
         })
+        
         return goals
     }
 
     function getCountisCompleted() {
         var goals = []
         var db = getDatabase()
+        
         db.readTransaction(function(tx) {
-            var rs = tx.executeSql('SELECT * FROM goals WHERE isCompleted = 1')
+            var rs = tx.executeSql("SELECT * FROM goals WHERE isCompleted = 1")
+            
             for(var i = 0; i < rs.rows.length; i++) {
                 goals.push(rs.rows.item(i))
             }
         })
+        
         return goals
     }
 }

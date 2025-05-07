@@ -2,11 +2,10 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../models" as Models
 
-
 Rectangle {
+    
     id: monthPopup
-    property bool show: showMonthPopup
-    property var monthData: ({})
+    
     visible: showMonthPopup
     width: parent.width * 0.8
     height: parent.height * 0.6
@@ -20,8 +19,9 @@ Rectangle {
     z: 1000
 
     property var monthCategories
+    property bool show: showMonthPopup
+    property var monthData: ({})
 
-    // Крестик для закрытия
     Rectangle {
         id: closeButton
         width: Theme.itemSizeSmall
@@ -74,6 +74,7 @@ Rectangle {
             }
             anchors.horizontalCenter: parent.horizontalCenter
         }
+        
         Repeater {
             model: monthCategories
 
@@ -81,14 +82,12 @@ Rectangle {
                 width: parent.width
                 spacing: Theme.paddingSmall
 
-                // Название категории над столбцом
                 Label {
                     text: modelData.categoryName
                     color: Theme.primaryColor
                     font.pixelSize: Theme.fontSizeSmall
                 }
 
-                // Столбец диаграммы
                 Rectangle {
                     width: parent.width
                     height: 40
@@ -97,7 +96,6 @@ Rectangle {
                     border.color: Theme.rgba(Theme.secondaryColor, 0.3)
                     border.width: 1
 
-                    // Заполненная часть столбца
                     Rectangle {
                         width: parent.width * (modelData.value/monthData.value)
                         height: parent.height
@@ -107,7 +105,6 @@ Rectangle {
                             return colors[index % colors.length];
                         }
 
-                        // Текст внутри столбца
                         Row {
                             anchors {
                                 fill: parent
@@ -134,6 +131,7 @@ Rectangle {
                         }
                     }
                 }
+                
                 VerticalScrollDecorator {}
             }
         }

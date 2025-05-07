@@ -4,7 +4,9 @@ import "../models" as Models
 import "../components"
 
 Page {
+
     id: root
+
     allowedOrientations: Orientation.All
 
     property bool panelVisible: true
@@ -144,6 +146,7 @@ Page {
                     }
                 }
             }
+
             Rectangle {
                 id: goals
                 width: Theme.itemSizeExtraLarge
@@ -162,11 +165,12 @@ Page {
                     anchors.centerIn: parent
                     onClicked: {
                         pageStack.push(Qt.resolvedUrl("../pages/GoalsPage.qml"), {
-                                  goalModel: goalModel
+                            goalModel: goalModel
                         })
                     }
                 }
             }
+            
             Rectangle {
                 id: others
                 width: Theme.itemSizeExtraLarge

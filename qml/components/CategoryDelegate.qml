@@ -3,11 +3,12 @@ import Sailfish.Silica 1.0
 
 BackgroundItem {
 
+    signal categorySelected(int id)
+    
     property int categoryId: -1
     property string nameCategory: ""
     property string pathToIcon: ""
     property bool isSelected: false
-    signal categorySelected(int id)
 
     width: GridView.view.cellWidth
     height: GridView.view.cellHeight
@@ -30,11 +31,6 @@ BackgroundItem {
                 height: width
                 anchors.centerIn: parent
                 sourceSize: Qt.size(width, height)
-                onStatusChanged: {
-                    if (status === Image.Error) {
-                        console.error("Не удалось загрузить иконку:", source);
-                    }
-                }
             }
         }
 

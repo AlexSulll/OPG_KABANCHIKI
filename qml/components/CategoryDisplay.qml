@@ -3,6 +3,7 @@ import Sailfish.Silica 1.0
 import "../models" as Models
 
 Item {
+    
     width: parent.width
     height: Theme.itemSizeMedium
 

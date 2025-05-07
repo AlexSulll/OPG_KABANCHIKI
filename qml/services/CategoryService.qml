@@ -4,6 +4,7 @@ import QtQuick.LocalStorage 2.0
 import "../icons/Expense/"
 
 QtObject {
+    
     objectName: "categoryService"
 
     Component.onCompleted: initialize()
@@ -14,17 +15,19 @@ QtObject {
 
     function initialize() {
         var db = getDatabase();
+        
         db.transaction(function(tx) {
-            tx.executeSql('CREATE TABLE IF NOT EXISTS categories (
+            tx.executeSql("CREATE TABLE IF NOT EXISTS categories (
                 categoryId INTEGER PRIMARY KEY AUTOINCREMENT,
                 nameCategory TEXT,
                 typeCategory INTEGER,
                 pathToIcon TEXT,
                 limitAmount INTEGER DEFAULT 0,
                 isActive BOOLEAN DEFAULT 1
-            )');
+            )")
 
-            var check = tx.executeSql('SELECT COUNT(*) as count FROM categories');
+            var check = tx.executeSql("SELECT COUNT(*) as count FROM categories");
+            
             if (check.rows.item(0).count === 0) {
                 tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Кафе", 0, "../icons/Expense/CafeIcon.svg")');
                 tx.executeSql('INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES ("Досуг", 0, "../icons/Expense/FreeTimeIcon.svg")');
@@ -46,14 +49,15 @@ QtObject {
     function loadCategories(typeCategory) {
         var db = getDatabase();
         var result = [];
+        
         db.readTransaction(function(tx) {
-            var rs = tx.executeSql("SELECT c.categoryId AS categoryId, c.nameCategory, c.typeCategory, c.pathToIcon
-                                    FROM categories c
-                                    WHERE isActive = 1 AND c.typeCategory = ? ORDER BY categoryId", [typeCategory]);
+            var rs = tx.executeSql("SELECT c.categoryId AS categoryId, c.nameCategory, c.typeCategory, c.pathToIcon FROM categories c WHERE isActive = 1 AND c.typeCategory = ? ORDER BY categoryId", [typeCategory]);
+            
             for (var i = 0; i < rs.rows.length; ++i) {
                 result.push(rs.rows.item(i));
             }
         });
+
         return result;
     }
 
@@ -62,15 +66,18 @@ QtObject {
         var result = [];
         db.readTransaction(function(tx) {
             var rs = tx.executeSql("SELECT * FROM categories WHERE typeCategory = ? ORDER BY categoryId", [typeCategory]);
+            
             for (var i = 0; i < rs.rows.length; ++i) {
                 result.push(rs.rows.item(i));
             }
         });
+        
         return result;
     }
 
     function addCategory(category) {
         var db = getDatabase();
+        
         db.transaction(function(tx) {
             tx.executeSql("INSERT INTO categories (nameCategory, typeCategory, pathToIcon) VALUES (?, ?, ?)", [
                 category.nameCategory,
@@ -80,29 +87,24 @@ QtObject {
         });
     }
 
-    function dropCategories() {
-        var db = getDatabase();
-        db.transaction(function(tx) {
-            tx.executeSql("DELETE FROM categories");
-            tx.executeSql("DELETE FROM sqlite_sequence WHERE name='categories'");
-        });
-    }
-
     function loadCategoriesByCategoryId(categoryId) {
         var db = getDatabase();
         var result = [];
+        
         db.readTransaction(function(tx) {
             var rs = tx.executeSql("SELECT * FROM categories WHERE categoryId = ?", [categoryId]);
             for (var i = 0; i < rs.rows.length; ++i) {
                 result.push(rs.rows.item(i));
             }
         });
+        
         return result;
     }
 
     function updateCategory(categoryId, text) {
         var db = getDatabase();
         var result = false;
+        
         db.transaction(function(tx) {
             var query = "UPDATE categories SET nameCategory = ? WHERE categoryId = ?";
             var res = tx.executeSql(query, [text, categoryId]);
@@ -110,13 +112,13 @@ QtObject {
         });
 
         if (!result) {
-            console.warn("Failed to update category name");
             return false;
         }
     }
 
     function setCategoryLimit(categoryId, limit) {
         var db = getDatabase();
+        
         db.transaction(function(tx) {
             tx.executeSql("UPDATE categories SET limitAmount = ? WHERE categoryId = ?", [limit, categoryId]);
         });
@@ -125,6 +127,7 @@ QtObject {
     function getCategoryLimit(categoryId) {
         var db = getDatabase();
         var limit = null;
+        
         db.readTransaction(function(tx) {
             var rs = tx.executeSql("SELECT limitAmount FROM categories WHERE categoryId = ?", [categoryId]);
 
@@ -138,9 +141,9 @@ QtObject {
 
     function removeCategoryLimit(categoryId) {
         var db = getDatabase();
+        
         db.transaction(function(tx) {
             tx.executeSql("UPDATE categories SET limitAmount = 0 WHERE categoryId = ?", [categoryId]);
         });
     }
-
 }

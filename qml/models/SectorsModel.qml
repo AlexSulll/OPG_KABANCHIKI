@@ -4,9 +4,9 @@ import "../services" as Services
 import "../components"
 
 ListModel {
+    
     id: sectorModel
     objectName: "SectorModel"
-
 
     property var sectors:  []
     property real total: 0
@@ -14,13 +14,14 @@ ListModel {
 
     function getTotalByCategory(categoryId) {
         var total = 0
+        
         for (var i = 0; i < count; i++) {
             var item = get(i)
             if (item.categoryId === categoryId) {
                 total += item.total
             }
         }
-        console.log("Total for category", categoryId, ":", total)
+
         return total
     }
 
@@ -30,6 +31,7 @@ ListModel {
             "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0",
             "#9966FF", "#FF9F40", "#8AC24A", "#FF5722"
         ]
+
         return colors[categoryId % colors.length]
     }
 
@@ -38,15 +40,12 @@ ListModel {
         var data = [];
         var currentPeriod = operationModel.currentPeriod
         var filtered = operationModel.loadByTypeOperationForCardAndDateFiltering(action, currentPeriod);
-        console.log("Filtered data:", JSON.stringify(filtered));
-
-        // Рассчитываем общую сумму для текущего типа операций
         var totalForType = 0;
+        
         for (var i = 0; i < filtered.length; i++) {
             totalForType += filtered[i].total;
         }
 
-        // Формируем данные для секторов
         for (var j = 0; j < filtered.length; j++) {
             var item = filtered[j];
             if (item.total > 0) {
@@ -60,7 +59,6 @@ ListModel {
                 });
             }
         }
-
 
         data.sort(function(a, b) { return b.value - a.value; });
 

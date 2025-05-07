@@ -10,6 +10,7 @@ BasePage {
     property string selectedTab: "expenses"
     property int action: 0
     property bool isExpense: action === 0
+    
     property var categoryModel: Models.CategoryModel {}
     property var sectors: Models.SectorsModel {}
 
@@ -49,20 +50,19 @@ BasePage {
                 var suffix = "";
                 var formattedValue = 0;
 
-                if (absValue >= 1000000000000) { // Триллионы (1 000 000 000 000+)
+                if (absValue >= 1000000000000) {
                     formattedValue = (value / 1000000000000).toFixed(1);
                     suffix = " трлн";
-                } else if (absValue >= 1000000000) { // Миллиарды (1 000 000 000+)
+                } else if (absValue >= 1000000000) {
                     formattedValue = (value / 1000000000).toFixed(1);
                     suffix = " млрд";
-                } else if (absValue >= 1000000) { // Миллионы (1 000 000+)
+                } else if (absValue >= 1000000) {
                     formattedValue = (value / 1000000).toFixed(1);
                     suffix = " млн";
                 } else {
                     return Number(value).toLocaleString(Qt.locale(), 'f', 0) + " ₽";
                 }
 
-                // Форматирование числа
                 formattedValue = formattedValue.replace(".", ",").replace(",0", "");
                 return formattedValue + suffix + " ₽";
             }
@@ -94,91 +94,89 @@ BasePage {
     }
 
     SilicaListView {
-            anchors {
-                top: analyticsCard.bottom
-                left: parent.left
-                right: parent.right
-                bottom: parent.bottom
-                margins: Theme.paddingMedium
-            }
-            model: operationModel
-            spacing: Theme.paddingSmall
-            clip: true
+        anchors {
+            top: analyticsCard.bottom
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+            margins: Theme.paddingMedium
+        }
+        model: operationModel
+        spacing: Theme.paddingSmall
+        clip: true
 
-            delegate: ListItem {
-                width: parent.width
-                contentHeight: Theme.itemSizeMedium
+        delegate: ListItem {
+            width: parent.width
+            contentHeight: Theme.itemSizeMedium
 
-                property var categoryData: categoryModel.getCategoryById(model.categoryId);
+            property var categoryData: categoryModel.getCategoryById(model.categoryId);
 
-                Rectangle {
+            Rectangle {
+                anchors.fill: parent
+                radius: Theme.paddingMedium
+                color: Theme.rgba("#24224f", 0.9)
+
+                Row {
+                    id: itemContainer
                     anchors.fill: parent
-                    radius: Theme.paddingMedium
-                    color: Theme.rgba("#24224f", 0.9)
+                    anchors.margins: Theme.paddingMedium
+                    spacing: Theme.paddingMedium
+                    layoutDirection: Qt.LeftToRight
 
-                    Row {
-                        id: itemContainer
-                        anchors.fill: parent
-                        anchors.margins: Theme.paddingMedium
-                        spacing: Theme.paddingMedium
-                        layoutDirection: Qt.LeftToRight
+                    Image {
+                        id: icon
+                        width: Theme.iconSizeMedium
+                        height: width
+                        source: categoryData ? categoryData.pathToIcon : ""
+                        sourceSize: Qt.size(width, height)
+                        fillMode: Image.PreserveAspectFit
+                    }
 
-                        Image {
-                            id: icon
-                            width: Theme.iconSizeMedium
-                            height: width
-                            source: categoryData ? categoryData.pathToIcon : ""
-                            sourceSize: Qt.size(width, height)
-                            fillMode: Image.PreserveAspectFit
+                    Label {
+                        width: parent.width
+                        text: categoryData ? categoryData.nameCategory : "Без категории"
+                        color: Theme.primaryColor
+                        anchors{
+                            verticalCenter: itemContainer.verticalCenter
+                            left: icon.right
+                            leftMargin: Theme.paddingLarge
                         }
+                        font.pixelSize: Theme.fontSizeLarge
+                        truncationMode: TruncationMode.Fade
+                    }
 
-                         Label {
-                            width: parent.width
-                            text: categoryData ? categoryData.nameCategory : "Без категории"
-                            color: Theme.primaryColor
-                            anchors{
-                                verticalCenter: itemContainer.verticalCenter
-                                left: icon.right
-                                leftMargin: Theme.paddingLarge
-                            }
-                            font.pixelSize: Theme.fontSizeLarge
-                            truncationMode: TruncationMode.Fade
-                         }
-
-                        Label {
-                            id: amountLabel
-                            width: parent.width * 0.35 - Theme.paddingMedium
-                            horizontalAlignment: Text.AlignRight
-                            anchors {
-                                verticalCenter: parent.verticalCenter
-                                right: parent.right
-                                rightMargin: Theme.paddingSmall
-                            }
-                            text: isNaN(model.total) ? "0 ₽" : Number(model.total).toLocaleString(Qt.locale(), 'f', 0) + " ₽"
-                            color: selectedTab === "expenses" ? "#FF6384" : Theme.highlightColor
-                            font {
-                                pixelSize: Theme.fontSizeLarge
-                                family: Theme.fontFamilyHeading
-                                bold: true
-
-                            }
-                            elide: Text.ElideRight
+                    Label {
+                        id: amountLabel
+                        width: parent.width * 0.35 - Theme.paddingMedium
+                        horizontalAlignment: Text.AlignRight
+                        anchors {
+                            verticalCenter: parent.verticalCenter
+                            right: parent.right
+                            rightMargin: Theme.paddingSmall
                         }
+                        text: isNaN(model.total) ? "0 ₽" : Number(model.total).toLocaleString(Qt.locale(), 'f', 0) + " ₽"
+                        color: selectedTab === "expenses" ? "#FF6384" : Theme.highlightColor
+                        font {
+                            pixelSize: Theme.fontSizeLarge
+                            family: Theme.fontFamilyHeading
+                            bold: true
+                        }
+                        elide: Text.ElideRight
                     }
                 }
-
-                onClicked: {
-                    console.log(dateFilter.currentPeriod);
-                    pageStack.push(Qt.resolvedUrl("../pages/CategoryDetailsPage.qml"), {
-                        categoryId: model.categoryId,
-                        action: mainpage.action,
-                        categoryModel: categoryModel,
-                        currentPeriod: dateFilter.currentPeriod,
-                        dateFilterModel: dateFilter
-                    });
-                }
             }
 
-            VerticalScrollDecorator {}
+            onClicked: {
+                pageStack.push(Qt.resolvedUrl("../pages/CategoryDetailsPage.qml"), {
+                    categoryId: model.categoryId,
+                    action: mainpage.action,
+                    categoryModel: categoryModel,
+                    currentPeriod: dateFilter.currentPeriod,
+                    dateFilterModel: dateFilter
+                });
+            }
         }
+
+        VerticalScrollDecorator {}
+    }
 }

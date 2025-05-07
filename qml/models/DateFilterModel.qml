@@ -1,11 +1,13 @@
 import QtQuick 2.0
 
 ListModel {
+    
     id: root
+
+    signal filterChanged(var filteredOperations)
 
     property var operationModel: null
     property string currentPeriod: "All"
-    signal filterChanged(var filteredOperations)
     property var filteredOperations: []
 
     ListElement { dateId: "week"; dateLabel: "Неделя" }
@@ -14,17 +16,19 @@ ListModel {
     ListElement { dateId: "All"; dateLabel: "Все" }
 
     function filterOperationsByPeriod(operations, period) {
+        
         if (!operations) {
-            console.warn("No operations provided");
             return [];
         }
 
         currentPeriod = period || currentPeriod;
+
         if (currentPeriod === "All") {
-            filteredOperations = operations.slice(); // Создаем копию массива
+            filteredOperations = operations.slice();
             filterChanged(filteredOperations);
             return filteredOperations;
         }
+
         var dateRange = getDateRange(currentPeriod);
         filteredOperations = [];
 
@@ -68,15 +72,7 @@ ListModel {
                 toDate = new Date(fromDate.getFullYear(), 11, 31)
                 toDate.setHours(23,59,59,999)
                 break
-            case "All":
-                return {
-                    fromDate: new Date(0), // Минимальная дата
-                    toDate: new Date(8640000000000000), // Максимальная дата
-                    fromDateFormatted: "Все",
-                    toDateFormatted: "операции"
-                }
             default:
-                console.error("Unknown period:", period)
                 return {
                     fromDate: new Date(0),
                     toDate: new Date(8640000000000000),

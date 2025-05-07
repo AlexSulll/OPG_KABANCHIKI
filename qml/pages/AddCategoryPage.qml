@@ -3,11 +3,12 @@ import Sailfish.Silica 1.0
 import Sailfish.Pickers 1.0
 
 Page {
+    
     id: addCategoryPage
 
     property var categoryModel
+    
     property int categoryType: 0
-
     property string categoryName: ""
     property string iconPath: ""
 
@@ -34,6 +35,7 @@ Page {
                 width: parent.width
                 label: "Иконка категории"
                 value: iconPath ? iconPath.split("/").pop() : "Не выбрана"
+                
                 onClicked: {
                     pageStack.push(filePicker)
                 }
@@ -47,6 +49,7 @@ Page {
                     MenuItem { text: "Расход" }
                     MenuItem { text: "Доход" }
                 }
+                
                 onCurrentIndexChanged: {
                     categoryType = currentIndex
                 }
@@ -56,6 +59,7 @@ Page {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: "Сохранить"
                 enabled: categoryName.length > 0 && iconPath.length > 0
+                
                 onClicked: {
                     var newCategory = {
                         nameCategory: categoryName,

@@ -3,6 +3,7 @@ import Sailfish.Silica 1.0
 import "../components"
 
 Page {
+    
     id: goalsPage
 
     property var goalModel

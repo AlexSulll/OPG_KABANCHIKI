@@ -3,15 +3,16 @@ import Sailfish.Silica 1.0
 import "../services" as Services
 
 ListModel {
+    
     id: categoryModel
     objectName: "CategoryModel"
+
+    property var categories: []
 
     property var service: Services.CategoryService {
         id: categoryService
         Component.onCompleted: initialize()
     }
-
-    property var categories: []
 
     function loadCategoriesByType(type) {
         categories = service.loadCategories(type);
@@ -61,14 +62,11 @@ ListModel {
     }
 
     function filteredCategories(action) {
-        console.log("Filtering categories for action:АААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААА", action);
         loadAllCategories();
         var filtered = categories.filter(function(cat) {
-            return cat.categoryId !== 8 &&
-                   cat.categoryId !== 13 &&
-                   cat.typeCategory === action;
+            return cat.categoryId !== 8 && cat.categoryId !== 13 && cat.typeCategory === action;
         });
-        console.log("Filtered categories:", JSON.stringify(filtered));
+
         return filtered;
     }
 
@@ -93,7 +91,6 @@ ListModel {
         return service.loadCategoriesByCategoryId(selectedCategoryId);
     }
 
-
     function updateCategoryName(categoryId, newName) {
         service.updateCategory(categoryId, newName)
 
@@ -104,8 +101,7 @@ ListModel {
                 return true;
             }
         }
-
-        console.warn("Category with id", categoryId, "not found");
+        
         return false;
     }
 

@@ -3,17 +3,19 @@ import Sailfish.Silica 1.0
 import "../components" as Components
 
 Page {
+
     id: categoryPage
+    
     allowedOrientations: Orientation.All
 
-    property var categoryModel
-    property var operationModel
     property int action: 0
     property bool fromMainButton: true
     property int selectedCategoryId: -1
     property int editingCategoryId: -1
 
     property var sectorModel
+    property var categoryModel
+    property var operationModel
 
     onActionChanged: {
         categoryModel.loadCategoriesByType(action);
@@ -77,7 +79,6 @@ Page {
 
                                 onCategorySelected: {
                                     if (fromMainButton) {
-                                        // Старое поведение
                                         if (categoryId === 8 || categoryId === 13) {
                                             pageStack.push(Qt.resolvedUrl("AddCategoryPage.qml"), {
                                                 categoryType: action,
@@ -93,7 +94,6 @@ Page {
                                             });
                                         }
                                     } else {
-                                        // Новое поведение для бургер-меню
                                         editingCategoryId = categoryId
                                         editField.text = nameCategory
                                         editField.forceActiveFocus()
@@ -109,11 +109,6 @@ Page {
                                 text: model.nameCategory
                                 label: "Название категории"
                                 EnterKey.onClicked: {
-                                    if (text.trim() !== "") {
-                                        if (!categoryModel.updateCategoryName(model.categoryId, text)) {
-                                            console.error("Failed to update category name")
-                                        }
-                                    }
                                     editingCategoryId = -1
                                     focus = false
                                     pageStack.replaceAbove(null, Qt.resolvedUrl("MainPage.qml"))
@@ -128,6 +123,7 @@ Page {
                         }
                     }
                 }
+                
                 VerticalScrollDecorator {}
             }
         }

@@ -4,12 +4,10 @@ import Sailfish.Silica 1.0
 Dialog {
     id: addGoalPage
 
-    property string date: Qt.formatDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), "dd.MM.yyyy")
-    property bool allFieldsValid: titleField.text.trim() !== "" &&
-                                    amountField.text.trim() !== "" &&
-                                    !isNaN(parseFloat(amountField.text)) &&
-                                    parseFloat(amountField.text) > 0
     property var goalModel
+
+    property string date: Qt.formatDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), "dd.MM.yyyy")
+    property bool allFieldsValid: titleField.text.trim() !== "" && amountField.text.trim() !== "" && !isNaN(parseFloat(amountField.text)) && parseFloat(amountField.text) > 0
 
     canAccept: allFieldsValid
 
@@ -62,45 +60,47 @@ Dialog {
     }
 
     Dialog {
-            id: dateDialog
+        id: dateDialog
 
-            Column {
+        Column {
+            width: parent.width
+            spacing: Theme.paddingLarge
+
+            DialogHeader {
+                title: "Выберите дату"
+                acceptText: "ОК"
+                cancelText: "Отмена"
+            }
+
+            Label {
                 width: parent.width
-                spacing: Theme.paddingLarge
-
-                DialogHeader {
-                    title: "Выберите дату"
-                    acceptText: "ОК"
-                    cancelText: "Отмена"
-                }
-
-                Label {
-                    width: parent.width
-                    horizontalAlignment: Text.AlignHCenter
-                    text: {
-                        if (datePicker.date) {
-                            var locale = Qt.locale("ru_RU")
-                            var monthName = locale.standaloneMonthName(datePicker.date.getMonth())
-                            monthName = monthName.charAt(0).toUpperCase() + monthName.slice(1)
-                            return monthName + " " + datePicker.date.getFullYear()
-                        }
-                        return ""
+                horizontalAlignment: Text.AlignHCenter
+                text: {
+                    if (datePicker.date) {
+                        var locale = Qt.locale("ru_RU")
+                        var monthName = locale.standaloneMonthName(datePicker.date.getMonth())
+                        monthName = monthName.charAt(0).toUpperCase() + monthName.slice(1)
+                        
+                        return monthName + " " + datePicker.date.getFullYear()
                     }
-                    font.pixelSize: Theme.fontSizeLarge
+                    
+                    return ""
                 }
-
-                DatePicker {
-                    id: datePicker
-                    width: parent.width
-                    date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-                    onDateChanged: {
-                        addGoalPage.date = Qt.formatDate(date, "dd.MM.yyyy");
-                    }
-                }
+                font.pixelSize: Theme.fontSizeLarge
             }
 
-            onOpened: {
-                    datePicker.date = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+            DatePicker {
+                id: datePicker
+                width: parent.width
+                date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+                onDateChanged: {
+                    addGoalPage.date = Qt.formatDate(date, "dd.MM.yyyy");
+                }
             }
+        }
+
+        onOpened: {
+            datePicker.date = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        }
     }
 }

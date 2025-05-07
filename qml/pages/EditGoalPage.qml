@@ -2,22 +2,16 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 Page {
+
     id: editGoalPage
+    
     allowedOrientations: Orientation.All
+
+    property string date: ""
+    property real monthlyPayment: calculateMonthlyPayment()
 
     property var goal
     property var goalModel
-
-    property string date: ""
-
-    property real monthlyPayment: calculateMonthlyPayment()
-
-    function calculateMonthlyPayment() {
-        if(!goal) return 0
-        const remaining = targetAmountField.text - goal.currentAmount
-        const monthsLeft = Math.ceil((datePicker.date - new Date()) / (1000*60*60*24*30))
-        return monthsLeft > 0 ? (remaining / monthsLeft).toFixed(2) : 0
-    }
 
     onGoalChanged: {
         if(goal) {
@@ -41,9 +35,7 @@ Page {
                 minimumValue: 0
                 maximumValue: goal ? goal.targetAmount : 1
                 value: goal ? goal.currentAmount : 0
-                label: value >= maximumValue ?
-                    "Цель достигнута! 🎉" :
-                    "Прогресс: " + (value/maximumValue*100).toFixed(1) + "%"
+                label: value >= maximumValue ? "Цель достигнута! 🎉" : "Прогресс: " + (value/maximumValue*100).toFixed(1) + "%"
             }
 
             TextField {
@@ -124,12 +116,15 @@ Page {
                             model: {
                                 var locale = Qt.locale("ru_RU")
                                 var months = []
+                                
                                 for (var i = 0; i < 12; i++) {
                                     var monthName = locale.standaloneMonthName(i, Locale.LongFormat)
                                     months.push(monthName.charAt(0).toUpperCase() + monthName.slice(1))
                                 }
+                                
                                 return months
                             }
+                            
                             MenuItem { text: modelData }
                         }
                     }
@@ -152,9 +147,11 @@ Page {
                     property var years: (function() {
                         var arr = []
                         var currentYear = new Date().getFullYear()
+                        
                         for (var i = currentYear - 3; i <= currentYear + 3; i++) {
                             arr.push(i)
                         }
+                        
                         return arr
                     })()
 
@@ -199,14 +196,21 @@ Page {
             targetAmount: parseFloat(targetAmountField.text),
             endDate: datePicker.date.toISOString()
         }
+
         goalModel.updateGoal(updatedGoal)
         pageStack.pop()
     }
 
     function deleteGoal() {
-            onTriggered: {
-                goalModel.removeGoal(goal.id)
-                pageStack.pop()
-            }
-        }
+        goalModel.removeGoal(goal.id)
+        pageStack.pop()
     }
+    
+    function calculateMonthlyPayment() {
+        if(!goal) return 0
+        const remaining = targetAmountField.text - goal.currentAmount
+        const monthsLeft = Math.ceil((datePicker.date - new Date()) / (1000*60*60*24*30))
+        
+        return monthsLeft > 0 ? (remaining / monthsLeft).toFixed(2) : 0
+    }
+}

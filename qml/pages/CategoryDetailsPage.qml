@@ -20,51 +20,6 @@ Page {
         id: operationModel
     }
 
-    function groupOperationsByDate() {
-        groupedModel.clear()
-        var operationsByDate = {}
-
-        // Фильтрация операций
-        for(var i = 0; i < operationModel.count; i++) {
-            var op = operationModel.get(i)
-            if(op.categoryId !== categoryId || op.action !== action) continue
-
-            // Проверка формата даты
-            var dateParts = op.date.split('.')
-            if(dateParts.length !== 3) {
-                console.error("Некорректная дата:", op.date)
-                continue
-            }
-
-            // Преобразование в Date
-            var jsDate = new Date(dateParts[2], dateParts[1]-1, dateParts[0])
-            if(isNaN(jsDate.getTime())) {
-                console.error("Невалидная дата:", op.date)
-                continue
-            }
-
-            var dateKey = Qt.formatDate(jsDate, "yyyy-MM-dd")
-
-            // Инициализация массива
-            if(!operationsByDate[dateKey]) {
-                operationsByDate[dateKey] = []
-            }
-            operationsByDate[dateKey].push(op)
-        }
-
-        // Сортировка
-        var sortedDates = Object.keys(operationsByDate).sort().reverse()
-
-        // Заполнение модели
-        sortedDates.forEach(function(dateKey) {
-            var opsArray = operationsByDate[dateKey] || []
-            groupedModel.append({
-                date: Qt.formatDate(new Date(dateKey), "dd.MM.yyyy"),
-                operations: opsArray.slice() // Гарантированный новый массив
-            })
-        })
-    }
-
     Component.onCompleted: {
         if (operationModel && dateFilterModel) {
             operationModel.dateFilterModel = dateFilterModel;
@@ -160,7 +115,6 @@ Page {
                                     }
                                 }
 
-
                                 Label {
                                     id: amountLabel
                                     width: Math.min(implicitWidth, parent.width * 0.35)
@@ -183,11 +137,11 @@ Page {
                         }
 
                         onClicked: {
-                             pageStack.push(Qt.resolvedUrl("../pages/OperationDetailsPage.qml"), {
-                                 operationId: model.id,
-                                 operationModel: operationModel,
-                                 categoryModel: categoryModel
-                             });
+                            pageStack.push(Qt.resolvedUrl("../pages/OperationDetailsPage.qml"), {
+                                operationId: model.id,
+                                operationModel: operationModel,
+                                categoryModel: categoryModel
+                            });
                         }
                     }
                 }
@@ -196,4 +150,41 @@ Page {
 
             VerticalScrollDecorator {}
         }
+
+    function groupOperationsByDate() {
+        groupedModel.clear()
+        var operationsByDate = {}
+
+        for(var i = 0; i < operationModel.count; i++) {
+            var op = operationModel.get(i)
+            
+            if(op.categoryId !== categoryId || op.action !== action) continue
+
+            var dateParts = op.date.split('.')
+            
+            if(dateParts.length !== 3) continue
+
+            var jsDate = new Date(dateParts[2], dateParts[1]-1, dateParts[0])
+            
+            if(isNaN(jsDate.getTime())) continue
+
+            var dateKey = Qt.formatDate(jsDate, "yyyy-MM-dd")
+
+            if(!operationsByDate[dateKey]) {
+                operationsByDate[dateKey] = []
+            }
+            
+            operationsByDate[dateKey].push(op)
+        }
+
+        var sortedDates = Object.keys(operationsByDate).sort().reverse()
+
+        sortedDates.forEach(function(dateKey) {
+            var opsArray = operationsByDate[dateKey] || []
+            groupedModel.append({
+                date: Qt.formatDate(new Date(dateKey), "dd.MM.yyyy"),
+                operations: opsArray.slice()
+            })
+        })
+    }
 }

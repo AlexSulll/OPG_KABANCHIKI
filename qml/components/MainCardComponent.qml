@@ -2,9 +2,10 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../models" as Models
 
-
 Item {
+    
     id: cardRoot
+    
     width: parent.width - 2 * Theme.paddingLarge
     height: width
 
@@ -13,12 +14,12 @@ Item {
     property var sectors: []
     property var period: []
     property real totalValue: 0
-    property bool isExpense: true  // true - расходы, false - доходы
+    property bool isExpense: true
     property string selectedPeriod: "All"
     property var dateRange: []
     property var operationModel: null
     property string currentPeriod: "All"
-    property int selectedSector: -1 // Индекс выбранного сектора
+    property int selectedSector: -1
 
     Models.DateFilterModel {
         id: dateModel
@@ -65,11 +66,10 @@ Item {
                         selectedSector = -1
 
                         var filteredOps = operationModel.service.getFilteredCategories(mainpage.action, selectedPeriod)
-                        // Обновляем модель
+
                         operationModel.loadOperation(filteredOps)
                         operationModel.calculateTotalBalance()
 
-                        // Обновляем график
                         isExpense = mainpage.action === 0
                         sectorModel.calculateChartData(operationModel, mainpage.action)
                         sectorsCanvas.requestPaint();
@@ -89,6 +89,7 @@ Item {
             Canvas {
                 id: backgroundRing
                 anchors.fill: parent
+                
                 onPaint: {
                     var ctx = getContext("2d")
                     ctx.reset()
@@ -109,7 +110,7 @@ Item {
                 id: sectorsCanvas
                 anchors.fill: parent
 
-                property var sectorAngles: [] // Храним углы секторов для обработки кликов
+                property var sectorAngles: []
 
                 onPaint: {
                     var ctx = getContext("2d")
@@ -120,9 +121,8 @@ Item {
                     var lineWidth = radius * 0.55
                     var startAngle = -Math.PI/2
                     var total = 0
-                    sectorAngles = [] // Очищаем массив углов
+                    sectorAngles = []
 
-                    // Считаем общую сумму для текущего типа операций
                     for (var i = 0; i < sectors.length; i++) {
                         if ((isExpense && sectors[i].isExpense) || (!isExpense && !sectors[i].isExpense)) {
                             total += sectors[i].value
@@ -130,7 +130,6 @@ Item {
                     }
 
                     if (total <= 0) {
-                        // Если нет данных, рисуем серое кольцо
                         ctx.beginPath()
                         ctx.arc(centerX, centerY, radius, 0, Math.PI * 2, false)
                         ctx.lineWidth = lineWidth
@@ -139,10 +138,9 @@ Item {
                         return
                     }
 
-                    // Рисуем сектора для текущего типа операций
                     for (var j = 0; j < sectors.length; j++) {
                         var sector = sectors[j]
-                        // Пропускаем сектора другого типа
+
                         if ((isExpense && !sector.isExpense) || (!isExpense && sector.isExpense)) {
                             continue
                         }
@@ -150,7 +148,6 @@ Item {
                         var angle = (sector.value / total) * Math.PI * 2
                         var endAngle = startAngle + angle
 
-                        // Сохраняем углы сектора для обработки кликов
                         sectorAngles.push({
                             start: startAngle,
                             end: endAngle,
@@ -158,7 +155,6 @@ Item {
                             radius: radius
                         })
 
-                        // Если это выбранный сектор, рисуем его с большим радиусом
                         var currentRadius = (selectedSector === j) ? radius * 1.1 : radius
                         var currentLineWidth = (selectedSector === j) ? lineWidth * 1.1 : lineWidth
 
@@ -174,6 +170,7 @@ Item {
 
                 MouseArea {
                     anchors.fill: parent
+                    
                     onClicked: {
                         var centerX = width / 2
                         var centerY = height / 2
@@ -183,52 +180,44 @@ Item {
                         var clickAngle = Math.atan2(clickY, clickX)
                         var clickedInsideSector = false
 
-                        // Нормализуем угол (-π до π) -> (0 до 2π)
                         if (clickAngle < 0) clickAngle += 2 * Math.PI
 
-                        // Проверяем все сектора
                         for (var i = 0; i < sectorsCanvas.sectorAngles.length; i++) {
                             var sector = sectorsCanvas.sectorAngles[i]
 
-                            // Учитываем увеличенный радиус для выбранного сектора
                             var sectorRadius = (selectedSector === sector.index) ? sector.radius * 1.1 : sector.radius
                             var sectorLineWidth = (selectedSector === sector.index) ? sector.radius * 0.55 * 1.1 : sector.radius * 0.55
 
-                            // Диапазон радиусов для клика
                             var minRadius = Math.max(0, sectorRadius - sectorLineWidth/2)
                             var maxRadius = sectorRadius + sectorLineWidth/2
 
-                            // Проверяем попадание в радиус
                             if (distance >= minRadius && distance <= maxRadius) {
-                                // Нормализуем углы сектора
                                 var startAngle = sector.start < 0 ? sector.start + 2*Math.PI : sector.start
                                 var endAngle = sector.end < 0 ? sector.end + 2*Math.PI : sector.end
 
-                                // Проверяем попадание в угол
                                 var angleInSector = false
 
                                 if (startAngle <= endAngle) {
                                     angleInSector = (clickAngle >= startAngle && clickAngle <= endAngle)
                                 } else {
-                                    // Сектор пересекает 0
                                     angleInSector = (clickAngle >= startAngle || clickAngle <= endAngle)
                                 }
 
                                 if (angleInSector) {
                                     clickedInsideSector = true
-                                    // Нашли сектор, на который кликнули
+
                                     if (selectedSector === sector.index) {
-                                        selectedSector = -1 // Снимаем выделение
+                                        selectedSector = -1
                                     } else {
-                                        selectedSector = sector.index // Выделяем новый сектор
+                                        selectedSector = sector.index
                                     }
+
                                     sectorsCanvas.requestPaint()
-                                    break // Прерываем цикл, так как нашли нужный сектор
+                                    break
                                 }
                             }
                         }
 
-                        // Клик вне секторов - снимаем выделение
                         if (!clickedInsideSector && selectedSector !== -1) {
                             selectedSector = -1
                             sectorsCanvas.requestPaint()
@@ -260,38 +249,38 @@ Item {
                             var suffix = "";
                             var formattedValue = 0;
 
-                            if (absValue >= 1000000000000) { // Триллионы (1 000 000 000 000+)
+                            if (absValue >= 1000000000000) {
                                 formattedValue = (value / 1000000000000).toFixed(1);
                                 suffix = " трлн";
-                            } else if (absValue >= 1000000000) { // Миллиарды (1 000 000 000+)
+                            } else if (absValue >= 1000000000) {
                                 formattedValue = (value / 1000000000).toFixed(1);
                                 suffix = " млрд";
-                            } else if (absValue >= 1000000) { // Миллионы (1 000 000+)
+                            } else if (absValue >= 1000000) {
                                 formattedValue = (value / 1000000).toFixed(1);
                                 suffix = " млн";
                             } else {
                                 return Number(value).toLocaleString(Qt.locale(), 'f', 2) + " ₽";
                             }
 
-                            // Заменяем точку на запятую и убираем .0
                             formattedValue = formattedValue.replace(".", ",").replace(",0", "");
                             return formattedValue + suffix + " ₽";
                         }
 
                         if (selectedSector >= 0 && selectedSector < sectors.length) {
-                            // Показываем значение выбранного сектора
                             return formatMoney(sectors[selectedSector].value);
                         } else {
-                            // Показываем общую сумму
                             var sum = 0;
+
                             for (var i = 0; i < sectors.length; i++) {
                                 if ((isExpense && sectors[i].isExpense) || (!isExpense && !sectors[i].isExpense)) {
                                     sum += sectors[i].value;
                                 }
                             }
+
                             return formatMoney(sum);
                         }
                     }
+
                     color: isExpense ? "#FF6384" : Theme.highlightColor
                     font.pixelSize: Theme.fontSizeLarge
                     font.bold: true
@@ -302,16 +291,16 @@ Item {
                     horizontalAlignment: Text.AlignHCenter
                     text: {
                         if (selectedSector >= 0 && selectedSector < sectors.length) {
-                            // Показываем название выбранной категории
                             return sectors[selectedSector].name || "Категория"
                         } else {
-                            // Показываем количество категорий
                             var count = 0
+
                             for (var i = 0; i < sectors.length; i++) {
                                 if ((isExpense && sectors[i].isExpense) || (!isExpense && !sectors[i].isExpense)) {
                                     count++
                                 }
                             }
+                            
                             return count===1 && sectors[0]["value"]===0 ? "Нет категорий" : count + " категори"+ (count === 1 ? "я" : (count >= 5 ? "й" : "и") )
                         }
                     }
@@ -322,10 +311,10 @@ Item {
         }
     }
 
-
     ParallelAnimation {
         id: appearAnimation
         running: true
+        
         NumberAnimation {
             target: cardRoot
             property: "rotationAngle"
@@ -334,6 +323,7 @@ Item {
             duration: 800
             easing.type: Easing.OutBack
         }
+        
         NumberAnimation {
             target: cardRoot
             property: "scaleFactor"
@@ -345,8 +335,7 @@ Item {
     }
 
     onSectorsChanged: {
-        console.log("Sectors changed:", JSON.stringify(sectors));
-        selectedSector = -1 // Сброс выбранного сектора при изменении данных
+        selectedSector = -1
         backgroundRing.requestPaint()
         sectorsCanvas.requestPaint()
     }

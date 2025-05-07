@@ -2,30 +2,13 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 Item {
+    
     property var model: []
     property bool isExpense: true
     property color lineColor: isExpense ? Theme.errorColor : Theme.highlightColor
     property real maxValue: 0
     property real minValue: 0
     property int padding: Theme.paddingLarge
-
-    // Рассчитываем min/max значения для масштабирования
-    function calculateBounds() {
-        if (model.length === 0) return;
-
-        maxValue = model[0].value;
-        minValue = model[0].value;
-
-        for (var i = 1; i < model.length; i++) {
-            maxValue = Math.max(maxValue, model[i].value);
-            minValue = Math.min(minValue, model[i].value);
-        }
-
-        // Добавляем небольшой отступ
-        var range = maxValue - minValue;
-        maxValue += range * 0.1;
-        minValue = Math.max(0, minValue - range * 0.1);
-    }
 
     onModelChanged: {
         calculateBounds();
@@ -49,12 +32,11 @@ Item {
             var height = canvas.height;
             var xStep = width / (model.length - 1);
 
-            // Рисуем сетку
             ctx.strokeStyle = Theme.rgba(Theme.primaryColor, 0.1);
             ctx.lineWidth = 1;
 
-            // Горизонтальные линии
             var gridLines = 5;
+
             for (var i = 0; i <= gridLines; i++) {
                 var y = height - (i * height / gridLines);
                 ctx.beginPath();
@@ -62,13 +44,11 @@ Item {
                 ctx.lineTo(width, y);
                 ctx.stroke();
 
-                // Подписи значений
                 ctx.fillStyle = Theme.primaryColor;
                 ctx.font = '12px Sans-Serif';
                 ctx.fillText(Math.round(minValue + (maxValue - minValue) * (1 - i/gridLines)), width + 5, y + 4);
             }
 
-            // Рисуем линию графика
             ctx.strokeStyle = lineColor;
             ctx.lineWidth = 2;
             ctx.beginPath();
@@ -83,13 +63,11 @@ Item {
                     ctx.lineTo(x, valueY);
                 }
 
-                // Рисуем точки
                 ctx.fillStyle = lineColor;
                 ctx.beginPath();
                 ctx.arc(x, valueY, 4, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Подписи дат
                 if (j % Math.max(1, Math.floor(model.length / 5)) === 0 || j === model.length - 1) {
                     ctx.fillStyle = Theme.primaryColor;
                     ctx.font = '10px Sans-Serif';
@@ -102,7 +80,6 @@ Item {
         }
     }
 
-    // Легенда
     Rectangle {
         anchors {
             top: parent.top
@@ -121,5 +98,21 @@ Item {
             color: lineColor
             font.pixelSize: Theme.fontSizeExtraSmall
         }
+    }
+
+    function calculateBounds() {
+        if (model.length === 0) return;
+
+        maxValue = model[0].value;
+        minValue = model[0].value;
+
+        for (var i = 1; i < model.length; i++) {
+            maxValue = Math.max(maxValue, model[i].value);
+            minValue = Math.min(minValue, model[i].value);
+        }
+
+        var range = maxValue - minValue;
+        maxValue += range * 0.1;
+        minValue = Math.max(0, minValue - range * 0.1);
     }
 }

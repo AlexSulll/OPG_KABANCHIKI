@@ -2,13 +2,16 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 Page {
+    
     id: fullscreenGraphPage
+    
     allowedOrientations: Orientation.Landscape
     backgroundColor: "white"
+    
     property var timeSeriesData
     property var selectedMonthData
-
     property real scaleFactor: 0.9
+    
     Behavior on scaleFactor { NumberAnimation { duration: 200; easing.type: Easing.OutQuad } }
 
     Component.onCompleted: scaleFactor = 1.0
@@ -35,7 +38,6 @@ Page {
                     verticalCenterOffset: -Theme.paddingMedium
                 }
 
-                // Настройки для полноэкранного режима
                 pulseSize: 1.1
                 pulseOpacity: 0.4
 
@@ -54,7 +56,6 @@ Page {
 
                         if (!timeSeriesData || timeSeriesData.length === 0) return;
 
-                        // Рассчитываем масштаб
                         var maxValue = Math.max(
                             10000,
                             Math.max.apply(null, timeSeriesData.map(function(d) {
@@ -62,33 +63,26 @@ Page {
                             }))
                         );
 
-                        // Автоматический расчет шага между точками
-                        var minStep = 150; // Увеличили минимальный шаг
+                        var minStep = 150;
                         var availableWidth = Math.max(width - 80, timeSeriesData.length * minStep);
-                        var xStep = timeSeriesData.length > 1 ?
-                                   availableWidth / (timeSeriesData.length - 1) :
-                                   0;
+                        var xStep = timeSeriesData.length > 1 ? availableWidth / (timeSeriesData.length - 1) : 0;
 
-                        // Увеличиваем область для подписей
-                        var chartBottom = height - 80; // Больше места снизу
-                        var chartTop = 70; // Больше места сверху
+                        var chartBottom = height - 80;
+                        var chartTop = 70;
 
-                        // Создаем массив точек
                         var points = [];
                         for (var i = 0; i < timeSeriesData.length; i++) {
-                            var x = timeSeriesData.length > 1 ?
-                                  40 + i * xStep :
-                                  width / 2;
+                            var x = timeSeriesData.length > 1 ? 40 + i * xStep : width / 2;
                             var y = chartBottom - ((timeSeriesData[i].value || 0.0001) / maxValue * (chartBottom - chartTop));
                             points.push({x: x, y: y});
                         }
                     }
                 }
             }
+
             VerticalScrollDecorator {}
         }
     }
-
 
     Label {
         anchors.centerIn: parent

@@ -2,9 +2,11 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 BackgroundItem {
-    property var operationData
+    
     signal deleteRequested(int operationId)
 
+    property var operationData
+    
     height: Theme.itemSizeLarge
 
     Row {
@@ -12,26 +14,21 @@ BackgroundItem {
         anchors.centerIn: parent
         spacing: Theme.paddingMedium
 
-        // Иконка типа операции
         Image {
-            source: operationData.action === 0 ?
-                "image://theme/icon-m-minus" :
-                "image://theme/icon-m-plus"
+            source: operationData.action === 0 ? "image://theme/icon-m-minus" : "image://theme/icon-m-plus"
             width: Theme.iconSizeMedium
             height: width
             anchors.verticalCenter: parent.verticalCenter
         }
 
-        // Основная информация
         Column {
             width: parent.width - Theme.iconSizeMedium - Theme.paddingMedium
             anchors.verticalCenter: parent.verticalCenter
 
             Label {
                 text: {
-                        // Получаем категорию по ID из CategoryModel
-                        var category = categoryModel.getCategoryById(operationData.categoryId);
-                        return category ? category.nameCategory : "Без категории";
+                    var category = categoryModel.getCategoryById(operationData.categoryId);
+                    return category ? category.nameCategory : "Без категории";
                 }
                 color: Theme.primaryColor
                 font.pixelSize: Theme.fontSizeSmall
@@ -44,7 +41,6 @@ BackgroundItem {
             }
         }
 
-        // Сумма
         Label {
             text: (operationData.action === 0 ? "-" : "+") + operationData.amount + " ₽"
             color: operationData.action === 0 ? "red" : "green"
@@ -52,7 +48,6 @@ BackgroundItem {
         }
     }
 
-    // Контекстное меню
     ContextMenu {
         MenuItem {
             text: "Удалить"

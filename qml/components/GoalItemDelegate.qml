@@ -2,24 +2,15 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 ListItem {
+    
     id: delegate
+    
     width: parent.width
     contentHeight: Theme.itemSizeExtraLarge * 2
 
     property real monthlyPayment: calculateMonthlyPayment()
     property real progressRatio: targetAmount > 0 ? Math.min(currentAmount / targetAmount, 1) : 0
     property string daysLeft: calculateDaysLeft()
-
-    function calculateMonthlyPayment() {
-        const remaining = targetAmount - currentAmount
-        const monthsLeft = Math.max(Math.ceil((new Date(endDate) - new Date()) / (1000*60*60*24*30)), 0)
-        return monthsLeft > 0 ? (remaining / monthsLeft).toFixed(2) : 0
-    }
-
-    function calculateDaysLeft() {
-        const days = Math.ceil((new Date(endDate) - new Date()) / (1000*60*60*24))
-        return days > 0 ? days + " " + (days === 1 ? qsTr("день") : days < 5 ? qsTr("дня") : qsTr("дней")) : qsTr("Срок истёк")
-    }
 
     Rectangle {
         anchors {
@@ -48,7 +39,7 @@ ListItem {
                     font {
                         pixelSize: Theme.fontSizeMedium
                         bold: true
-                        strikeout: isCompleted === 1 // Зачёркивание
+                        strikeout: isCompleted === 1
                     }
                     color: isCompleted === 1 ? Theme.secondaryColor : Theme.primaryColor
                     truncationMode: TruncationMode.Fade
@@ -98,19 +89,18 @@ ListItem {
                 }
             }
 
-            // Финансовая информация (исправленное расположение столбцов)
             Grid {
                 width: parent.width
                 columns: 2
                 columnSpacing: Theme.paddingSmall
                 rowSpacing: Theme.paddingSmall
 
-                // Первая строка - Цель
                 Label {
                     text: qsTr("Цель:")
                     font.pixelSize: Theme.fontSizeExtraSmall
                     color: Theme.secondaryColor
                 }
+
                 Label {
                     text: targetAmount.toFixed(2) + " ₽"
                     font.pixelSize: Theme.fontSizeExtraSmall
@@ -119,12 +109,12 @@ ListItem {
                     width: parent.width/2 - Theme.paddingSmall
                 }
 
-                // Вторая строка - Накоплено
                 Label {
                     text: qsTr("Накоплено:")
                     font.pixelSize: Theme.fontSizeExtraSmall
                     color: Theme.secondaryColor
                 }
+
                 Label {
                     text: currentAmount.toFixed(2) + " ₽"
                     font.pixelSize: Theme.fontSizeExtraSmall
@@ -132,12 +122,12 @@ ListItem {
                     horizontalAlignment: Text.AlignRight
                 }
 
-                // Третья строка - Осталось
                 Label {
                     text: qsTr("Осталось:")
                     font.pixelSize: Theme.fontSizeExtraSmall
                     color: Theme.secondaryColor
                 }
+
                 Label {
                     text: isCompleted === 0 ? (targetAmount - currentAmount).toFixed(2) + " ₽" : "-"
                     font.pixelSize: Theme.fontSizeExtraSmall
@@ -145,12 +135,12 @@ ListItem {
                     horizontalAlignment: Text.AlignRight
                 }
 
-                // Четвертая строка - Ежемесячно
                 Label {
                     text: qsTr("Ежемесячно:")
                     font.pixelSize: Theme.fontSizeExtraSmall
                     color: Theme.secondaryColor
                 }
+
                 Label {
                     text: isCompleted === 0 ? monthlyPayment + " ₽" : "-"
                     font.pixelSize: Theme.fontSizeExtraSmall
@@ -158,12 +148,12 @@ ListItem {
                     horizontalAlignment: Text.AlignRight
                 }
 
-                // Пятая строка - Дней
                 Label {
                     text: qsTr("Дней:")
                     font.pixelSize: Theme.fontSizeExtraSmall
                     color: Theme.secondaryColor
                 }
+
                 Label {
                     text: isCompleted === 0 ? daysLeft : "-"
                     font.pixelSize: Theme.fontSizeExtraSmall
@@ -176,8 +166,19 @@ ListItem {
 
     onClicked: {
         pageStack.push(Qt.resolvedUrl("../pages/EditGoalPage.qml"), {
-            goal: model, // Передаем всю модель цели
+            goal: model,
             goalModel: goalModel
         })
+    }
+
+    function calculateMonthlyPayment() {
+        const remaining = targetAmount - currentAmount
+        const monthsLeft = Math.max(Math.ceil((new Date(endDate) - new Date()) / (1000*60*60*24*30)), 0)
+        return monthsLeft > 0 ? (remaining / monthsLeft).toFixed(2) : 0
+    }
+
+    function calculateDaysLeft() {
+        const days = Math.ceil((new Date(endDate) - new Date()) / (1000*60*60*24))
+        return days > 0 ? days + " " + (days === 1 ? qsTr("день") : days < 5 ? qsTr("дня") : qsTr("дней")) : qsTr("Срок истёк")
     }
 }

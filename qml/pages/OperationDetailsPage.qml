@@ -5,17 +5,16 @@ Page {
     id: operationDetailsPage
     allowedOrientations: Orientation.All
 
-    property var operationModel
-    property var categoryModel
     property int operationId: -1
-
     property string amount: ""
     property int categoryId: -1
     property string date: ""
     property string desc: ""
     property int action: 0
-
     property bool isValid: amount.length > 0 && categoryId !== -1
+
+    property var operationModel
+    property var categoryModel
 
     Component.onCompleted: {
         var op = operationModel.getOperationById(operationId);
@@ -52,7 +51,6 @@ Page {
             ComboBox {
                 id: categoryCombo
                 width: parent.width
-                //label: "Категория"
                 currentIndex: categoryModel.getIndexById(categoryId)
 
                 Row {
@@ -199,8 +197,9 @@ Page {
                 }
             }
         }
+        
         onOpened: {
-                datePicker.date = new Date()
+            datePicker.date = new Date()
         }
     }
 }

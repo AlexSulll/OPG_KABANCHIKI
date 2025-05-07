@@ -4,7 +4,9 @@ import "../components" as Components
 import "../models" as Models
 
 Page {
+
     id: operationPage
+    
     allowedOrientations: Orientation.All
     anchors.centerIn: parent
 
@@ -20,7 +22,6 @@ Page {
     property var limitModel: Models.LimitModel {}
     property bool fromMainButton: true
 
-    // Свойства для хранения данных о лимите
     property real categoryLimit: 0
     property real currentSpent: 0
     property real operationAmount: 0
@@ -151,12 +152,15 @@ Page {
                             model: {
                                 var locale = Qt.locale("ru_RU")
                                 var months = []
+                                
                                 for (var i = 0; i < 12; i++) {
                                     var monthName = locale.standaloneMonthName(i, Locale.LongFormat)
                                     months.push(monthName.charAt(0).toUpperCase() + monthName.slice(1))
                                 }
+
                                 return months
                             }
+                            
                             MenuItem { text: modelData }
                         }
                     }

@@ -165,42 +165,42 @@
 <context>
     <name>OperationPage</name>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="77"/>
+        <location filename="../qml/pages/OperationPage.qml" line="90"/>
         <source>Комментарий</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="134"/>
+        <location filename="../qml/pages/OperationPage.qml" line="244"/>
         <source>Превышение лимита</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="135"/>
+        <location filename="../qml/pages/OperationPage.qml" line="245"/>
         <source>Все равно сохранить</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="136"/>
+        <location filename="../qml/pages/OperationPage.qml" line="246"/>
         <source>Отменить</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="143"/>
+        <location filename="../qml/pages/OperationPage.qml" line="253"/>
         <source>Вы превысите лимит на %1 руб.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="152"/>
+        <location filename="../qml/pages/OperationPage.qml" line="262"/>
         <source>Лимит: %1 руб.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="159"/>
+        <location filename="../qml/pages/OperationPage.qml" line="269"/>
         <source>Уже потрачено: %1 руб.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="166"/>
+        <location filename="../qml/pages/OperationPage.qml" line="276"/>
         <source>Новая операция: %1 руб.</source>
         <translation type="unfinished"></translation>
     </message>

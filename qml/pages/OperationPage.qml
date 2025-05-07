@@ -116,36 +116,106 @@ Page {
 
     Dialog {
         id: dateDialog
+        allowedOrientations: Orientation.All
+
         Column {
             width: parent.width
             spacing: Theme.paddingLarge
+
             DialogHeader {
                 title: "Выберите дату"
                 acceptText: "ОК"
                 cancelText: "Отмена"
             }
-            Label {
+
+            Row {
                 width: parent.width
-                horizontalAlignment: Text.AlignHCenter
-                text: {
-                    if (datePicker.date) {
-                        var locale = Qt.locale("ru_RU")
-                        var monthName = locale.standaloneMonthName(datePicker.date.getMonth())
-                        monthName = monthName.charAt(0).toUpperCase() + monthName.slice(1)
-                        return monthName + " " + datePicker.date.getFullYear()
+                spacing: Theme.paddingMedium
+
+                ComboBox {
+                    id: monthCombo
+                    width: parent.width / 2 - Theme.paddingMedium/2
+                    label: "Месяц"
+                    currentIndex: datePicker.date.getMonth()
+
+                    menu: ContextMenu {
+                        Repeater {
+                            model: {
+                                var locale = Qt.locale("ru_RU")
+                                var months = []
+                                for (var i = 0; i < 12; i++) {
+                                    var monthName = locale.standaloneMonthName(i, Locale.LongFormat)
+                                    months.push(monthName.charAt(0).toUpperCase() + monthName.slice(1))
+                                }
+                                return months
+                            }
+                            MenuItem { text: modelData }
+                        }
                     }
-                    return ""
+
+                    onCurrentIndexChanged: {
+                        if (datePicker.date) {
+                            var newDate = new Date(datePicker.date)
+                            newDate.setMonth(currentIndex)
+                            datePicker.date = newDate
+                        }
+                    }
                 }
-                font.pixelSize: Theme.fontSizeLarge
+
+                ComboBox {
+                    id: yearCombo
+                    width: parent.width / 2 - Theme.paddingMedium/2
+                    label: "Год"
+                    currentIndex: 5
+
+                    property var years: (function() {
+                        var arr = []
+                        var currentYear = new Date().getFullYear()
+                        for (var i = currentYear - 3; i <= currentYear + 3; i++) {
+                            arr.push(i)
+                        }
+                        return arr
+                    })()
+
+                    menu: ContextMenu {
+                        Repeater {
+                            model: yearCombo.years
+                            MenuItem { text: modelData }
+                        }
+                    }
+
+                    onCurrentIndexChanged: {
+                        if (datePicker.date) {
+                            var newDate = new Date(datePicker.date)
+                            newDate.setFullYear(years[currentIndex])
+                            datePicker.date = newDate
+                        }
+                    }
+                }
             }
+
             DatePicker {
                 id: datePicker
                 width: parent.width
                 date: new Date()
-                onDateChanged: operationPage.date = Qt.formatDate(date, "dd.MM.yyyy")
+
+                onDateChanged: {
+                    // Синхронизация с комбобоксами
+                    monthCombo.currentIndex = date.getMonth()
+                    yearCombo.currentIndex = yearCombo.years.indexOf(date.getFullYear())
+                    operationPage.date = Qt.formatDate(date, "dd.MM.yyyy")
+                }
             }
         }
-        onOpened: datePicker.date = new Date()
+
+        onOpened: {
+            var today = new Date()
+            datePicker.date = today
+        }
+
+        onAccepted: {
+            operationPage.date = Qt.formatDate(datePicker.date, "dd.MM.yyyy")
+        }
     }
 
     Dialog {

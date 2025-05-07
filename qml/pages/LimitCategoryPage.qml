@@ -16,8 +16,25 @@ Page {
         Component.onCompleted: loadCategoriesByType(0)
     }
 
+    Components.HeaderCategoryComponent {
+        id: header
+        fontSize: Theme.fontSizeExtraLarge*1.2
+        color: "transparent"
+        headerText: "Лимиты расходов"
+        anchors {
+            top: parent.top
+            left: parent.left
+            right: parent.right
+        }
+    }
+
     SilicaFlickable {
-        anchors.fill: parent
+        anchors {
+            top: header.bottom
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+        }
         contentHeight: column.height + Theme.paddingLarge
 
         Column {
@@ -25,11 +42,6 @@ Page {
             width: parent.width
             spacing: Theme.paddingMedium
 
-            PageHeader {
-                title: qsTr("Лимиты расходов")
-            }
-
-            // Заменяем ComboBox на GridView с категориями
             GridView {
                 id: categoriesGrid
                 width: parent.width
@@ -42,7 +54,7 @@ Page {
                     var filtered = [];
                     for (var i = 0; i < categoryModel.count; i++) {
                         var item = categoryModel.get(i);
-                        if (item.categoryId !== 8) { // Исключаем категорию с ID 8
+                        if (item.categoryId !== 8) {
                             filtered.push({
                                 categoryId: item.categoryId,
                                 nameCategory: item.nameCategory,
@@ -67,7 +79,6 @@ Page {
                             nameCategory: nameCategory,
                             pathToIcon: pathToIcon
                         };
-                        console.log("Selected category:", nameCategory, "ID:", categoryId);
                         updateLimitDisplay();
                     }
                 }
@@ -80,6 +91,11 @@ Page {
                 placeholderText: qsTr("Введите сумму лимита")
                 inputMethodHints: Qt.ImhDigitsOnly
                 validator: IntValidator { bottom: 1 }
+                onTextChanged: {
+                    if (text.charAt(0) === '-' || text.charAt(0) === '0') {
+                        text = text.substring(1);
+                    }
+                }
                 visible: isCategorySelected
             }
 
@@ -121,9 +137,8 @@ Page {
         if (!isCategorySelected) return;
 
         var currentLimit = limitModel.getLimit(selectedCategory.categoryId);
-        console.log("Current limit for", selectedCategory.nameCategory, ":", currentLimit);
 
-        if (currentLimit !== null && currentLimit !== undefined) {
+        if (currentLimit !== null && currentLimit !== undefined && currentLimit !== 0) {
             currentLimitLabel.text = qsTr("Текущий лимит: %1 руб").arg(currentLimit);
             limitInput.text = currentLimit;
         } else {
@@ -139,7 +154,6 @@ Page {
         if (isNaN(limitAmount)) return;
 
         limitModel.setLimit(selectedCategory.categoryId, limitAmount);
-        showNotification(qsTr("Лимит для '%1' установлен").arg(selectedCategory.nameCategory));
         updateLimitDisplay();
     }
 
@@ -147,11 +161,6 @@ Page {
         if (!isCategorySelected) return;
 
         limitModel.removeLimit(selectedCategory.categoryId);
-        showNotification(qsTr("Лимит для '%1' сброшен").arg(selectedCategory.nameCategory));
         updateLimitDisplay();
     }
-
-    function showNotification(message) {
-        console.log("Notification:", message);
-    }
-}
+ }

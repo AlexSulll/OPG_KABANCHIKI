@@ -23,6 +23,8 @@ Page {
         categoryModel.loadCategoriesByType(action);
     }
 
+    onVisibleChanged: categoryModel.loadCategoriesByType(action);
+
     SilicaFlickable {
         anchors.fill: parent
 

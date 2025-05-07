@@ -2,7 +2,7 @@ import QtQuick 2.0
 
 ListModel {
     ListElement {
-        text: "Записи"
+        text: "Главная"
         icon: "icon-m-home"
         page: "../pages/MainPage.qml"
     }

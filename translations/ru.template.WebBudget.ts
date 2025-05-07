@@ -170,37 +170,37 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="244"/>
+        <location filename="../qml/pages/OperationPage.qml" line="229"/>
         <source>Превышение лимита</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="245"/>
+        <location filename="../qml/pages/OperationPage.qml" line="230"/>
         <source>Все равно сохранить</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="246"/>
+        <location filename="../qml/pages/OperationPage.qml" line="231"/>
         <source>Отменить</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="253"/>
+        <location filename="../qml/pages/OperationPage.qml" line="238"/>
         <source>Вы превысите лимит на %1 руб.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="262"/>
+        <location filename="../qml/pages/OperationPage.qml" line="247"/>
         <source>Лимит: %1 руб.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="269"/>
+        <location filename="../qml/pages/OperationPage.qml" line="254"/>
         <source>Уже потрачено: %1 руб.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="276"/>
+        <location filename="../qml/pages/OperationPage.qml" line="261"/>
         <source>Новая операция: %1 руб.</source>
         <translation type="unfinished"></translation>
     </message>

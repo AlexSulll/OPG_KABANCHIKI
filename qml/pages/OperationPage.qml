@@ -11,7 +11,7 @@ Page {
     property string amount: ""
     property int selectedCategoryId: -1
     property int action: 0
-    property string date: Qt.formatDate(new Date(), "dd.MM.yyyy")
+    property string date: ""
     property string desc: ""
 
     property var selectedCategory: null
@@ -66,10 +66,16 @@ Page {
             TextField {
                 id: sumInput
                 width: parent.width
+                label: "Сумма операции"
                 placeholderText: "Сумма (руб)"
                 inputMethodHints: Qt.ImhDigitsOnly
                 validator: IntValidator { bottom: 1 }
-                onTextChanged: amount = text
+                onTextChanged: {
+                    if (text.charAt(0) === '-' || text.charAt(0) === '0') {
+                        text = text.substring(1);
+                    }
+                    amount = text
+                }
             }
 
             Components.CategoryDisplay {
@@ -80,6 +86,8 @@ Page {
             TextField {
                 width: parent.width
                 placeholderText: "Дата"
+                label: "Дата операции"
+                readOnly: true
                 text: date
                 onClicked: dateDialog.open()
             }
@@ -197,20 +205,13 @@ Page {
             DatePicker {
                 id: datePicker
                 width: parent.width
-                date: new Date()
 
                 onDateChanged: {
-                    // Синхронизация с комбобоксами
                     monthCombo.currentIndex = date.getMonth()
                     yearCombo.currentIndex = yearCombo.years.indexOf(date.getFullYear())
                     operationPage.date = Qt.formatDate(date, "dd.MM.yyyy")
                 }
             }
-        }
-
-        onOpened: {
-            var today = new Date()
-            datePicker.date = today
         }
 
         onAccepted: {

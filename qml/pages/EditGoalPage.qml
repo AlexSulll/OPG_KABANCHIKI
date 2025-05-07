@@ -8,7 +8,8 @@ Page {
     property var goal
     property var goalModel
 
-    // Вычисляемые свойства
+    property string date: ""
+
     property real monthlyPayment: calculateMonthlyPayment()
 
     function calculateMonthlyPayment() {
@@ -35,10 +36,6 @@ Page {
             width: parent.width
             spacing: Theme.paddingLarge
 
-            PageHeader {
-                title: "Редактирование цели"
-            }
-
             ProgressBar {
                 width: parent.width
                 minimumValue: 0
@@ -64,10 +61,13 @@ Page {
                 validator: DoubleValidator { bottom: 1 }
             }
 
-            DatePicker {
-                id: datePicker
+            TextField {
                 width: parent.width
-//                title: "Дата завершения"
+                placeholderText: "Дата"
+                label: "Дата завершения цели"
+                readOnly: true
+                text: date
+                onClicked: dateDialog.open()
             }
 
             DetailItem {
@@ -78,13 +78,11 @@ Page {
             DetailItem {
                 label: "Ежемесячный взнос"
                 value: monthlyPayment + " ₽"
-//                valueColor: monthlyPayment > 0 ? Theme.primaryColor : Theme.errorColor
             }
 
             Button {
                 text: "Сохранить изменения"
                 anchors.horizontalCenter: parent.horizontalCenter
-//                enabled: isValid
                 onClicked: saveChanges()
             }
 
@@ -94,6 +92,103 @@ Page {
                 color: Theme.errorColor
                 onClicked: deleteGoal()
             }
+        }
+    }
+
+    Dialog {
+        id: dateDialog
+        allowedOrientations: Orientation.All
+
+        Column {
+            width: parent.width
+            spacing: Theme.paddingLarge
+
+            DialogHeader {
+                title: "Выберите дату"
+                acceptText: "ОК"
+                cancelText: "Отмена"
+            }
+
+            Row {
+                width: parent.width
+                spacing: Theme.paddingMedium
+
+                ComboBox {
+                    id: monthCombo
+                    width: parent.width / 2 - Theme.paddingMedium/2
+                    label: "Месяц"
+                    currentIndex: datePicker.date.getMonth()
+
+                    menu: ContextMenu {
+                        Repeater {
+                            model: {
+                                var locale = Qt.locale("ru_RU")
+                                var months = []
+                                for (var i = 0; i < 12; i++) {
+                                    var monthName = locale.standaloneMonthName(i, Locale.LongFormat)
+                                    months.push(monthName.charAt(0).toUpperCase() + monthName.slice(1))
+                                }
+                                return months
+                            }
+                            MenuItem { text: modelData }
+                        }
+                    }
+
+                    onCurrentIndexChanged: {
+                        if (datePicker.date) {
+                            var newDate = new Date(datePicker.date)
+                            newDate.setMonth(currentIndex)
+                            datePicker.date = newDate
+                        }
+                    }
+                }
+
+                ComboBox {
+                    id: yearCombo
+                    width: parent.width / 2 - Theme.paddingMedium/2
+                    label: "Год"
+                    currentIndex: 5
+
+                    property var years: (function() {
+                        var arr = []
+                        var currentYear = new Date().getFullYear()
+                        for (var i = currentYear - 3; i <= currentYear + 3; i++) {
+                            arr.push(i)
+                        }
+                        return arr
+                    })()
+
+                    menu: ContextMenu {
+                        Repeater {
+                            model: yearCombo.years
+                            MenuItem { text: modelData }
+                        }
+                    }
+
+                    onCurrentIndexChanged: {
+                        if (datePicker.date) {
+                            var newDate = new Date(datePicker.date)
+                            newDate.setFullYear(years[currentIndex])
+                            datePicker.date = newDate
+                        }
+                    }
+                }
+            }
+
+            DatePicker {
+                id: datePicker
+                width: parent.width
+
+                onDateChanged: {
+                    monthCombo.currentIndex = date.getMonth()
+                    yearCombo.currentIndex = yearCombo.years.indexOf(date.getFullYear())
+                    editGoalPage.date = Qt.formatDate(date, "dd.MM.yyyy")
+                }
+            }
+        }
+
+        onAccepted: {
+            editGoalPage.date = Qt.formatDate(datePicker.date, "dd.MM.yyyy")
         }
     }
 

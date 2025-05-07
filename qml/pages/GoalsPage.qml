@@ -11,23 +11,37 @@ Page {
         goalModel.refresh();
     }
 
+    HeaderCategoryComponent {
+        id: header
+        fontSize: Theme.fontSizeExtraLarge*1.2
+        color: "transparent"
+        headerText: "Финансовые цели"
+        anchors {
+            top: parent.top
+            left: parent.left
+            right: parent.right
+        }
+    }
+
     SilicaFlickable {
-        anchors.fill: parent
+        anchors {
+            top: header.bottom
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+        }
         contentHeight: column.height
 
         Column {
             id: column
             width: parent.width
-
-            PageHeader {
-                title: "Финансовые цели"
-                titleColor: Theme.primaryColor
-            }
+            anchors.top: header.bottom
 
             Repeater {
                 model: goalModel
                 delegate: GoalItemDelegate {}
             }
+
             Button {
                 text: "Добавить цель"
                 color: "white"

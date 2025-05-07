@@ -5,8 +5,13 @@ Dialog {
     id: addGoalPage
 
     property string date: Qt.formatDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), "dd.MM.yyyy")
-
+    property bool allFieldsValid: titleField.text.trim() !== "" &&
+                                    amountField.text.trim() !== "" &&
+                                    !isNaN(parseFloat(amountField.text)) &&
+                                    parseFloat(amountField.text) > 0
     property var goalModel
+
+    canAccept: allFieldsValid
 
     Column {
         width: parent.width

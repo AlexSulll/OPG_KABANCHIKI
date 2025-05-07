@@ -176,6 +176,35 @@ QtObject {
         return categories
     }
 
+    function getOperationCountByCategory(type) {
+        var db = getDatabase();
+        var categories = [];
+
+        db.readTransaction(function(tx) {
+            var rs = tx.executeSql(
+                "SELECT
+                    categories.nameCategory as name,
+                    COUNT(operations.id) as operationCount
+                FROM operations
+                JOIN categories
+                    ON categories.categoryId = operations.categoryId AND operations.action = ?
+                GROUP BY categories.categoryId
+                ORDER BY operationCount DESC",
+                [type]
+            );
+
+            for (var i = 0; i < rs.rows.length; i++) {
+                var item = rs.rows.item(i);
+                categories.push({
+                    name: item.name,
+                    operationCount: item.operationCount
+                });
+            }
+        });
+
+        return categories;
+    }
+
     function getOperationByCategory(categoryId, type) {
         var db = getDatabase()
         var operations = []
@@ -358,5 +387,54 @@ QtObject {
         }
 
         return { fromDate: fromDate, toDate: toDate };
+    }
+
+    function getExpensesByMonth(monthName) {
+        var db = getDatabase();
+        var categories = [];
+        var currentYear = new Date().getFullYear().toString();
+
+        // Month name to number mapping (uppercase)
+        var monthNumber = {
+            "JAN": 1, "FEB": 2, "MAR": 3, "APR": 4, "MAY": 5, "JUN": 6,
+            "JUL": 7, "AUG": 8, "SEP": 9, "OCT": 10, "NOV": 11, "DEC": 12
+        }[monthName.toUpperCase()];
+
+        if (!monthNumber) {
+            console.error("Invalid month name:", monthName);
+            return [];
+        }
+
+        db.readTransaction(function(tx) {
+            // Format month with leading zero
+            var monthStr = monthNumber < 10 ? "0" + monthNumber : monthNumber.toString();
+
+            // SQL query using dd.mm.yyyy format
+            var query = "SELECT " +
+                       "operations.categoryId, " +
+                       "categories.nameCategory as categoryName, " +
+                       "SUM(operations.amount) as totalExpenses " +
+                       "FROM operations " +
+                       "JOIN categories ON categories.categoryId = operations.categoryId " +
+                       "WHERE " +
+                       "operations.action = 0 AND " +
+                       "substr(date, 4, 2) = ? AND " +  // Month (positions 4-5)
+                       "substr(date, 7, 4) = ? " +     // Year (positions 7-10)
+                       "GROUP BY operations.categoryId " +
+                       "ORDER BY totalExpenses DESC";
+
+            var rs = tx.executeSql(query, [monthStr, currentYear]);
+
+            for (var i = 0; i < rs.rows.length; i++) {
+                var item = rs.rows.item(i);
+                categories.push({
+                    categoryName: item.categoryName,
+                    value: item.totalExpenses || 0,
+                });
+            }
+        });
+
+        console.log("MonthCategory: ", JSON.stringify(categories));
+        return categories;
     }
 }

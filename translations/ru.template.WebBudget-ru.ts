@@ -12,40 +12,30 @@
 <context>
     <name>AnalyticsPage</name>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="121"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="139"/>
         <source>За время использования
 приложения потрачено</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="152"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="170"/>
         <source>В среднем вы
 тратили в месяц</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="196"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="215"/>
         <source>Количество операций: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="215"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="235"/>
         <source>Самая популярная категория: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="235"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="255"/>
         <source>Целей достигнуто: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="304"/>
-        <source>No data available</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="304"/>
-        <source>Loading...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

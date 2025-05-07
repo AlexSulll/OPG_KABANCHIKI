@@ -19,6 +19,7 @@ DISTFILES += \
     qml/components/HeaderCategoryComponent.qml \
     qml/components/HeaderComponent.qml \
     qml/components/MainCardComponent.qml \
+    qml/components/MonthPopup.qml \
     qml/components/OperationDelegate.qml \
     qml/components/SideDrawerComponent.qml \
     qml/components/TimeSeriesGraph.qml \

@@ -13,6 +13,7 @@ HEADERS += \
 DISTFILES += \
     qml/components/CategoryDelegate.qml \
     qml/components/CategoryDisplay.qml \
+    qml/components/CategorySelector.qml \
     qml/components/FullscreenGraphic.qml \
     qml/components/GoalItemDelegate.qml \
     qml/components/GraphicContainerComponent.qml \
@@ -21,6 +22,7 @@ DISTFILES += \
     qml/components/MainCardComponent.qml \
     qml/components/MonthPopup.qml \
     qml/components/OperationDelegate.qml \
+    qml/components/RegularPaymentItem.qml \
     qml/components/SideDrawerComponent.qml \
     qml/components/TimeSeriesGraph.qml \
     qml/models/CategoryModel.qml \
@@ -28,6 +30,7 @@ DISTFILES += \
     qml/models/GoalModel.qml \
     qml/models/LimitModel.qml \
     qml/models/OperationModel.qml \
+    qml/models/RegularPaymentsModel.qml \
     qml/models/SectorsModel.qml \
     qml/models/SideMenuModel.qml \
     qml/pages/AddCategoryPage.qml \
@@ -46,6 +49,7 @@ DISTFILES += \
     qml/services/CategoryService.qml \
     qml/services/GoalService.qml \
     qml/services/OperationService.qml \
+    qml/services/RegularPaymentsService.qml \
     rpm/ru.template.WebBudget.spec \
 
 AURORAAPP_ICONS = 86x86 108x108 128x128 172x172

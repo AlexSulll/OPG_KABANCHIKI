@@ -102,7 +102,9 @@ Item {
                         }
 
                         if (page === "../pages/RegularOperationPage.qml") {
-                            pageStack.push(Qt.resolvedUrl("../pages/RegularOperationPage.qml"));
+                            pageStack.push(Qt.resolvedUrl("../pages/RegularOperationPage.qml"), {
+                                    categoryModel: categoryModel
+                            });
                         }
                     }
                 }

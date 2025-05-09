@@ -236,23 +236,7 @@ ListModel {
         return service.getExpensesByMonth(month)
     }
 
-    function exportOperations(params) {
-        var operations = getOperationsForExport(params)
-        var exporter = Qt.createQmlObject('import QtQuick 2.0; ExportHelper {}', this)
-
-        var result = exporter.exportData({
-            data: operations,
-            format: params.format,
-            includeHeader: params.includeHeader,
-            folder: fileService.getExportFolder()
-        })
-
-        return {
-            success: result.success,
-            filePath: result.filePath,
-            fileName: result.fileName,
-            count: operations.length,
-            fileSize: result.fileSize
-        }
+    function getOperationsForExport(params) {
+        return service.getOperationsForExport(params);
     }
 }

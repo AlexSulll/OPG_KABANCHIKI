@@ -1,28 +1,36 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import Nemo.DBus 2.0
+import Nemo.Configuration 1.0
 import "../models" as Models
-import "../services" as Services
-import Qt.labs.folderlistmodel 2.1
 
 Page {
     id: exportPage
     allowedOrientations: Orientation.All
 
-    property var operationModel
-    property var fileService: Services.FileService {}
-    property string exportPath: ""
+    property string exportStatus: ""
     property bool exportInProgress: false
+    property string suggestedFileName: ""
+    property var operations: []
+
+    ConfigurationValue {
+        id: documentsPath
+        key: "/desktop/nemo/preferences/documents_path"
+        defaultValue: StandardPaths.documents
+    }
+
+    Models.OperationModel {
+        id: operationModel
+    }
+
+    Models.CategoryModel {
+        id: categoryModel
+        Component.onCompleted: loadAllCategories()
+    }
 
     SilicaFlickable {
         anchors.fill: parent
         contentHeight: column.height
-
-        PullDownMenu {
-            MenuItem {
-                text: "Очистить историю экспорта"
-                onClicked: clearExportHistory()
-            }
-        }
 
         Column {
             id: column
@@ -37,36 +45,17 @@ Page {
                 id: periodCombo
                 width: parent.width
                 label: "Период экспорта"
-                currentIndex: 0
                 menu: ContextMenu {
                     MenuItem { text: "За последний месяц" }
                     MenuItem { text: "За последние 3 месяца" }
-                    MenuItem { text: "За последние 6 месяцев" }
-                    MenuItem { text: "За последний год" }
                     MenuItem { text: "За все время" }
-                    MenuItem { text: "Произвольный период" }
                 }
-            }
-
-            DatePicker {
-                id: startDatePicker
-                width: parent.width
-                date: new Date(Date.now() - 30*24*60*60*1000) // 30 дней назад
-                visible: periodCombo.currentIndex === 5
-            }
-
-            DatePicker {
-                id: endDatePicker
-                width: parent.width
-                date: new Date()
-                visible: periodCombo.currentIndex === 5
             }
 
             ComboBox {
                 id: typeCombo
                 width: parent.width
                 label: "Тип операций"
-                currentIndex: 0
                 menu: ContextMenu {
                     MenuItem { text: "Все операции" }
                     MenuItem { text: "Только доходы" }
@@ -74,30 +63,22 @@ Page {
                 }
             }
 
-            ComboBox {
-                id: formatCombo
+            TextField {
+                id: fileNameField
                 width: parent.width
-                label: "Формат экспорта"
-                currentIndex: 0
-                menu: ContextMenu {
-                    MenuItem { text: "CSV (Excel)" }
-                    MenuItem { text: "JSON" }
-                    MenuItem { text: "XML" }
-                }
-            }
-
-            TextSwitch {
-                id: includeHeaderSwitch
-                text: "Включать заголовки столбцов"
-                checked: true
-                visible: formatCombo.currentIndex === 0
+                label: "Имя файла"
+                placeholderText: "Введите имя файла"
+                text: suggestedFileName
             }
 
             Button {
-                text: "Сформировать отчет"
+                text: "Экспортировать в файл"
                 anchors.horizontalCenter: parent.horizontalCenter
-                enabled: !exportInProgress
-                onClicked: generateExportFile()
+                enabled: !exportInProgress && fileNameField.text.length > 0
+                onClicked: {
+                    // Сначала получаем данные
+                    getOperationsForExport()
+                }
             }
 
             Label {
@@ -106,89 +87,88 @@ Page {
                 horizontalAlignment: Text.AlignHCenter
                 color: Theme.highlightColor
                 wrapMode: Text.Wrap
-            }
-
-            Button {
-                text: "Поделиться файлом"
-                anchors.horizontalCenter: parent.horizontalCenter
-                visible: exportPath !== "" && !exportInProgress
-                onClicked: shareFile()
-            }
-
-            Button {
-                text: "Открыть папку с файлами"
-                anchors.horizontalCenter: parent.horizontalCenter
-                visible: exportPath !== "" && !exportInProgress
-                onClicked: openExportFolder()
+                text: exportStatus
             }
         }
     }
 
-    function generateExportFile() {
+    Component.onCompleted: {
+        suggestedFileName = "operations_" + Qt.formatDateTime(new Date(), "yyyyMMdd") + ".txt"
+    }
+
+    function getOperationsForExport() {
         exportInProgress = true
-        statusLabel.text = "Формирование отчета..."
+        exportStatus = "Получение данных..."
 
-        var period = periodCombo.currentIndex
-        var type = typeCombo.currentIndex
-        var format = formatCombo.currentIndex
-        var includeHeader = includeHeaderSwitch.checked
-
-        var startDate = period === 5 ? startDatePicker.date : null
-        var endDate = period === 5 ? endDatePicker.date : null
-
-        var result = operationModel.exportOperations({
-            period: period,
-            type: type,
-            format: format,
-            includeHeader: includeHeader,
-            startDate: startDate,
-            endDate: endDate
+        // Вызываем метод модели для получения операций
+        operations = operationModel.getOperationsForExport({
+            period: periodCombo.currentIndex,
+            type: typeCombo.currentIndex
         })
 
-        if (result.success) {
-            exportPath = result.filePath
-            statusLabel.text = "Файл успешно сохранен:\n" + result.fileName +
-                             "\nОпераций экспортировано: " + result.count +
-                             "\nРазмер: " + formatFileSize(result.fileSize)
+        if (operations && operations.length > 0) {
+            exportStatus = "Найдено операций: " + operations.length
+            prepareExportData()
         } else {
-            statusLabel.text = "Ошибка: " + result.error
+            exportStatus = "Нет операций для экспорта"
+            exportInProgress = false
+        }
+    }
+
+    function prepareExportData() {
+        exportStatus = "Подготовка данных..."
+
+        var filePath = documentsPath.value + "/" + fileNameField.text
+
+        // Формируем текстовые данные
+        var textData = "Список операций\n\n"
+        for (var i = 0; i < operations.length; i++) {
+            var op = operations[i]
+            var categoryName = categoryModel.getCategoryName(op.categoryId) || "Без категории"
+            textData += "Дата: " + op.date + "\n" +
+                       "Категория: " + categoryName + "\n" +
+                       "Сумма: " + op.amount + " ₽\n" +
+                       "Тип: " + (op.type === 1 ? "Доход" : "Расход") + "\n" +
+                       "Описание: " + (op.description || "-") + "\n" +
+                       "----------------------------\n"
+        }
+
+        var fullPath = saveToFile(textData)
+
+        if (fullPath) {
+            pageStack.push(Qt.resolvedUrl("ExportResultDialog.qml"), {
+                fileName: fileNameField.text,
+                dataSize: textData.length,
+                operationsCount: operations.length,
+                sampleData: textData,
+                filePath: filePath
+            })
+        } else {
+            exportStatus = "Ошибка сохранения файла"
         }
 
         exportInProgress = false
     }
 
-    function shareFile() {
-        if (exportPath !== "") {
-            Qt.openUrlExternally("file://" + exportPath)
+    function saveToFile(textData) {
+            var filePath = documentsPath.value + "/" + fileNameField.text
+
+            try {
+                // Используем FileIO из QtDocs или аналоги
+                if (typeof FileIO !== 'undefined') {
+                    FileIO.write(filePath, textData)
+                    return filePath
+                }
+                // Альтернативный вариант через XMLHttpRequest
+                else {
+                    var xhr = new XMLHttpRequest()
+                    xhr.open("PUT", "file://" + filePath, false)
+                    xhr.send(textData)
+                    return (xhr.status === 0 || xhr.status === 200) ? filePath : ""
+                }
+            } catch(e) {
+                console.log("Error saving file:", e)
+                return ""
+            }
         }
-    }
-
-    function openExportFolder() {
-        var folder = fileService.getExportFolder()
-        Qt.openUrlExternally("file://" + folder)
-    }
-
-    function clearExportHistory() {
-        if (fileService.clearExportFolder()) {
-            exportPath = ""
-            statusLabel.text = "История экспорта очищена"
-        } else {
-            statusLabel.text = "Ошибка при очистке истории"
-        }
-    }
-
-    function formatFileSize(bytes) {
-        if (bytes < 1024) return bytes + " Б"
-        if (bytes < 1048576) return (bytes/1024).toFixed(1) + " КБ"
-        return (bytes/1048576).toFixed(1) + " МБ"
-    }
-
-    Component.onCompleted: {
-        // Проверяем доступность места при загрузке страницы
-        var storageInfo = fileService.checkStorage()
-        if (!storageInfo.hasSpace) {
-            statusLabel.text = "Внимание: мало свободного места (" +
-                             formatFileSize(storageInfo.freeSpace) + ")"
-        }
-    }
 }

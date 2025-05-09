@@ -437,4 +437,46 @@ QtObject {
         console.log("MonthCategory: ", JSON.stringify(categories));
         return categories;
     }
+
+    function getOperationsForExport(params) {
+        var operations = []
+        var db = getDatabase()
+
+        db.transaction(function(tx) {
+            var query = "SELECT * FROM operations WHERE 1=1"
+            var args = []
+
+            // Фильтр по типу
+            if (params.type === 1) { // Только доходы
+                query += " AND action = ?"
+                args.push(1)
+            } else if (params.type === 2) { // Только расходы
+                query += " AND action = ?"
+                args.push(0)
+            }
+
+            // Фильтр по дате
+            if (params.period !== 2) { // Если не "Все время"
+                var now = new Date()
+                var startDate = new Date()
+
+                if (params.period === 0) { // 1 месяц
+                    startDate.setMonth(now.getMonth() - 1)
+                } else { // 3 месяца
+                    startDate.setMonth(now.getMonth() - 3)
+                }
+
+                query += " AND date BETWEEN ? AND ?"
+                args.push(Qt.formatDate(startDate, "yyyy-MM-dd"))
+                args.push(Qt.formatDate(now, "yyyy-MM-dd"))
+            }
+
+            var rs = tx.executeSql(query, args)
+            for (var i = 0; i < rs.rows.length; i++) {
+                operations.push(rs.rows.item(i))
+            }
+        })
+
+        return operations
+    }
 }

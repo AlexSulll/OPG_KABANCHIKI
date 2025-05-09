@@ -41,13 +41,13 @@ DISTFILES += \
     qml/pages/EditCategoryPage.qml \
     qml/pages/EditGoalPage.qml \
     qml/pages/ExportPage.qml \
+    qml/pages/ExportResultDialog.qml \
     qml/pages/GoalsPage.qml \
     qml/pages/LimitCategoryPage.qml \
     qml/pages/OperationDetailsPage.qml \
     qml/pages/OperationPage.qml \
     qml/pages/RegularOperationPage.qml \
     qml/services/CategoryService.qml \
-    qml/services/FileService.qml \
     qml/services/GoalService.qml \
     qml/services/OperationService.qml \
     qml/services/RegularPaymentsService.qml \

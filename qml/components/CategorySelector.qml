@@ -8,43 +8,71 @@ ComboBox {
 
     property var categoryModel
     property int selectedCategoryId: -1
-    property int currentCategoryType: 0 // 0 - расход, 1 - доход
+    property int currentCategoryType: 0
+    property bool initialized: false
 
-    // Обновляем список при изменении типа категории
-    onCurrentCategoryTypeChanged: {
-        categoryModel.loadCategoriesByType(currentCategoryType)
+    // Фильтруем категории, исключая ID 8 и 13
+    property var filteredCategories: {
+        var result = [];
+        if (categoryModel) {
+            for (var i = 0; i < categoryModel.count; i++) {
+                var cat = categoryModel.get(i);
+                if (cat.categoryId !== 8 && cat.categoryId !== 13) {
+                    result.push(cat);
+                }
+            }
+        }
+        return result;
     }
 
     menu: ContextMenu {
+        MenuItem {
+            text: "Выберите категорию"
+            onClicked: {
+                selectedCategoryId = -1;
+                currentIndex = 0;
+            }
+        }
+
         Repeater {
-            model: categoryModel
+            model: filteredCategories
 
             delegate: MenuItem {
-                text: nameCategory
+                text: modelData.nameCategory
                 onClicked: {
-                    selectedCategoryId = categoryId
+                    selectedCategoryId = modelData.categoryId;
                 }
             }
         }
     }
 
-    // Инициализация и обновления
-    Component.onCompleted: {
-        if (categoryModel) {
-            categoryModel.loadCategoriesByType(currentCategoryType)
+    onCurrentCategoryTypeChanged: {
+        if (initialized) {
+            resetSelection();
         }
     }
 
-    // Обновление выбранного значения
+    Component.onCompleted: {
+        initialized = true;
+        resetSelection();
+    }
+
+    function resetSelection() {
+        selectedCategoryId = -1;
+        currentIndex = 0;
+    }
+
     onSelectedCategoryIdChanged: {
-        if (selectedCategoryId > 0) {
-            var index = categoryModel.getIndexById(selectedCategoryId)
-            if (index >= 0) {
-                currentIndex = index
-            }
+        if (selectedCategoryId === -1) {
+            currentIndex = 0;
         } else {
-            currentIndex = -1
-            currentItem.text = "Выберите категорию"
+            // Находим индекс категории в filteredCategories
+            for (var i = 0; i < filteredCategories.length; i++) {
+                if (filteredCategories[i].categoryId === selectedCategoryId) {
+                    currentIndex = i + 1; // +1 из-за пункта "Выберите категорию"
+                    break;
+                }
+            }
         }
     }
 }

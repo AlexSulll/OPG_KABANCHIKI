@@ -164,7 +164,7 @@ Page {
                     icon.source: "image://theme/icon-l-whereami"
                     anchors.centerIn: parent
                     onClicked: {
-                        pageStack.push(Qt.resolvedUrl("../pages/GoalsPage.qml"), {
+                        pageStack.push(Qt.resolvedUrl("GoalsPage.qml"), {
                             goalModel: goalModel
                         })
                     }
@@ -189,7 +189,7 @@ Page {
                     anchors.centerIn: parent
                     onClicked: {
                         pageStack.push(Qt.resolvedUrl("../pages/ExportPage.qml"), {
-//                            operationModel: operationModel,
+                            operationModel: operationModel
 //                            categoryModel: categoryModel,
 //                            action: selectedTab === "expenses" ? 0 : 1,
 //                            selectedTab: mainpage.selectedTab

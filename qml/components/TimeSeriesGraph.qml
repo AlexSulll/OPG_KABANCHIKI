@@ -2,7 +2,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 Item {
-    
+
     property var model: []
     property bool isExpense: true
     property color lineColor: isExpense ? Theme.errorColor : Theme.highlightColor

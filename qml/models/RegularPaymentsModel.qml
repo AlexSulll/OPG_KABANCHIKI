@@ -2,10 +2,9 @@ import QtQuick 2.0
 import "../services" as Services
 
 QtObject {
-    id: regularPaymentsModel
+    id: model
 
     property var payments: []
-    property int count: payments.length
     property var regularPaymentsService: Services.RegularPaymentsService {}
 
     signal paymentsUpdated()
@@ -21,14 +20,18 @@ QtObject {
         return result;
     }
 
-    function removePayment(id) {
-        var result = regularPaymentsService.removePayment(id);
+    function updatePayment(payment) {
+        var result = regularPaymentsService.updatePayment(payment);
         if (result) loadPayments();
         return result;
     }
 
-    function updatePayment(payment) {
-        var result = regularPaymentsService.updatePayment(payment);
+    function calculateNextDate(fromDate, frequency) {
+        return regularPaymentsService.calculateNextDate(fromDate, frequency);
+    }
+
+    function removePayment(id) {
+        var result = regularPaymentsService.removePayment(id);
         if (result) loadPayments();
         return result;
     }

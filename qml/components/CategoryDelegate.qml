@@ -4,7 +4,7 @@ import Sailfish.Silica 1.0
 BackgroundItem {
 
     signal categorySelected(int id)
-    
+
     property int categoryId: -1
     property string nameCategory: ""
     property string pathToIcon: ""

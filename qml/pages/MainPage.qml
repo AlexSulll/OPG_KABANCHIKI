@@ -2,6 +2,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../components"
 import "../models" as Models
+import "../services" as Services
 
 BasePage {
 
@@ -11,9 +12,19 @@ BasePage {
     property string selectedTab: "expenses"
     property int action: 0
     property bool isExpense: action === 0
-    
+
+    property var regularPaymentsModel: Models.RegularPaymentsModel {}
+    property var operationService: Services.OperationService {}
     property var categoryModel: Models.CategoryModel {}
     property var sectors: Models.SectorsModel {}
+
+    Timer {
+        id: paymentCheckTimer
+        interval: 1000
+        running: true
+        repeat: true
+        onTriggered: checkRegularPayments()
+    }
 
     Models.CategoryModel {
         id: categoryModel
@@ -36,11 +47,14 @@ BasePage {
         dateFilterModel: dateFilter
     }
 
+    onVisibleChanged: regularPaymentsModel.loadPayments();
+
     Component.onCompleted: {
         categoryModel.loadAllCategories();
         operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1);
         operationModel.calculateTotalBalance();
-        sectorModel.calculateChartData(operationModel, 0)
+        sectorModel.calculateChartData(operationModel, 0);
+        regularPaymentsModel.loadPayments();
     }
 
     HeaderComponent {
@@ -180,4 +194,42 @@ BasePage {
 
         VerticalScrollDecorator {}
     }
+
+    function checkRegularPayments() {
+            var now = new Date();
+            var payments = regularPaymentsModel.payments;
+            var processedCount = 0;
+
+            for (var i = 0; i < payments.length; i++) {
+                var payment = payments[i];
+                var nextDate = new Date(payment.nextPaymentDate);
+                var lastProcessed = new Date(payment.lastProcessedDate || 0);
+
+                if (nextDate <= now && nextDate > lastProcessed) {
+                    var operation = {
+                        amount: payment.amount,
+                        action: payment.isIncome ? 1 : 0,
+                        categoryId: payment.categoryId,
+                        date: Qt.formatDate(nextDate, "dd.MM.yyyy"),
+                        desc: payment.description + " (Автоплатеж)"
+                    };
+
+                    if (operationService.addOperation(operation)) {
+                        // Обновляем даты платежа
+                        payment.lastProcessedDate = nextDate.toISOString();
+                        payment.nextPaymentDate = regularPaymentsModel.calculateNextDate(nextDate, payment.frequency);
+                        regularPaymentsModel.updatePayment(payment);
+
+                        processedCount++;
+                        console.log("Добавлена операция для платежа ID:", payment.id);
+                    }
+                }
+            }
+
+            if (processedCount > 0) {
+                console.log("Обработано платежей:", processedCount);
+                // Обновляем список операций
+                operationModel.loadByTypeOperation(action);
+            }
+        }
 }

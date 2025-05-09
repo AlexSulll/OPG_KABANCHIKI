@@ -1,16 +1,28 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../models" as Models
+import "../services" as Services
+import Qt.labs.folderlistmodel 2.1
 
 Page {
     id: exportPage
     allowedOrientations: Orientation.All
 
     property var operationModel
+    property var fileService: Services.FileService {}
+    property string exportPath: ""
+    property bool exportInProgress: false
 
     SilicaFlickable {
         anchors.fill: parent
         contentHeight: column.height
+
+        PullDownMenu {
+            MenuItem {
+                text: "Очистить историю экспорта"
+                onClicked: clearExportHistory()
+            }
+        }
 
         Column {
             id: column
@@ -29,9 +41,25 @@ Page {
                 menu: ContextMenu {
                     MenuItem { text: "За последний месяц" }
                     MenuItem { text: "За последние 3 месяца" }
+                    MenuItem { text: "За последние 6 месяцев" }
                     MenuItem { text: "За последний год" }
                     MenuItem { text: "За все время" }
+                    MenuItem { text: "Произвольный период" }
                 }
+            }
+
+            DatePicker {
+                id: startDatePicker
+                width: parent.width
+                date: new Date(Date.now() - 30*24*60*60*1000) // 30 дней назад
+                visible: periodCombo.currentIndex === 5
+            }
+
+            DatePicker {
+                id: endDatePicker
+                width: parent.width
+                date: new Date()
+                visible: periodCombo.currentIndex === 5
             }
 
             ComboBox {
@@ -46,16 +74,30 @@ Page {
                 }
             }
 
+            ComboBox {
+                id: formatCombo
+                width: parent.width
+                label: "Формат экспорта"
+                currentIndex: 0
+                menu: ContextMenu {
+                    MenuItem { text: "CSV (Excel)" }
+                    MenuItem { text: "JSON" }
+                    MenuItem { text: "XML" }
+                }
+            }
+
             TextSwitch {
                 id: includeHeaderSwitch
                 text: "Включать заголовки столбцов"
                 checked: true
+                visible: formatCombo.currentIndex === 0
             }
 
             Button {
-                text: "Сформировать CSV"
+                text: "Сформировать отчет"
                 anchors.horizontalCenter: parent.horizontalCenter
-                onClicked: generateCSV()
+                enabled: !exportInProgress
+                onClicked: generateExportFile()
             }
 
             Label {
@@ -69,33 +111,84 @@ Page {
             Button {
                 text: "Поделиться файлом"
                 anchors.horizontalCenter: parent.horizontalCenter
-                visible: exportPath !== ""
+                visible: exportPath !== "" && !exportInProgress
                 onClicked: shareFile()
+            }
+
+            Button {
+                text: "Открыть папку с файлами"
+                anchors.horizontalCenter: parent.horizontalCenter
+                visible: exportPath !== "" && !exportInProgress
+                onClicked: openExportFolder()
             }
         }
     }
 
-    property string exportPath: ""
+    function generateExportFile() {
+        exportInProgress = true
+        statusLabel.text = "Формирование отчета..."
 
-    function generateCSV() {
-        var period = periodCombo.currentIndex;
-        var type = typeCombo.currentIndex;
-        var includeHeader = includeHeaderSwitch.checked;
+        var period = periodCombo.currentIndex
+        var type = typeCombo.currentIndex
+        var format = formatCombo.currentIndex
+        var includeHeader = includeHeaderSwitch.checked
 
-        var csvData = operationModel.exportToCSV(period, type, includeHeader);
+        var startDate = period === 5 ? startDatePicker.date : null
+        var endDate = period === 5 ? endDatePicker.date : null
 
-        if (csvData) {
-            exportPath = csvData.filePath;
-            statusLabel.text = "Файл сохранен: " + csvData.fileName +
-                             "\nОпераций экспортировано: " + csvData.recordCount;
+        var result = operationModel.exportOperations({
+            period: period,
+            type: type,
+            format: format,
+            includeHeader: includeHeader,
+            startDate: startDate,
+            endDate: endDate
+        })
+
+        if (result.success) {
+            exportPath = result.filePath
+            statusLabel.text = "Файл успешно сохранен:\n" + result.fileName +
+                             "\nОпераций экспортировано: " + result.count +
+                             "\nРазмер: " + formatFileSize(result.fileSize)
         } else {
-            statusLabel.text = "Ошибка при экспорте данных";
+            statusLabel.text = "Ошибка: " + result.error
         }
+
+        exportInProgress = false
     }
 
     function shareFile() {
         if (exportPath !== "") {
-            Qt.openUrlExternally("file://" + exportPath);
+            Qt.openUrlExternally("file://" + exportPath)
+        }
+    }
+
+    function openExportFolder() {
+        var folder = fileService.getExportFolder()
+        Qt.openUrlExternally("file://" + folder)
+    }
+
+    function clearExportHistory() {
+        if (fileService.clearExportFolder()) {
+            exportPath = ""
+            statusLabel.text = "История экспорта очищена"
+        } else {
+            statusLabel.text = "Ошибка при очистке истории"
+        }
+    }
+
+    function formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + " Б"
+        if (bytes < 1048576) return (bytes/1024).toFixed(1) + " КБ"
+        return (bytes/1048576).toFixed(1) + " МБ"
+    }
+
+    Component.onCompleted: {
+        // Проверяем доступность места при загрузке страницы
+        var storageInfo = fileService.checkStorage()
+        if (!storageInfo.hasSpace) {
+            statusLabel.text = "Внимание: мало свободного места (" +
+                             formatFileSize(storageInfo.freeSpace) + ")"
         }
     }
 }

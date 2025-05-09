@@ -7,7 +7,15 @@ ListItem {
     contentHeight: Theme.itemSizeMedium
 
     property var paymentData
+    property var categoryModel // Добавляем модель категорий
     signal deleteRequested(int id)
+
+    // Получаем название категории
+    property string categoryName: {
+        if (!paymentData || !categoryModel) return "Без категории"
+        var cat = categoryModel.getCategoryById(paymentData.categoryId)
+        return cat ? cat.nameCategory : "Без категории"
+    }
 
     Row {
         width: parent.width - 2*Theme.horizontalPageMargin
@@ -25,7 +33,7 @@ ListItem {
             }
 
             Label {
-                text: (paymentData.categoryName || "Без категории") + " • " + getFrequencyText(paymentData.frequency || 0)
+                text: categoryName + " • " + frequencyText
                 color: listItem.highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
                 font.pixelSize: Theme.fontSizeSmall
                 width: parent.width
@@ -46,12 +54,19 @@ ListItem {
         }
     }
 
-    function getFrequencyText(frequency) {
-        switch(frequency) {
-            case 0: return "Ежемесячно";
-            case 1: return "Ежеквартально";
-            case 2: return "Ежегодно";
-            default: return "";
+    // Текст периодичности с правильными значениями
+    property string frequencyText: {
+        if (!paymentData) return ""
+        switch(paymentData.frequency) {
+            case 0: return "Ежедневно"
+            case 1: return "Еженедельно"
+            case 2: return "Каждые 2 недели"
+            case 3: return "Ежемесячно"
+            case 4: return "Каждые 2 месяца"
+            case 5: return "Ежеквартально"
+            case 6: return "Каждые полгода"
+            case 7: return "Ежегодно"
+            default: return ""
         }
     }
 }

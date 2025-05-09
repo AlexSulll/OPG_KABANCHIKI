@@ -2,9 +2,9 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 ListItem {
-    
+
     id: delegate
-    
+
     width: parent.width
     contentHeight: Theme.itemSizeExtraLarge * 2
 

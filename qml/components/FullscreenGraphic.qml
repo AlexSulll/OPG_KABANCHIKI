@@ -2,16 +2,16 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 Page {
-    
+
     id: fullscreenGraphPage
-    
+
     allowedOrientations: Orientation.Landscape
     backgroundColor: "white"
-    
+
     property var timeSeriesData
     property var selectedMonthData
     property real scaleFactor: 0.9
-    
+
     Behavior on scaleFactor { NumberAnimation { duration: 200; easing.type: Easing.OutQuad } }
 
     Component.onCompleted: scaleFactor = 1.0

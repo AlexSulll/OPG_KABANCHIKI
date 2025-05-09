@@ -2,14 +2,14 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 Item {
-    
+
     id: graphic
-    
+
     width: parent.width
     height: 600
     clip: true
     anchors.top: fullStaticCard.bottom
-    
+
     property real pulseSize: 1.0
     property real pulseOpacity: 0.3
     property var availableYears: []
@@ -20,7 +20,7 @@ Item {
             chartCanvas.requestPaint();
         }
     }
-    
+
     Component.onCompleted: {
         chartCanvas.requestPaint();
         availableYears = [2020, 2021, 2022, 2023, 2024];
@@ -137,7 +137,7 @@ Item {
                     var chartTop = 50;
 
                     var points = [];
-                    
+
                     for (var i = 0; i < timeSeriesData.length; i++) {
                         var x = timeSeriesData.length > 1 ? 40 + i * xStep : width / 2;
                         var y = chartBottom - ((timeSeriesData[i].value || 0.0001) / maxValue * (height * 0.6));
@@ -147,11 +147,11 @@ Item {
                     if (timeSeriesData.length > 1) {
                         ctx.beginPath();
                         ctx.moveTo(40, chartBottom);
-                        
+
                         for (var j = 0; j < points.length; j++) {
                             ctx.lineTo(points[j].x, points[j].y);
                         }
-                        
+
                         ctx.lineTo(40 + (timeSeriesData.length - 1) * xStep, chartBottom);
                         ctx.closePath();
 
@@ -172,7 +172,7 @@ Item {
                     if (timeSeriesData.length > 1) {
                         ctx.beginPath();
                         ctx.moveTo(points[0].x, points[0].y);
-                        
+
                         for (var l = 1; l < points.length; l++) {
                             ctx.lineTo(points[l].x, points[l].y);
                         }
@@ -298,7 +298,7 @@ Item {
                             var area = chartCanvas.clickAreas[i];
                             var dx = mouse.x - area.x;
                             var dy = mouse.y - area.y;
-                            
+
                             if (Math.sqrt(dx*dx + dy*dy) <= area.radius) {
                                 selectedMonthData = area.data;
                                 showMonthPopup = true;

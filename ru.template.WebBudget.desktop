@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+X-Nemo-Application-Type=silica-qt5
+Icon=ru.template.WebBudget
+Exec=/usr/bin/ru.template.WebBudget
+Name=WebBudget
+Name[ru]=Финансы
+
+[X-Application]
+Permissions=PushNotifications;Internet;RemovableMedia;UserDirs
+OrganizationName=ru.template
+ApplicationName=WebBudget
+ExecDBus=/usr/bin/ru.template.WebBudget

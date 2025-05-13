@@ -11,7 +11,6 @@ ComboBox {
     property int currentCategoryType: 0
     property bool initialized: false
 
-    // Фильтруем категории, исключая ID 8 и 13
     property var filteredCategories: {
         var result = [];
         if (categoryModel) {
@@ -66,10 +65,9 @@ ComboBox {
         if (selectedCategoryId === -1) {
             currentIndex = 0;
         } else {
-            // Находим индекс категории в filteredCategories
             for (var i = 0; i < filteredCategories.length; i++) {
                 if (filteredCategories[i].categoryId === selectedCategoryId) {
-                    currentIndex = i + 1; // +1 из-за пункта "Выберите категорию"
+                    currentIndex = i + 1;
                     break;
                 }
             }

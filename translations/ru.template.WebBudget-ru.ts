@@ -143,6 +143,14 @@
     </message>
 </context>
 <context>
+    <name>ImportPage</name>
+    <message>
+        <location filename="../qml/pages/ImportPage.qml" line="55"/>
+        <source>Выберите файл CSV</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LimitCategoryPage</name>
     <message>
         <location filename="../qml/pages/LimitCategoryPage.qml" line="94"/>

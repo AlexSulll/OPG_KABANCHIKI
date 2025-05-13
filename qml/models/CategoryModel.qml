@@ -98,4 +98,19 @@ ListModel {
     function removeCategory(categoryId) {
         service.removeCategory(categoryId)
     }
+
+    function getCategoryIdByName(categoryName) {
+        for (var i = 0; i < count; i++) {
+            if (get(i).nameCategory === categoryName) {
+                return get(i).categoryId
+            }
+        }
+        // Если категория не найдена, создаем новую
+        var newCategory = {
+            nameCategory: categoryName,
+            typeCategory: 0 // По умолчанию как расход
+        }
+        addCategory(newCategory)
+        return newCategory.categoryId
+    }
 }

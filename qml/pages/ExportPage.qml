@@ -81,6 +81,16 @@ Page {
                 }
             }
 
+            Button {
+                text: "Импорт"
+                anchors.horizontalCenter: parent.horizontalCenter
+                enabled: !exportInProgress && fileNameField.text.length > 0
+                onClicked: {
+                    pageStack.push(Qt.resolvedUrl("../pages/ImportPage.qml"), {
+                    });
+                }
+            }
+
             Label {
                 id: statusLabel
                 width: parent.width
@@ -93,7 +103,7 @@ Page {
     }
 
     Component.onCompleted: {
-        suggestedFileName = "operations_" + Qt.formatDateTime(new Date(), "yyyyMMdd") + ".txt"
+        suggestedFileName = "operations_" + Qt.formatDateTime(new Date(), "yyyyMMdd") + ".csv"
     }
 
     function getOperationsForExport() {
@@ -116,39 +126,41 @@ Page {
     }
 
     function prepareExportData() {
-        exportStatus = "Подготовка данных..."
+            exportStatus = "Подготовка данных..."
 
-        var filePath = documentsPath.value + "/" + fileNameField.text
+            // Формируем CSV заголовок
+            var csvData = "Дата,Категория,Сумма,Тип,Описание\n"
 
-        // Формируем текстовые данные
-        var textData = "Список операций\n\n"
-        for (var i = 0; i < operations.length; i++) {
-            var op = operations[i]
-            var categoryName = categoryModel.getCategoryName(op.categoryId) || "Без категории"
-            textData += "Дата: " + op.date + "\n" +
-                       "Категория: " + categoryName + "\n" +
-                       "Сумма: " + op.amount + " ₽\n" +
-                       "Тип: " + (op.type === 1 ? "Доход" : "Расход") + "\n" +
-                       "Описание: " + (op.description || "-") + "\n" +
-                       "----------------------------\n"
+            for (var i = 0; i < operations.length; i++) {
+                var op = operations[i]
+                var categoryName = categoryModel.getCategoryName(op.categoryId) || "Без категории"
+
+                // Экранируем специальные символы
+                var desc = op.description || ""
+                desc = desc.replace(/"/g, '""') // Экранируем кавычки
+
+                csvData += '"' + op.date + '","' +
+                          categoryName + '",' +
+                          op.amount + ',"' +
+                          (op.type === 1 ? "Доход" : "Расход") + '","' +
+                          desc + '"\n'
+            }
+
+            var fullPath = saveToFile(csvData)
+
+            if (fullPath) {
+                pageStack.push(Qt.resolvedUrl("ExportResultDialog.qml"), {
+                    fileName: fileNameField.text,
+                    dataSize: csvData.length,
+                    operationsCount: operations.length,
+                    sampleData: csvData.substring(0, 300) + (csvData.length > 300 ? "..." : "")
+                })
+            } else {
+                exportStatus = "Ошибка сохранения файла"
+            }
+
+            exportInProgress = false
         }
-
-        var fullPath = saveToFile(textData)
-
-        if (fullPath) {
-            pageStack.push(Qt.resolvedUrl("ExportResultDialog.qml"), {
-                fileName: fileNameField.text,
-                dataSize: textData.length,
-                operationsCount: operations.length,
-                sampleData: textData,
-                filePath: filePath
-            })
-        } else {
-            exportStatus = "Ошибка сохранения файла"
-        }
-
-        exportInProgress = false
-    }
 
     function saveToFile(textData) {
             var filePath = documentsPath.value + "/" + fileNameField.text

@@ -43,6 +43,7 @@ DISTFILES += \
     qml/pages/ExportPage.qml \
     qml/pages/ExportResultDialog.qml \
     qml/pages/GoalsPage.qml \
+    qml/pages/ImportPage.qml \
     qml/pages/LimitCategoryPage.qml \
     qml/pages/OperationDetailsPage.qml \
     qml/pages/OperationPage.qml \

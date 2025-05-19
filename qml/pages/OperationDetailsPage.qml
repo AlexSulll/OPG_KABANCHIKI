@@ -2,7 +2,6 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 Page {
-
     id: operationDetailsPage
     allowedOrientations: Orientation.All
 
@@ -46,7 +45,9 @@ Page {
                 inputMethodHints: Qt.ImhDigitsOnly
                 text: amount
                 onTextChanged: amount = text
-                validator: IntValidator { bottom: 1 }
+                validator: IntValidator {
+                    bottom: 1
+                }
             }
 
             ComboBox {
@@ -91,7 +92,7 @@ Page {
                                 Row {
                                     anchors.fill: parent
                                     spacing: Theme.paddingMedium
-                                    anchors.leftMargin: Theme.paddingLarge*1.1
+                                    anchors.leftMargin: Theme.paddingLarge * 1.1
 
                                     Image {
                                         source: modelData.pathToIcon || ""
@@ -133,17 +134,17 @@ Page {
                 spacing: Theme.paddingLarge
 
                 Button {
-                    width: parent.width/2 - Theme.paddingMedium
+                    width: parent.width / 2 - Theme.paddingMedium
                     text: "Удалить"
                     color: Theme.errorColor
                     onClicked: {
-                        operationModel.deleteOperation(operationId)
-                        pageStack.replaceAbove(null, Qt.resolvedUrl("MainPage.qml"))
+                        operationModel.deleteOperation(operationId);
+                        pageStack.replaceAbove(null, Qt.resolvedUrl("MainPage.qml"));
                     }
                 }
 
                 Button {
-                    width: parent.width/2 - Theme.paddingMedium
+                    width: parent.width / 2 - Theme.paddingMedium
                     text: "Сохранить"
                     enabled: isValid
                     onClicked: {
@@ -154,8 +155,8 @@ Page {
                             categoryId: categoryId,
                             date: date,
                             desc: desc
-                        })
-                        pageStack.replaceAbove(null, Qt.resolvedUrl("MainPage.qml"))
+                        });
+                        pageStack.replaceAbove(null, Qt.resolvedUrl("MainPage.qml"));
                     }
                 }
             }
@@ -180,12 +181,12 @@ Page {
                 horizontalAlignment: Text.AlignHCenter
                 text: {
                     if (datePicker.date) {
-                        var locale = Qt.locale("ru_RU")
-                        var monthName = locale.standaloneMonthName(datePicker.date.getMonth())
-                        monthName = monthName.charAt(0).toUpperCase() + monthName.slice(1)
-                        return monthName + " " + datePicker.date.getFullYear()
-                     }
-                     return ""
+                        var locale = Qt.locale("ru_RU");
+                        var monthName = locale.standaloneMonthName(datePicker.date.getMonth());
+                        monthName = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+                        return monthName + " " + datePicker.date.getFullYear();
+                    }
+                    return "";
                 }
                 font.pixelSize: Theme.fontSizeLarge
             }
@@ -198,9 +199,9 @@ Page {
                 }
             }
         }
-        
+
         onOpened: {
-            datePicker.date = new Date()
+            datePicker.date = new Date();
         }
     }
 }

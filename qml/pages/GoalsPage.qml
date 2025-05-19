@@ -3,7 +3,6 @@ import Sailfish.Silica 1.0
 import "../components"
 
 Page {
-    
     id: goalsPage
 
     property var goalModel
@@ -14,7 +13,7 @@ Page {
 
     HeaderCategoryComponent {
         id: header
-        fontSize: Theme.fontSizeExtraLarge*1.2
+        fontSize: Theme.fontSizeExtraLarge * 1.2
         color: "transparent"
         headerText: "Финансовые цели"
         anchors {

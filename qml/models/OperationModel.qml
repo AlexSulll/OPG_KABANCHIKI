@@ -3,7 +3,6 @@ import "../services" as Services
 import "../models"
 
 ListModel {
-    
     id: operationModel
     objectName: "OperationModel"
 
@@ -37,23 +36,24 @@ ListModel {
             var ops = service.loadOperations();
             if (ops && ops.length > 0) {
                 loadOperation(ops);
+                calculateTotalBalance();
             }
         }
     }
 
     function loadByTypeOperation(type) {
-        loadOperation(service.getTotalSumByCategory(type))
+        loadOperation(service.getTotalSumByCategory(type));
     }
 
     function loadByTypeCategory(categoryId, action) {
-        loadOperation(service.getOperationByCategory(categoryId, action))
+        loadOperation(service.getOperationByCategory(categoryId, action));
     }
 
     function loadOperation(operations) {
         clear();
-        
+
         if (operations) {
-            operations.forEach(function(op) {
+            operations.forEach(function (op) {
                 append({
                     id: op.id,
                     amount: op.amount,
@@ -63,85 +63,86 @@ ListModel {
                     date: op.date,
                     desc: op.desc,
                     total: op.total || 0
-                })
-            })
+                });
+            });
         }
     }
 
     function getOperationById(id) {
-        
         for (var i = 0; i < count; i++) {
-            if (get(i).id === id) return get(i)
+            if (get(i).id === id)
+                return get(i);
         }
-        
-        return null
+
+        return null;
     }
 
     function updateOperation(operation) {
-        service.updateOperation(operation)
-        refresh()
+        service.updateOperation(operation);
+        refresh();
     }
 
     function deleteOperation(id) {
-        service.deleteOperation(id)
-        refresh()
+        service.deleteOperation(id);
+        refresh();
     }
 
     function parseDate(dateStr) {
         var parts = dateStr.split(".");
-        return parts.length === 3 ? new Date(parts[2], parts[1]-1, parts[0]) : new Date()
+        return parts.length === 3 ? new Date(parts[2], parts[1] - 1, parts[0]) : new Date();
     }
 
     function loadByTypeOperationForCard(type) {
         data = service.getTotalSumByCategory(type);
-        return data
+        return data;
     }
 
     function loadByTypeOperationForCardAndDateFiltering(type, period) {
-        
-        if (period==="All") {
-            loadByTypeOperationForCard(type)
+        if (period === "All") {
+            loadByTypeOperationForCard(type);
         }
-        
+
         data = service.getFilteredCategories(type, period);
-        return data
+        return data;
     }
 
     function formatDateForSQL(date) {
-        if (!date) return ""
-        return Qt.formatDate(date, "yyyy-MM-dd")
+        if (!date)
+            return "";
+        return Qt.formatDate(date, "yyyy-MM-dd");
     }
 
     function getTotalSum() {
-        var sum = 0
-        if (!operationModel) return 0
+        var sum = 0;
+        if (!operationModel)
+            return 0;
 
         for (var i = 0; i < operationModel.count; i++) {
-            var item = operationModel.get(i)
+            var item = operationModel.get(i);
             if (item && ((!action && item.action === 0) || (action && item.action === 1))) {
-                sum += item.total || 0
+                sum += item.total || 0;
             }
         }
-        
-        return sum
+
+        return sum;
     }
 
     function updateBalanceText() {
         if (balanceHidden) {
-            header.headerText = "****** ₽"
+            header.headerText = "****** ₽";
         } else {
-            header.headerText = Number(operationModel.totalBalance).toLocaleString(Qt.locale(), 'f', 2) + " ₽"
+            header.headerText = Number(operationModel.totalBalance).toLocaleString(Qt.locale(), 'f', 2) + " ₽";
         }
     }
 
     function loadOperationsByCategoryAndPeriod(categoryId, action, period) {
         clear();
-        
+
         if (service) {
             var dateRange = dateFilterModel.getDateRange(period);
             var operations = service.getOperationsByCategoryAndPeriod(categoryId, action, period, dateRange);
             if (operations) {
-                operations.forEach(function(op) {
+                operations.forEach(function (op) {
                     append({
                         id: op.id,
                         amount: op.amount,
@@ -159,7 +160,7 @@ ListModel {
 
     function getTotalSpentByCategory(categoryId) {
         var total = 0;
-        
+
         if (service) {
             var operations = service.getOperationByCategory(categoryId, 0);
             for (var i = 0; i < operations.length; i++) {
@@ -176,28 +177,37 @@ ListModel {
 
         if (!operations || operations.length === 0) {
             return [
-                { month: "JAN", year: "2024", value: 0, target: 10000 },
-                { month: "FEB", year: "2024", value: 0, target: 10000 }
+                {
+                    month: "JAN",
+                    year: "2024",
+                    value: 0,
+                    target: 10000
+                },
+                {
+                    month: "FEB",
+                    year: "2024",
+                    value: 0,
+                    target: 10000
+                }
             ];
         }
 
         var monthlyData = {};
         var monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
-        operations.forEach(function(op) {
-            
+        operations.forEach(function (op) {
             if (!op.date) {
                 return;
             }
 
             var dateParts = op.date.split(".");
-            
+
             if (dateParts.length !== 3) {
                 return;
             }
 
             var monthIndex = parseInt(dateParts[1]) - 1;
-            
+
             if (isNaN(monthIndex) || monthIndex < 0 || monthIndex > 11) {
                 return;
             }
@@ -220,20 +230,30 @@ ListModel {
             result.push(monthlyData[key]);
         }
 
-        result.sort(function(a, b) {
+        result.sort(function (a, b) {
             var aDate = new Date(a.year, monthNames.indexOf(a.month));
             var bDate = new Date(b.year, monthNames.indexOf(b.month));
             return aDate - bDate;
         });
 
         return result.length > 0 ? result : [
-            { month: "JAN", year: "2024", value: 0, target: 10000 },
-            { month: "FEB", year: "2024", value: 0, target: 10000 }
+            {
+                month: "JAN",
+                year: "2024",
+                value: 0,
+                target: 10000
+            },
+            {
+                month: "FEB",
+                year: "2024",
+                value: 0,
+                target: 10000
+            }
         ];
     }
 
     function getAnalyticsDataForPopup(month) {
-        return service.getExpensesByMonth(month)
+        return service.getExpensesByMonth(month);
     }
 
     function getOperationsForExport(params) {

@@ -22,10 +22,10 @@ BasePage {
     property var operationModel: Models.OperationModel {
         onDataChanged: updateChartData()
         Component.onCompleted: {
-            var data = operationModel.service. getOperationCountByCategory(0)
-            favoriteCaregory = data[0]["name"]
-            data = operationModel.service.loadExpOperations()
-            countOperations = data.length
+            var data = operationModel.service.getOperationCountByCategory(0);
+            favoriteCaregory = data[0]["name"];
+            data = operationModel.service.loadExpOperations();
+            countOperations = data.length;
             updateChartData();
         }
     }
@@ -34,9 +34,9 @@ BasePage {
         onDataChanged: refresh()
         Component.onCompleted: {
             refresh();
-            allGoals = getCount()
+            allGoals = getCount();
             countisCompleted = getCountisCompleted();
-            console.log("Получена длина ", countisCompleted)
+            console.log("Получена длина ", countisCompleted);
         }
     }
 
@@ -46,14 +46,12 @@ BasePage {
     property bool pulsing: true
     property real pulseSize: 1.0
 
-
     function updateChartData() {
         console.log("Updating chart data...");
         var chartData = operationModel.getTimeSeriesData("All");
 
         if (chartData && chartData.length > 0) {
-            // Фильтруем записи с value = 0
-            timeSeriesData = chartData.filter(function(item) {
+            timeSeriesData = chartData.filter(function (item) {
                 return item.value > 0;
             });
             console.log("Filtered data points:", timeSeriesData.length);
@@ -97,7 +95,7 @@ BasePage {
         monthData: selectedMonthData
 
         onVisibleChanged: {
-            monthCategories = operationModel.getAnalyticsDataForPopup(monthData.month)
+            monthCategories = operationModel.getAnalyticsDataForPopup(monthData.month);
         }
     }
 
@@ -109,8 +107,6 @@ BasePage {
             id: contentColumn
             width: parent.width
             spacing: Theme.paddingLarge
-
-            // Карточка с общей статистикой
             BackgroundItem {
                 id: fullStaticCard
                 width: parent.width
@@ -121,8 +117,14 @@ BasePage {
                     anchors.fill: parent
                     radius: Theme.paddingMedium
                     gradient: Gradient {
-                        GradientStop { position: 0.0; color: "#24224f" }
-                        GradientStop { position: 1.0; color: "#1a1a3a" }
+                        GradientStop {
+                            position: 0.0
+                            color: "#24224f"
+                        }
+                        GradientStop {
+                            position: 1.0
+                            color: "#1a1a3a"
+                        }
                     }
                     border.color: "#24224f"
                     border.width: 4
@@ -146,7 +148,7 @@ BasePage {
                                 for (var i = 0; i < timeSeriesData.length; i++) {
                                     total += timeSeriesData[i].value;
                                 }
-                                return (total/1000).toFixed(1) + "k ₽"
+                                return (total / 1000).toFixed(1) + "k ₽";
                             }
                             color: Theme.primaryColor
                             font {
@@ -174,11 +176,13 @@ BasePage {
                         Label {
                             text: {
                                 var avg = 0;
-                                if (timeSeriesData.length===0) { return "-" }
+                                if (timeSeriesData.length === 0) {
+                                    return "-";
+                                }
                                 for (var i = 0; i < timeSeriesData.length; i++) {
                                     avg += timeSeriesData[i].value;
                                 }
-                                return (avg/timeSeriesData.length/1000).toFixed(1) + "k ₽"
+                                return (avg / timeSeriesData.length / 1000).toFixed(1) + "k ₽";
                             }
                             color: Theme.primaryColor
                             font {
@@ -189,8 +193,6 @@ BasePage {
                     }
                 }
             }
-
-            // График
             GraphicContainerComponent {
                 id: graphic
                 HorizontalScrollDecorator {}
@@ -258,7 +260,7 @@ BasePage {
                         }
 
                         Label {
-                            text: countisCompleted+ "/" + allGoals
+                            text: countisCompleted + "/" + allGoals
                             color: "#24224f"
                             font {
                                 pixelSize: Theme.fontSizeLarge

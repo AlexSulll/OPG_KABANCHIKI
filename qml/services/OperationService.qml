@@ -3,7 +3,6 @@ import QtQuick.LocalStorage 2.0
 import "../components"
 
 QtObject {
-
     id: service
 
     Component.onCompleted: initialize()
@@ -12,12 +11,12 @@ QtObject {
     property string currentPeriod: "All"
 
     function getDatabase() {
-        return LocalStorage.openDatabaseSync("WebBudgetDB", "1.0", "WebBudget storage", 1000000)
+        return LocalStorage.openDatabaseSync("WebBudgetDB", "1.0", "WebBudget storage", 1000000);
     }
 
     function initialize() {
-        var db = getDatabase()
-        db.transaction(function(tx) {
+        var db = getDatabase();
+        db.transaction(function (tx) {
             tx.executeSql('CREATE TABLE IF NOT EXISTS operations (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 amount INTEGER,
@@ -26,131 +25,77 @@ QtObject {
                 date TEXT,
                 desc TEXT
             )');
-        })
+        });
     }
 
     function loadOperations() {
-        var operations = []
-        var db = getDatabase()
-        db.readTransaction(function(tx) {
-            var rs = tx.executeSql('SELECT * FROM operations ORDER BY id DESC')
+        var operations = [];
+        var db = getDatabase();
+        db.readTransaction(function (tx) {
+            var rs = tx.executeSql('SELECT * FROM operations ORDER BY id DESC');
             for (var i = 0; i < rs.rows.length; i++) {
-                operations.push(rs.rows.item(i))
+                operations.push(rs.rows.item(i));
             }
-        })
-        return operations
+        });
+        return operations;
     }
 
     function loadExpOperations() {
-        var operations = []
-        var db = getDatabase()
-        db.readTransaction(function(tx) {
-            var rs = tx.executeSql('SELECT * FROM operations WHERE action = 0 ORDER BY id DESC')
+        var operations = [];
+        var db = getDatabase();
+        db.readTransaction(function (tx) {
+            var rs = tx.executeSql('SELECT * FROM operations WHERE action = 0 ORDER BY id DESC');
             for (var i = 0; i < rs.rows.length; i++) {
-                operations.push(rs.rows.item(i))
+                operations.push(rs.rows.item(i));
             }
-        })
-        return operations
+        });
+        return operations;
     }
 
     function addOperation(operation) {
-        var db = getDatabase()
-        db.transaction(function(tx) {
-            // Проверка активных целей для категории
-            var goalResult = tx.executeSql(
-                "SELECT * FROM goals WHERE categoryId = ? AND isCompleted = 0",
-                [operation.categoryId]
-            )
+        var db = getDatabase();
+        db.transaction(function (tx) {
+            var goalResult = tx.executeSql("SELECT * FROM goals WHERE categoryId = ? AND isCompleted = 0", [operation.categoryId]);
 
             if (goalResult.rows.length > 0) {
-                var goal = goalResult.rows.item(0)
-
-                // Рассчет доступной суммы
-                var remaining = goal.targetAmount - goal.currentAmount
-                operation.amount = Math.min(operation.amount, remaining)
-
-                // Обновление прогресса цели
-                tx.executeSql(
-                    "UPDATE goals SET currentAmount = currentAmount + ? WHERE id = ?",
-                    [operation.amount, goal.id]
-                )
-
-                // Проверка выполнения цели
-                var newAmount = goal.currentAmount + operation.amount
+                var goal = goalResult.rows.item(0);
+                var remaining = goal.targetAmount - goal.currentAmount;
+                operation.amount = Math.min(operation.amount, remaining);
+                tx.executeSql("UPDATE goals SET currentAmount = currentAmount + ? WHERE id = ?", [operation.amount, goal.id]);
+                var newAmount = goal.currentAmount + operation.amount;
                 if (newAmount >= goal.targetAmount) {
-                    // Помечаем цель как выполненную
-                    tx.executeSql(
-                        "UPDATE goals SET isCompleted = 1 WHERE id = ?",
-                        [goal.id]
-                    )
-
-                    // Деактивируем категорию цели
-                    tx.executeSql(
-                        "UPDATE categories SET isActive = 0 WHERE categoryId = ?",
-                        [operation.categoryId]
-                    )
+                    tx.executeSql("UPDATE goals SET isCompleted = 1 WHERE id = ?", [goal.id]);
+                    tx.executeSql("UPDATE categories SET isActive = 0 WHERE categoryId = ?", [operation.categoryId]);
                 }
             }
-
-            // Добавление операции
-            tx.executeSql(
-                'INSERT INTO operations (amount, action, categoryId, date, desc) VALUES (?, ?, ?, ?, ?)',
-                [operation.amount, operation.action, operation.categoryId, operation.date, operation.desc]
-            )
-        })
+            tx.executeSql('INSERT INTO operations (amount, action, categoryId, date, desc) VALUES (?, ?, ?, ?, ?)', [operation.amount, operation.action, operation.categoryId, operation.date, operation.desc]);
+        });
     }
 
     function deleteOperation(operationId) {
-        var db = getDatabase()
-        db.transaction(function(tx) {
-            // 1. Получаем данные операции
-            var op = tx.executeSql(
-                "SELECT * FROM operations WHERE id = ?",
-                [operationId]
-            ).rows.item(0)
+        var db = getDatabase();
+        db.transaction(function (tx) {
+            var op = tx.executeSql("SELECT * FROM operations WHERE id = ?", [operationId]).rows.item(0);
+            var goals = tx.executeSql("SELECT * FROM goals WHERE categoryId = ?", [op.categoryId]).rows;
+            for (var i = 0; i < goals.length; i++) {
+                var goal = goals.item(i);
+                var newAmount = goal.currentAmount - op.amount;
 
-            // 2. Находим связанные цели
-            var goals = tx.executeSql(
-                "SELECT * FROM goals WHERE categoryId = ?",
-                [op.categoryId]
-            ).rows
-
-            // 3. Обновляем цели
-            for(var i = 0; i < goals.length; i++) {
-                var goal = goals.item(i)
-                var newAmount = goal.currentAmount - op.amount
-
-                tx.executeSql(
-                    "UPDATE goals SET currentAmount = ? WHERE id = ?",
-                    [newAmount, goal.id]
-                )
-
-                // 4. Проверяем статус цели
-                if(newAmount < goal.targetAmount && goal.isCompleted) {
-                    // Возвращаем категорию
-                    tx.executeSql(
-                        "UPDATE categories SET isActive = 1 WHERE categoryId = ?",
-                        [op.categoryId]
-                    )
-                    // Снимаем флаг выполнения
-                    tx.executeSql(
-                        "UPDATE goals SET isCompleted = 0 WHERE id = ?",
-                        [goal.id]
-                    )
+                tx.executeSql("UPDATE goals SET currentAmount = ? WHERE id = ?", [newAmount, goal.id]);
+                if (newAmount < goal.targetAmount && goal.isCompleted) {
+                    tx.executeSql("UPDATE categories SET isActive = 1 WHERE categoryId = ?", [op.categoryId]);
+                    tx.executeSql("UPDATE goals SET isCompleted = 0 WHERE id = ?", [goal.id]);
                 }
             }
-
-            // 5. Удаляем операцию
-            tx.executeSql("DELETE FROM operations WHERE id = ?", [operationId])
-        })
+            tx.executeSql("DELETE FROM operations WHERE id = ?", [operationId]);
+        });
     }
 
     function getTotalSumByCategory(type) {
-        var db = getDatabase()
-        var categories = []
-        db.readTransaction(function(tx) {
-            var rs = tx.executeSql(
-                        'SELECT
+        var db = getDatabase();
+        var categories = [];
+        db.readTransaction(function (tx) {
+            var rs = tx.executeSql('SELECT
                             operations.action,
                             operations.categoryId,
                             operations.date,
@@ -161,37 +106,34 @@ QtObject {
                         JOIN categories
                             ON categories.categoryId = operations.categoryId AND operations.action = ?
                         GROUP BY categories.categoryId
-                        ORDER BY total DESC', [type])
+                        ORDER BY total DESC', [type]);
             for (var i = 0; i < rs.rows.length; i++) {
-                var item = rs.rows.item(i)
+                var item = rs.rows.item(i);
                 categories.push({
                     categoryId: item.categoryId,
                     name: item.nameCategory,
                     icon: item.pathToIcon,
                     total: item.total,
-                    date: item.date,
-                })
+                    date: item.date
+                });
             }
-        })
-        return categories
+        });
+        return categories;
     }
 
     function getOperationCountByCategory(type) {
         var db = getDatabase();
         var categories = [];
 
-        db.readTransaction(function(tx) {
-            var rs = tx.executeSql(
-                "SELECT
+        db.readTransaction(function (tx) {
+            var rs = tx.executeSql("SELECT
                     categories.nameCategory as name,
                     COUNT(operations.id) as operationCount
                 FROM operations
                 JOIN categories
                     ON categories.categoryId = operations.categoryId AND operations.action = ?
                 GROUP BY categories.categoryId
-                ORDER BY operationCount DESC",
-                [type]
-            );
+                ORDER BY operationCount DESC", [type]);
 
             for (var i = 0; i < rs.rows.length; i++) {
                 var item = rs.rows.item(i);
@@ -206,23 +148,20 @@ QtObject {
     }
 
     function getOperationByCategory(categoryId, type) {
-        var db = getDatabase()
-        var operations = []
-        db.readTransaction(function(tx) {
-            var rs = tx.executeSql(
-                        'SELECT * FROM operations WHERE categoryId = ? AND action = ? ORDER BY date DESC',
-                        [categoryId, type]
-            )
+        var db = getDatabase();
+        var operations = [];
+        db.readTransaction(function (tx) {
+            var rs = tx.executeSql('SELECT * FROM operations WHERE categoryId = ? AND action = ? ORDER BY date DESC', [categoryId, type]);
             for (var i = 0; i < rs.rows.length; i++) {
-                        operations.push(rs.rows.item(i))
+                operations.push(rs.rows.item(i));
             }
-        })
-        return operations
+        });
+        return operations;
     }
 
     function getTotalIncome() {
         var total = 0;
-        getDatabase().readTransaction(function(tx) {
+        getDatabase().readTransaction(function (tx) {
             var rs = tx.executeSql('SELECT SUM(amount) as total FROM operations WHERE action = 1');
             total = rs.rows.item(0).total || 0;
         });
@@ -231,7 +170,7 @@ QtObject {
 
     function getTotalExpenses() {
         var total = 0;
-        getDatabase().readTransaction(function(tx) {
+        getDatabase().readTransaction(function (tx) {
             var rs = tx.executeSql('SELECT SUM(amount) as total FROM operations WHERE action = 0');
             total = rs.rows.item(0).total || 0;
         });
@@ -239,70 +178,50 @@ QtObject {
     }
 
     function updateOperation(operation) {
-        var db = getDatabase()
-        db.transaction(function(tx) {
-            tx.executeSql(
-                'UPDATE operations SET amount = ?, action = ?, categoryId = ?, date = ?, desc = ? WHERE id = ?',
-                [
-                    operation.amount,
-                    operation.action,
-                    operation.categoryId,
-                    operation.date,
-                    operation.desc,
-                    operation.id
-                ]
-            )
-        })
+        var db = getDatabase();
+        db.transaction(function (tx) {
+            tx.executeSql('UPDATE operations SET amount = ?, action = ?, categoryId = ?, date = ?, desc = ? WHERE id = ?', [operation.amount, operation.action, operation.categoryId, operation.date, operation.desc, operation.id]);
+        });
     }
 
     function getFilteredCategories(type, period) {
-        var db = getDatabase()
-        var categories = []
-        currentPeriod = period
-        var range = dateFilter.getDateRange(currentPeriod)
-        console.log("Filter range from:", range.fromDate, "to:", range.toDate)
+        var db = getDatabase();
+        var categories = [];
+        currentPeriod = period;
+        var range = dateFilter.getDateRange(currentPeriod);
+        console.log("Filter range from:", range.fromDate, "to:", range.toDate);
 
         if (period === "All") {
-            return getTotalSumByCategory(type)
+            return getTotalSumByCategory(type);
         }
 
-        db.readTransaction(function(tx) {
-            // Преобразуем даты в формат, соответствующий хранимому в базе
-            var fromDateStr = Qt.formatDateTime(range.fromDate, "dd-MM-yyyy")
-            var toDateStr = Qt.formatDateTime(range.toDate, "dd-MM-yyyy")
+        db.readTransaction(function (tx) {
+            var fromDateStr = Qt.formatDateTime(range.fromDate, "dd-MM-yyyy");
+            var toDateStr = Qt.formatDateTime(range.toDate, "dd-MM-yyyy");
 
-            console.log("Using dates for SQL:", fromDateStr, toDateStr)
+            console.log("Using dates for SQL:", fromDateStr, toDateStr);
 
-            var query = 'SELECT operations.action, operations.categoryId, ' +
-                   'SUM(operations.amount) as total, categories.nameCategory as nameCategory ' +
-                   'FROM operations ' +
-                   'JOIN categories ON categories.categoryId = operations.categoryId ' +
-                   'WHERE operations.action = ? ' +
-                   'AND (substr(date, 7, 4) || "-" || substr(date, 4, 2) || "-" || substr(date, 1, 2)) ' +
-                   'BETWEEN ? AND ? ' +
-                   'GROUP BY operations.categoryId ORDER BY total DESC'
+            var query = 'SELECT operations.action, operations.categoryId, ' + 'SUM(operations.amount) as total, categories.nameCategory as nameCategory ' + 'FROM operations ' + 'JOIN categories ON categories.categoryId = operations.categoryId ' + 'WHERE operations.action = ? ' + 'AND (substr(date, 7, 4) || "-" || substr(date, 4, 2) || "-" || substr(date, 1, 2)) ' + 'BETWEEN ? AND ? ' + 'GROUP BY operations.categoryId ORDER BY total DESC';
+            var sqlFromDate = Qt.formatDateTime(range.fromDate, "yyyy-MM-dd");
+            var sqlToDate = Qt.formatDateTime(range.toDate, "yyyy-MM-dd");
 
-            // Преобразуем в SQL-формат даты для сравнения
-            var sqlFromDate = Qt.formatDateTime(range.fromDate, "yyyy-MM-dd")
-            var sqlToDate = Qt.formatDateTime(range.toDate, "yyyy-MM-dd")
-
-            var rs = tx.executeSql(query, [type, sqlFromDate, sqlToDate])
-            console.log("Executed query:", query, "with params:", [type, sqlFromDate, sqlToDate])
-            console.log("Found rows:", rs.rows.length)
+            var rs = tx.executeSql(query, [type, sqlFromDate, sqlToDate]);
+            console.log("Executed query:", query, "with params:", [type, sqlFromDate, sqlToDate]);
+            console.log("Found rows:", rs.rows.length);
 
             for (var i = 0; i < rs.rows.length; i++) {
-                var item = rs.rows.item(i)
+                var item = rs.rows.item(i);
                 categories.push({
                     categoryId: item.categoryId,
                     categoryName: item.nameCategory,
                     total: item.total || 0,
                     action: item.action
-                })
+                });
             }
-        })
-        console.log("Returning categories:", JSON.stringify(categories))
+        });
+        console.log("Returning categories:", JSON.stringify(categories));
 
-        return categories
+        return categories;
     }
 
     function getOperationsByCategoryAndPeriod(categoryId, type, period, dateRange) {
@@ -313,7 +232,7 @@ QtObject {
 
         console.log("Fetching operations for category:", categoryId, "type:", type, "period:", period, "range:", fromDateSQL, toDateSQL);
 
-        db.readTransaction(function(tx) {
+        db.readTransaction(function (tx) {
             var query = 'SELECT * FROM operations WHERE categoryId = ? AND action = ?';
             var params = [categoryId, type];
 
@@ -342,7 +261,7 @@ QtObject {
         var db = getDatabase();
         var operations = [];
 
-        db.readTransaction(function(tx) {
+        db.readTransaction(function (tx) {
             var query = 'SELECT * FROM operations';
             var params = [];
 
@@ -370,34 +289,45 @@ QtObject {
         var fromDate = new Date();
         var toDate = new Date();
 
-        switch(period) {
-            case "Week":
-                fromDate.setDate(now.getDate() - 7);
-                break;
-            case "Month":
-                fromDate.setMonth(now.getMonth() - 1);
-                break;
-            case "Year":
-                fromDate.setFullYear(now.getFullYear() - 1);
-                break;
-            default: // "All"
-                fromDate = new Date(0); // Начало эпохи Unix
-                toDate = new Date(8640000000000000); // Максимальная дата
-                break;
+        switch (period) {
+        case "Week":
+            fromDate.setDate(now.getDate() - 7);
+            break;
+        case "Month":
+            fromDate.setMonth(now.getMonth() - 1);
+            break;
+        case "Year":
+            fromDate.setFullYear(now.getFullYear() - 1);
+            break;
+        default:
+            fromDate = new Date(0); // Начало эпохи Unix
+            toDate = new Date(8640000000000000); // Максимальная дата
+            break;
         }
 
-        return { fromDate: fromDate, toDate: toDate };
+        return {
+            fromDate: fromDate,
+            toDate: toDate
+        };
     }
 
     function getExpensesByMonth(monthName) {
         var db = getDatabase();
         var categories = [];
         var currentYear = new Date().getFullYear().toString();
-
-        // Month name to number mapping (uppercase)
         var monthNumber = {
-            "JAN": 1, "FEB": 2, "MAR": 3, "APR": 4, "MAY": 5, "JUN": 6,
-            "JUL": 7, "AUG": 8, "SEP": 9, "OCT": 10, "NOV": 11, "DEC": 12
+            "JAN": 1,
+            "FEB": 2,
+            "MAR": 3,
+            "APR": 4,
+            "MAY": 5,
+            "JUN": 6,
+            "JUL": 7,
+            "AUG": 8,
+            "SEP": 9,
+            "OCT": 10,
+            "NOV": 11,
+            "DEC": 12
         }[monthName.toUpperCase()];
 
         if (!monthNumber) {
@@ -405,23 +335,11 @@ QtObject {
             return [];
         }
 
-        db.readTransaction(function(tx) {
-            // Format month with leading zero
+        db.readTransaction(function (tx) {
             var monthStr = monthNumber < 10 ? "0" + monthNumber : monthNumber.toString();
-
-            // SQL query using dd.mm.yyyy format
-            var query = "SELECT " +
-                       "operations.categoryId, " +
-                       "categories.nameCategory as categoryName, " +
-                       "SUM(operations.amount) as totalExpenses " +
-                       "FROM operations " +
-                       "JOIN categories ON categories.categoryId = operations.categoryId " +
-                       "WHERE " +
-                       "operations.action = 0 AND " +
-                       "substr(date, 4, 2) = ? AND " +  // Month (positions 4-5)
-                       "substr(date, 7, 4) = ? " +     // Year (positions 7-10)
-                       "GROUP BY operations.categoryId " +
-                       "ORDER BY totalExpenses DESC";
+            var query = "SELECT " + "operations.categoryId, " + "categories.nameCategory as categoryName, " + "SUM(operations.amount) as totalExpenses " + "FROM operations " + "JOIN categories ON categories.categoryId = operations.categoryId " + "WHERE " + "operations.action = 0 AND " + "substr(date, 4, 2) = ? AND " +  // Month (positions 4-5)
+            "substr(date, 7, 4) = ? " +     // Year (positions 7-10)
+            "GROUP BY operations.categoryId " + "ORDER BY totalExpenses DESC";
 
             var rs = tx.executeSql(query, [monthStr, currentYear]);
 
@@ -429,7 +347,7 @@ QtObject {
                 var item = rs.rows.item(i);
                 categories.push({
                     categoryName: item.categoryName,
-                    value: item.totalExpenses || 0,
+                    value: item.totalExpenses || 0
                 });
             }
         });
@@ -439,44 +357,42 @@ QtObject {
     }
 
     function getOperationsForExport(params) {
-        var operations = []
-        var db = getDatabase()
+        var operations = [];
+        var db = getDatabase();
 
-        db.transaction(function(tx) {
-            var query = "SELECT * FROM operations WHERE 1=1"
-            var args = []
-
-            // Фильтр по типу
-            if (params.type === 1) { // Только доходы
-                query += " AND action = ?"
-                args.push(1)
-            } else if (params.type === 2) { // Только расходы
-                query += " AND action = ?"
-                args.push(0)
+        db.transaction(function (tx) {
+            var query = "SELECT * FROM operations WHERE 1=1";
+            var args = [];
+            if (params.type === 1) {
+                query += " AND action = ?";
+                args.push(1);
+            } else if (params.type === 2) {
+                query += " AND action = ?";
+                args.push(0);
             }
+            if (params.period !== 2) {
+                var now = new Date();
+                var startDate = new Date();
 
-            // Фильтр по дате
-            if (params.period !== 2) { // Если не "Все время"
-                var now = new Date()
-                var startDate = new Date()
-
-                if (params.period === 0) { // 1 месяц
-                    startDate.setMonth(now.getMonth() - 1)
-                } else { // 3 месяца
-                    startDate.setMonth(now.getMonth() - 3)
+                if (params.period === 0) {
+                    startDate.setMonth(now.getMonth() - 1);
+                } else {
+                    startDate.setMonth(now.getMonth() - 3);
                 }
+                var fromDate = Qt.formatDate(startDate, "dd.MM.yyyy");
+                var toDate = Qt.formatDate(now, "dd.MM.yyyy");
 
-                query += " AND date BETWEEN ? AND ?"
-                args.push(Qt.formatDate(startDate, "yyyy-MM-dd"))
-                args.push(Qt.formatDate(now, "yyyy-MM-dd"))
+                query += " AND date >= ? AND date <= ?";
+                args.push(fromDate);
+                args.push(toDate);
             }
 
-            var rs = tx.executeSql(query, args)
+            var rs = tx.executeSql(query, args);
             for (var i = 0; i < rs.rows.length; i++) {
-                operations.push(rs.rows.item(i))
+                operations.push(rs.rows.item(i));
             }
-        })
+        });
 
-        return operations
+        return operations;
     }
 }

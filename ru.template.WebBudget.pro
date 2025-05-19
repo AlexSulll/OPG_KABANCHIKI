@@ -33,6 +33,7 @@ DISTFILES += \
     qml/models/RegularPaymentsModel.qml \
     qml/models/SectorsModel.qml \
     qml/models/SideMenuModel.qml \
+    qml/pages/ActionsFilePage.qml \
     qml/pages/AddCategoryPage.qml \
     qml/pages/AddGoalPage.qml \
     qml/pages/AnalyticsPage.qml \

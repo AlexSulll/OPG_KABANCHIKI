@@ -7,7 +7,7 @@ QtObject {
     property var payments: []
     property var regularPaymentsService: Services.RegularPaymentsService {}
 
-    signal paymentsUpdated()
+    signal paymentsUpdated
 
     function loadPayments() {
         payments = regularPaymentsService.getPayments();
@@ -16,13 +16,15 @@ QtObject {
 
     function addPayment(payment) {
         var result = regularPaymentsService.addPayment(payment);
-        if (result) loadPayments();
+        if (result)
+            loadPayments();
         return result;
     }
 
     function updatePayment(payment) {
         var result = regularPaymentsService.updatePayment(payment);
-        if (result) loadPayments();
+        if (result)
+            loadPayments();
         return result;
     }
 
@@ -32,7 +34,8 @@ QtObject {
 
     function removePayment(id) {
         var result = regularPaymentsService.removePayment(id);
-        if (result) loadPayments();
+        if (result)
+            loadPayments();
         return result;
     }
 }

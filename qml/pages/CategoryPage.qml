@@ -4,9 +4,8 @@ import "../models" as Models
 import "../components" as Components
 
 Page {
-
     id: categoryPage
-    
+
     allowedOrientations: Orientation.All
 
     property int action: 0
@@ -30,7 +29,7 @@ Page {
         categoryModel.loadCategoriesByType(action);
     }
 
-    onVisibleChanged: categoryModel.loadCategoriesByType(action);
+    onVisibleChanged: categoryModel.loadCategoriesByType(action)
 
     SilicaFlickable {
         anchors.fill: parent
@@ -43,7 +42,7 @@ Page {
             Components.HeaderComponent {
                 id: header
                 headerText: fromMainButton ? "Добавление" : "Категории"
-                fontSize: Theme.fontSizeExtraLarge*2
+                fontSize: Theme.fontSizeExtraLarge * 2
                 color: "transparent"
                 showIcon: true
             }
@@ -101,8 +100,8 @@ Page {
                                     } else {
                                         var category = categoryModel.getCategoryById(categoryId);
                                         pageStack.push(Qt.resolvedUrl("EditCategoryPage.qml"), {
-                                                categoryModel: categoryModel,
-                                                categoryData: category
+                                            categoryModel: categoryModel,
+                                            categoryData: category
                                         });
                                     }
                                 }
@@ -110,12 +109,12 @@ Page {
                         }
 
                         onModelChanged: {
-                            currentIndex = -1
-                            positionViewAtBeginning()
+                            currentIndex = -1;
+                            positionViewAtBeginning();
                         }
                     }
                 }
-                
+
                 VerticalScrollDecorator {}
             }
         }

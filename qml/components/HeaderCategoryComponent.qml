@@ -2,15 +2,14 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 Rectangle {
-    
     id: headerRoot
-    
+
     width: parent.width
     height: parent.height / 10
     color: "#24224f"
 
     property string headerText: ""
-    property int fontSize: Theme.fontSizeExtraLarge*2
+    property int fontSize: Theme.fontSizeExtraLarge * 2
     property bool showIcon: true
 
     Row {

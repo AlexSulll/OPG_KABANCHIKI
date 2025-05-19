@@ -26,7 +26,8 @@ Item {
             var ctx = getContext("2d");
             ctx.reset();
 
-            if (model.length < 2) return;
+            if (model.length < 2)
+                return;
 
             var width = canvas.width;
             var height = canvas.height;
@@ -46,7 +47,7 @@ Item {
 
                 ctx.fillStyle = Theme.primaryColor;
                 ctx.font = '12px Sans-Serif';
-                ctx.fillText(Math.round(minValue + (maxValue - minValue) * (1 - i/gridLines)), width + 5, y + 4);
+                ctx.fillText(Math.round(minValue + (maxValue - minValue) * (1 - i / gridLines)), width + 5, y + 4);
             }
 
             ctx.strokeStyle = lineColor;
@@ -72,7 +73,7 @@ Item {
                     ctx.fillStyle = Theme.primaryColor;
                     ctx.font = '10px Sans-Serif';
                     var dateText = model[j].date.toLocaleDateString(Qt.locale(), "MMM yy");
-                    ctx.fillText(dateText, x - ctx.measureText(dateText).width/2, height + 15);
+                    ctx.fillText(dateText, x - ctx.measureText(dateText).width / 2, height + 15);
                 }
             }
 
@@ -101,7 +102,8 @@ Item {
     }
 
     function calculateBounds() {
-        if (model.length === 0) return;
+        if (model.length === 0)
+            return;
 
         maxValue = model[0].value;
         minValue = model[0].value;

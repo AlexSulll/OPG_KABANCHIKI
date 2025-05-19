@@ -10,7 +10,7 @@ BackgroundItem {
     height: Theme.itemSizeLarge
 
     Row {
-        width: parent.width - 2*Theme.horizontalPageMargin
+        width: parent.width - 2 * Theme.horizontalPageMargin
         anchors.centerIn: parent
         spacing: Theme.paddingMedium
 

@@ -5,7 +5,6 @@ import "../models" as Models
 import "../services" as Services
 
 BasePage {
-
     id: mainpage
     objectName: "MainPage"
 
@@ -47,7 +46,7 @@ BasePage {
         dateFilterModel: dateFilter
     }
 
-    onVisibleChanged: regularPaymentsModel.loadPayments();
+    onVisibleChanged: regularPaymentsModel.loadPayments()
 
     Component.onCompleted: {
         categoryModel.loadAllCategories();
@@ -86,12 +85,12 @@ BasePage {
         }
         selectedTab: mainpage.selectedTab
         onSelectedTabChanged: {
-            mainpage.selectedTab = header.selectedTab
-            mainpage.action = header.selectedTab === "expenses" ? 0 : 1
-            operationModel.loadByTypeOperation(mainpage.action)
-            operationModel.calculateTotalBalance()
-            analyticsCard.isExpense = mainpage.action === 0
-            sectorModel.calculateChartData(operationModel, mainpage.action)
+            mainpage.selectedTab = header.selectedTab;
+            mainpage.action = header.selectedTab === "expenses" ? 0 : 1;
+            operationModel.loadByTypeOperation(mainpage.action);
+            operationModel.calculateTotalBalance();
+            analyticsCard.isExpense = mainpage.action === 0;
+            sectorModel.calculateChartData(operationModel, mainpage.action);
         }
     }
 
@@ -124,7 +123,7 @@ BasePage {
             width: parent.width
             contentHeight: Theme.itemSizeMedium
 
-            property var categoryData: categoryModel.getCategoryById(model.categoryId);
+            property var categoryData: categoryModel.getCategoryById(model.categoryId)
 
             Rectangle {
                 anchors.fill: parent
@@ -151,7 +150,7 @@ BasePage {
                         width: parent.width
                         text: categoryData ? categoryData.nameCategory : "Без категории"
                         color: Theme.primaryColor
-                        anchors{
+                        anchors {
                             verticalCenter: itemContainer.verticalCenter
                             left: icon.right
                             leftMargin: Theme.paddingLarge
@@ -196,40 +195,38 @@ BasePage {
     }
 
     function checkRegularPayments() {
-            var now = new Date();
-            var payments = regularPaymentsModel.payments;
-            var processedCount = 0;
+        var now = new Date();
+        var payments = regularPaymentsModel.payments;
+        var processedCount = 0;
 
-            for (var i = 0; i < payments.length; i++) {
-                var payment = payments[i];
-                var nextDate = new Date(payment.nextPaymentDate);
-                var lastProcessed = new Date(payment.lastProcessedDate || 0);
+        for (var i = 0; i < payments.length; i++) {
+            var payment = payments[i];
+            var nextDate = new Date(payment.nextPaymentDate);
+            var lastProcessed = new Date(payment.lastProcessedDate || 0);
 
-                if (nextDate <= now && nextDate > lastProcessed) {
-                    var operation = {
-                        amount: payment.amount,
-                        action: payment.isIncome ? 1 : 0,
-                        categoryId: payment.categoryId,
-                        date: Qt.formatDate(nextDate, "dd.MM.yyyy"),
-                        desc: payment.description + " (Автоплатеж)"
-                    };
+            if (nextDate <= now && nextDate > lastProcessed) {
+                var operation = {
+                    amount: payment.amount,
+                    action: payment.isIncome ? 1 : 0,
+                    categoryId: payment.categoryId,
+                    date: Qt.formatDate(nextDate, "dd.MM.yyyy"),
+                    desc: payment.description + " (Автоплатеж)"
+                };
 
-                    if (operationService.addOperation(operation)) {
-                        // Обновляем даты платежа
-                        payment.lastProcessedDate = nextDate.toISOString();
-                        payment.nextPaymentDate = regularPaymentsModel.calculateNextDate(nextDate, payment.frequency);
-                        regularPaymentsModel.updatePayment(payment);
+                if (operationService.addOperation(operation)) {
+                    payment.lastProcessedDate = nextDate.toISOString();
+                    payment.nextPaymentDate = regularPaymentsModel.calculateNextDate(nextDate, payment.frequency);
+                    regularPaymentsModel.updatePayment(payment);
 
-                        processedCount++;
-                        console.log("Добавлена операция для платежа ID:", payment.id);
-                    }
+                    processedCount++;
+                    console.log("Добавлена операция для платежа ID:", payment.id);
                 }
             }
-
-            if (processedCount > 0) {
-                console.log("Обработано платежей:", processedCount);
-                // Обновляем список операций
-                operationModel.loadByTypeOperation(action);
-            }
         }
+
+        if (processedCount > 0) {
+            console.log("Обработано платежей:", processedCount);
+            operationModel.loadByTypeOperation(action);
+        }
+    }
 }

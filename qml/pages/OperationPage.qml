@@ -4,9 +4,8 @@ import "../components" as Components
 import "../models" as Models
 
 Page {
-
     id: operationPage
-    
+
     allowedOrientations: Orientation.All
     anchors.centerIn: parent
 
@@ -43,7 +42,7 @@ Page {
 
     Components.HeaderCategoryComponent {
         id: header
-        fontSize: Theme.fontSizeExtraLarge*2
+        fontSize: Theme.fontSizeExtraLarge * 2
         color: "transparent"
         headerText: fromMainButton ? "Добавление" : "Категории"
         anchors {
@@ -70,12 +69,14 @@ Page {
                 label: "Сумма операции"
                 placeholderText: "Сумма (руб)"
                 inputMethodHints: Qt.ImhDigitsOnly
-                validator: IntValidator { bottom: 1 }
+                validator: IntValidator {
+                    bottom: 1
+                }
                 onTextChanged: {
                     if (text.charAt(0) === '-' || text.charAt(0) === '0') {
                         text = text.substring(1);
                     }
-                    amount = text
+                    amount = text;
                 }
             }
 
@@ -143,64 +144,68 @@ Page {
 
                 ComboBox {
                     id: monthCombo
-                    width: parent.width / 2 - Theme.paddingMedium/2
+                    width: parent.width / 2 - Theme.paddingMedium / 2
                     label: "Месяц"
                     currentIndex: datePicker.date.getMonth()
 
                     menu: ContextMenu {
                         Repeater {
                             model: {
-                                var locale = Qt.locale("ru_RU")
-                                var months = []
-                                
+                                var locale = Qt.locale("ru_RU");
+                                var months = [];
+
                                 for (var i = 0; i < 12; i++) {
-                                    var monthName = locale.standaloneMonthName(i, Locale.LongFormat)
-                                    months.push(monthName.charAt(0).toUpperCase() + monthName.slice(1))
+                                    var monthName = locale.standaloneMonthName(i, Locale.LongFormat);
+                                    months.push(monthName.charAt(0).toUpperCase() + monthName.slice(1));
                                 }
 
-                                return months
+                                return months;
                             }
-                            
-                            MenuItem { text: modelData }
+
+                            MenuItem {
+                                text: modelData
+                            }
                         }
                     }
 
                     onCurrentIndexChanged: {
                         if (datePicker.date) {
-                            var newDate = new Date(datePicker.date)
-                            newDate.setMonth(currentIndex)
-                            datePicker.date = newDate
+                            var newDate = new Date(datePicker.date);
+                            newDate.setMonth(currentIndex);
+                            datePicker.date = newDate;
                         }
                     }
                 }
 
                 ComboBox {
                     id: yearCombo
-                    width: parent.width / 2 - Theme.paddingMedium/2
+                    width: parent.width / 2 - Theme.paddingMedium / 2
                     label: "Год"
                     currentIndex: 5
 
-                    property var years: (function() {
-                        var arr = []
-                        var currentYear = new Date().getFullYear()
-                        for (var i = currentYear - 3; i <= currentYear + 3; i++) {
-                            arr.push(i)
-                        }
-                        return arr
-                    })()
+                    property var years: (function () {
+                            var arr = [];
+                            var currentYear = new Date().getFullYear();
+                            for (var i = currentYear - 3; i <= currentYear + 3; i++) {
+                                arr.push(i);
+                            }
+                            return arr;
+                        })()
 
                     menu: ContextMenu {
                         Repeater {
                             model: yearCombo.years
-                            MenuItem { text: modelData }
+                            MenuItem {
+                                text: modelData
+                            }
                         }
                     }
 
                     onCurrentIndexChanged: {
                         if (datePicker.date) {
-                            var newDate = new Date(datePicker.date)
-                            newDate.setFullYear(years[currentIndex])
-                            datePicker.date = newDate
+                            var newDate = new Date(datePicker.date);
+                            newDate.setFullYear(years[currentIndex]);
+                            datePicker.date = newDate;
                         }
                     }
                 }
@@ -211,15 +216,15 @@ Page {
                 width: parent.width
 
                 onDateChanged: {
-                    monthCombo.currentIndex = date.getMonth()
-                    yearCombo.currentIndex = yearCombo.years.indexOf(date.getFullYear())
-                    operationPage.date = Qt.formatDate(date, "dd.MM.yyyy")
+                    monthCombo.currentIndex = date.getMonth();
+                    yearCombo.currentIndex = yearCombo.years.indexOf(date.getFullYear());
+                    operationPage.date = Qt.formatDate(date, "dd.MM.yyyy");
                 }
             }
         }
 
         onAccepted: {
-            operationPage.date = Qt.formatDate(datePicker.date, "dd.MM.yyyy")
+            operationPage.date = Qt.formatDate(datePicker.date, "dd.MM.yyyy");
         }
     }
 
@@ -273,7 +278,8 @@ Page {
 
     function checkAndSaveOperation() {
         operationAmount = parseInt(amount);
-        if (isNaN(operationAmount)) return;
+        if (isNaN(operationAmount))
+            return;
 
         categoryLimit = limitModel.getLimit(selectedCategoryId);
         if (categoryLimit === null || categoryLimit === undefined || categoryLimit === 0) {

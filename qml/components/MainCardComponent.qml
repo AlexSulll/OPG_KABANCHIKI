@@ -3,9 +3,8 @@ import Sailfish.Silica 1.0
 import "../models" as Models
 
 Item {
-    
     id: cardRoot
-    
+
     width: parent.width - 2 * Theme.paddingLarge
     height: width
 
@@ -23,7 +22,6 @@ Item {
 
     Models.DateFilterModel {
         id: dateModel
-//        operationModel: operationModel
     }
 
     Rectangle {
@@ -31,8 +29,14 @@ Item {
         anchors.fill: parent
         radius: Theme.paddingLarge * 1.5
         gradient: Gradient {
-            GradientStop { position: 0.0; color: "#24224f" }
-            GradientStop { position: 1.0; color: "#1a1a3a" }
+            GradientStop {
+                position: 0.0
+                color: "#24224f"
+            }
+            GradientStop {
+                position: 1.0
+                color: "#1a1a3a"
+            }
         }
 
         Row {
@@ -61,17 +65,17 @@ Item {
 
                     onClicked: {
                         selectedPeriod = dateId;
-                        operationModel.currentPeriod = selectedPeriod
-                        dateFilter.currentPeriod = selectedPeriod
-                        selectedSector = -1
+                        operationModel.currentPeriod = selectedPeriod;
+                        dateFilter.currentPeriod = selectedPeriod;
+                        selectedSector = -1;
 
-                        var filteredOps = operationModel.service.getFilteredCategories(mainpage.action, selectedPeriod)
+                        var filteredOps = operationModel.service.getFilteredCategories(mainpage.action, selectedPeriod);
 
-                        operationModel.loadOperation(filteredOps)
-                        operationModel.calculateTotalBalance()
+                        operationModel.loadOperation(filteredOps);
+                        operationModel.calculateTotalBalance();
 
-                        isExpense = mainpage.action === 0
-                        sectorModel.calculateChartData(operationModel, mainpage.action)
+                        isExpense = mainpage.action === 0;
+                        sectorModel.calculateChartData(operationModel, mainpage.action);
                         sectorsCanvas.requestPaint();
                         backgroundRing.requestPaint();
                     }
@@ -89,20 +93,20 @@ Item {
             Canvas {
                 id: backgroundRing
                 anchors.fill: parent
-                
-                onPaint: {
-                    var ctx = getContext("2d")
-                    ctx.reset()
-                    var centerX = width / 2
-                    var centerY = height / 2
-                    var radius = Math.min(width, height) * 0.35
-                    var lineWidth = radius * 0.75
 
-                    ctx.beginPath()
-                    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2, false)
-                    ctx.lineWidth = lineWidth
-                    ctx.strokeStyle = isExpense ? Theme.rgba("#FF6384", 0.2) : Theme.rgba("#36A2EB", 0.2)
-                    ctx.stroke()
+                onPaint: {
+                    var ctx = getContext("2d");
+                    ctx.reset();
+                    var centerX = width / 2;
+                    var centerY = height / 2;
+                    var radius = Math.min(width, height) * 0.35;
+                    var lineWidth = radius * 0.75;
+
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2, false);
+                    ctx.lineWidth = lineWidth;
+                    ctx.strokeStyle = isExpense ? Theme.rgba("#FF6384", 0.2) : Theme.rgba("#36A2EB", 0.2);
+                    ctx.stroke();
                 }
             }
 
@@ -113,114 +117,115 @@ Item {
                 property var sectorAngles: []
 
                 onPaint: {
-                    var ctx = getContext("2d")
-                    ctx.reset()
-                    var centerX = width / 2
-                    var centerY = height / 2
-                    var radius = Math.min(width, height) * 0.35
-                    var lineWidth = radius * 0.55
-                    var startAngle = -Math.PI/2
-                    var total = 0
-                    sectorAngles = []
+                    var ctx = getContext("2d");
+                    ctx.reset();
+                    var centerX = width / 2;
+                    var centerY = height / 2;
+                    var radius = Math.min(width, height) * 0.35;
+                    var lineWidth = radius * 0.55;
+                    var startAngle = -Math.PI / 2;
+                    var total = 0;
+                    sectorAngles = [];
 
                     for (var i = 0; i < sectors.length; i++) {
                         if ((isExpense && sectors[i].isExpense) || (!isExpense && !sectors[i].isExpense)) {
-                            total += sectors[i].value
+                            total += sectors[i].value;
                         }
                     }
 
                     if (total <= 0) {
-                        ctx.beginPath()
-                        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2, false)
-                        ctx.lineWidth = lineWidth
-                        ctx.strokeStyle = Theme.rgba(Theme.secondaryColor, 0.2)
-                        ctx.stroke()
-                        return
+                        ctx.beginPath();
+                        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2, false);
+                        ctx.lineWidth = lineWidth;
+                        ctx.strokeStyle = Theme.rgba(Theme.secondaryColor, 0.2);
+                        ctx.stroke();
+                        return;
                     }
 
                     for (var j = 0; j < sectors.length; j++) {
-                        var sector = sectors[j]
+                        var sector = sectors[j];
 
                         if ((isExpense && !sector.isExpense) || (!isExpense && sector.isExpense)) {
-                            continue
+                            continue;
                         }
 
-                        var angle = (sector.value / total) * Math.PI * 2
-                        var endAngle = startAngle + angle
+                        var angle = (sector.value / total) * Math.PI * 2;
+                        var endAngle = startAngle + angle;
 
                         sectorAngles.push({
                             start: startAngle,
                             end: endAngle,
                             index: j,
                             radius: radius
-                        })
+                        });
 
-                        var currentRadius = (selectedSector === j) ? radius * 1.1 : radius
-                        var currentLineWidth = (selectedSector === j) ? lineWidth * 1.1 : lineWidth
+                        var currentRadius = (selectedSector === j) ? radius * 1.1 : radius;
+                        var currentLineWidth = (selectedSector === j) ? lineWidth * 1.1 : lineWidth;
 
-                        ctx.beginPath()
-                        ctx.arc(centerX, centerY, currentRadius, startAngle, endAngle, false)
-                        ctx.lineWidth = currentLineWidth
-                        ctx.strokeStyle = sector.color || (isExpense ? "#FF6384" : "#36A2EB")
-                        ctx.stroke()
+                        ctx.beginPath();
+                        ctx.arc(centerX, centerY, currentRadius, startAngle, endAngle, false);
+                        ctx.lineWidth = currentLineWidth;
+                        ctx.strokeStyle = sector.color || (isExpense ? "#FF6384" : "#36A2EB");
+                        ctx.stroke();
 
-                        startAngle = endAngle
+                        startAngle = endAngle;
                     }
                 }
 
                 MouseArea {
                     anchors.fill: parent
-                    
-                    onClicked: {
-                        var centerX = width / 2
-                        var centerY = height / 2
-                        var clickX = mouse.x - centerX
-                        var clickY = mouse.y - centerY
-                        var distance = Math.sqrt(clickX * clickX + clickY * clickY)
-                        var clickAngle = Math.atan2(clickY, clickX)
-                        var clickedInsideSector = false
 
-                        if (clickAngle < 0) clickAngle += 2 * Math.PI
+                    onClicked: {
+                        var centerX = width / 2;
+                        var centerY = height / 2;
+                        var clickX = mouse.x - centerX;
+                        var clickY = mouse.y - centerY;
+                        var distance = Math.sqrt(clickX * clickX + clickY * clickY);
+                        var clickAngle = Math.atan2(clickY, clickX);
+                        var clickedInsideSector = false;
+
+                        if (clickAngle < 0)
+                            clickAngle += 2 * Math.PI;
 
                         for (var i = 0; i < sectorsCanvas.sectorAngles.length; i++) {
-                            var sector = sectorsCanvas.sectorAngles[i]
+                            var sector = sectorsCanvas.sectorAngles[i];
 
-                            var sectorRadius = (selectedSector === sector.index) ? sector.radius * 1.1 : sector.radius
-                            var sectorLineWidth = (selectedSector === sector.index) ? sector.radius * 0.55 * 1.1 : sector.radius * 0.55
+                            var sectorRadius = (selectedSector === sector.index) ? sector.radius * 1.1 : sector.radius;
+                            var sectorLineWidth = (selectedSector === sector.index) ? sector.radius * 0.55 * 1.1 : sector.radius * 0.55;
 
-                            var minRadius = Math.max(0, sectorRadius - sectorLineWidth/2)
-                            var maxRadius = sectorRadius + sectorLineWidth/2
+                            var minRadius = Math.max(0, sectorRadius - sectorLineWidth / 2);
+                            var maxRadius = sectorRadius + sectorLineWidth / 2;
 
                             if (distance >= minRadius && distance <= maxRadius) {
-                                var startAngle = sector.start < 0 ? sector.start + 2*Math.PI : sector.start
-                                var endAngle = sector.end < 0 ? sector.end + 2*Math.PI : sector.end
+                                var startAngle = sector.start < 0 ? sector.start + 2 * Math.PI : sector.start;
+                                var endAngle = sector.end < 0 ? sector.end + 2 * Math.PI : sector.end;
 
-                                var angleInSector = false
+                                var angleInSector = false;
 
                                 if (startAngle <= endAngle) {
-                                    angleInSector = (clickAngle >= startAngle && clickAngle <= endAngle)
+                                    angleInSector = (clickAngle >= startAngle && clickAngle <= endAngle);
                                 } else {
-                                    angleInSector = (clickAngle >= startAngle || clickAngle <= endAngle)
+                                    angleInSector = (clickAngle >= startAngle || clickAngle <= endAngle);
                                 }
 
                                 if (angleInSector) {
-                                    clickedInsideSector = true
+                                    clickedInsideSector = true;
 
                                     if (selectedSector === sector.index) {
-                                        selectedSector = -1
+                                        selectedSector = -1;
                                     } else {
-                                        selectedSector = sector.index
+                                        selectedSector = sector.index;
                                     }
 
-                                    sectorsCanvas.requestPaint()
-                                    break
+                                    sectorsCanvas.requestPaint();
+                                    break;
                                 }
                             }
                         }
 
                         if (!clickedInsideSector && selectedSector !== -1) {
-                            selectedSector = -1
-                            sectorsCanvas.requestPaint()
+                            selectedSector = -1;
+                            sectorsCanvas.requestPaint();
                         }
                     }
                 }
@@ -291,17 +296,17 @@ Item {
                     horizontalAlignment: Text.AlignHCenter
                     text: {
                         if (selectedSector >= 0 && selectedSector < sectors.length) {
-                            return sectors[selectedSector].name || "Категория"
+                            return sectors[selectedSector].name || "Категория";
                         } else {
-                            var count = 0
+                            var count = 0;
 
                             for (var i = 0; i < sectors.length; i++) {
                                 if ((isExpense && sectors[i].isExpense) || (!isExpense && !sectors[i].isExpense)) {
-                                    count++
+                                    count++;
                                 }
                             }
-                            
-                            return count===1 && sectors[0]["value"]===0 ? "Нет категорий" : count + " категори"+ (count === 1 ? "я" : (count >= 5 ? "й" : "и") )
+
+                            return count === 1 && sectors[0]["value"] === 0 ? "Нет категорий" : count + " категори" + (count === 1 ? "я" : (count >= 5 ? "й" : "и"));
                         }
                     }
                     color: Theme.secondaryColor
@@ -314,7 +319,7 @@ Item {
     ParallelAnimation {
         id: appearAnimation
         running: true
-        
+
         NumberAnimation {
             target: cardRoot
             property: "rotationAngle"
@@ -323,7 +328,7 @@ Item {
             duration: 800
             easing.type: Easing.OutBack
         }
-        
+
         NumberAnimation {
             target: cardRoot
             property: "scaleFactor"
@@ -335,8 +340,8 @@ Item {
     }
 
     onSectorsChanged: {
-        selectedSector = -1
-        backgroundRing.requestPaint()
-        sectorsCanvas.requestPaint()
+        selectedSector = -1;
+        backgroundRing.requestPaint();
+        sectorsCanvas.requestPaint();
     }
 }

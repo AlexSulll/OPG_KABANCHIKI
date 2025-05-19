@@ -4,44 +4,38 @@ import "../services" as Services
 import "../components"
 
 ListModel {
-    
     id: sectorModel
     objectName: "SectorModel"
 
-    property var sectors:  []
+    property var sectors: []
     property real total: 0
     property string currentPeriod: "All"
 
     function getTotalByCategory(categoryId) {
-        var total = 0
-        
+        var total = 0;
+
         for (var i = 0; i < count; i++) {
-            var item = get(i)
+            var item = get(i);
             if (item.categoryId === categoryId) {
-                total += item.total
+                total += item.total;
             }
         }
 
-        return total
+        return total;
     }
-
 
     function getColorForCategory(categoryId) {
-        var colors = [
-            "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0",
-            "#9966FF", "#FF9F40", "#8AC24A", "#FF5722"
-        ]
+        var colors = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF", "#FF9F40", "#8AC24A", "#FF5722"];
 
-        return colors[categoryId % colors.length]
+        return colors[categoryId % colors.length];
     }
-
 
     function calculateChartData(operationModel, action) {
         var data = [];
-        var currentPeriod = operationModel.currentPeriod
+        var currentPeriod = operationModel.currentPeriod;
         var filtered = operationModel.loadByTypeOperationForCardAndDateFiltering(action, currentPeriod);
         var totalForType = 0;
-        
+
         for (var i = 0; i < filtered.length; i++) {
             totalForType += filtered[i].total;
         }
@@ -60,7 +54,9 @@ ListModel {
             }
         }
 
-        data.sort(function(a, b) { return b.value - a.value; });
+        data.sort(function (a, b) {
+            return b.value - a.value;
+        });
 
         if (data.length === 0) {
             data.push({

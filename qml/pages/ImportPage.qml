@@ -2,6 +2,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import Sailfish.Pickers 1.0
 import "../models" as Models
+import "../components" as Components
 
 Page {
     id: importPage
@@ -18,18 +19,31 @@ Page {
         id: categoryModel
     }
 
+    Components.HeaderCategoryComponent {
+        id: header
+        fontSize: Theme.fontSizeExtraLarge * 1.2
+        color: "transparent"
+        headerText: "Импорт операций"
+        anchors {
+            top: parent.top
+            left: parent.left
+            right: parent.right
+        }
+    }
+
     SilicaFlickable {
-        anchors.fill: parent
+        anchors {
+            top: header.bottom
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+        }
         contentHeight: column.height
 
         Column {
             id: column
             width: parent.width
             spacing: Theme.paddingLarge
-
-            PageHeader {
-                title: "Импорт операций"
-            }
 
             Button {
                 text: "Выбрать CSV файл"
@@ -44,6 +58,15 @@ Page {
                 color: Theme.highlightColor
                 wrapMode: Text.Wrap
                 text: importStatus
+                visible: importStatus !== ""
+            }
+
+            Button {
+                id: okButton
+                text: "Ок"
+                anchors.horizontalCenter: parent.horizontalCenter
+                visible: importStatus.indexOf("Импорт завершен") === 0
+                onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("MainPage.qml"))
             }
         }
     }
@@ -58,98 +81,111 @@ Page {
 
             onSelectedContentPropertiesChanged: {
                 if (selectedContentProperties !== null) {
-                    var filePath = selectedContentProperties.filePath
-                    // Убираем префикс file:// если присутствует
-                    if (filePath.startsWith("file://")) {
-                        filePath = filePath.substring(7)
+                    var filePath = "" + selectedContentProperties.filePath;
+                    if (filePath.indexOf("file://") === 0) {
+                        filePath = filePath.substring(7);
                     }
-                    importOperations(filePath)
+                    importOperations(filePath);
                 }
             }
         }
     }
 
     function importOperations(filePath) {
-        importInProgress = true
-        importStatus = "Чтение файла..."
+        importInProgress = true;
+        importStatus = "Чтение файла...";
 
-        // Читаем файл через XMLHttpRequest
-        var xhr = new XMLHttpRequest()
-        xhr.open("GET", "file://" + filePath, false)
-        xhr.send()
+        categoryModel.loadAllCategories();
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "file://" + filePath, false);
+        xhr.send();
 
-        if (xhr.status !== 200) {
-            importStatus = "Ошибка чтения файла: " + xhr.status
-            importInProgress = false
-            return
+        if (xhr.status !== 200 && xhr.status !== 0) {
+            importStatus = "Ошибка чтения файла: " + xhr.status;
+            importInProgress = false;
+            return;
         }
 
-        var csvData = xhr.responseText
-        var lines = csvData.split('\n')
-        var importedCount = 0
-        var errors = []
+        var csvData = xhr.responseText;
+        if (!csvData || csvData.trim().length === 0) {
+            importStatus = "Файл пустой";
+            importInProgress = false;
+            return;
+        }
 
-        // Парсим CSV
-        for (var i = 1; i < lines.length; i++) { // Пропускаем заголовок
-            var line = lines[i].trim()
-            if (!line) continue
-
-            var fields = parseCsvLine(line)
+        var lines = csvData.split('\n');
+        var importedCount = 0;
+        var errors = [];
+        for (var i = 1; i < lines.length; i++) {
+            var line = lines[i].trim();
+            if (!line)
+                continue;
+            var fields = parseCsvLine(line);
+            var allEmpty = true;
+            for (var f = 0; f < fields.length; f++) {
+                if (fields[f].trim() !== "") {
+                    allEmpty = false;
+                    break;
+                }
+            }
+            if (allEmpty)
+                continue;
             if (fields.length !== 5) {
-                errors.push("Строка " + i + ": Некорректное количество полей")
-                continue
+                continue;
             }
 
             try {
                 var operation = {
-                    date: fields[0],
-                    category: categoryModel.getCategoryIdByName(fields[1]),
+                    date: fields[0] // формат dd.MM.yyyy
+                    ,
+                    categoryId: categoryModel.getCategoryIdByName(fields[1]),
                     amount: parseFloat(fields[2]),
-                    type: fields[3] === "Доход" ? 1 : 0,
-                    description: fields[4]
+                    action: fields[3] === "Доход" ? 1 : 0,
+                    desc: fields[4]
+                };
+
+                if (operation.categoryId === undefined || operation.categoryId === null || operation.categoryId === -1) {
+                    continue;
                 }
 
-                if (operationModel.addOperation(operation)) {
-                    importedCount++
-                } else {
-                    errors.push("Строка " + i + ": Ошибка сохранения")
+                if (isNaN(operation.amount)) {
+                    continue;
                 }
-            } catch(e) {
-                errors.push("Строка " + i + ": " + e.message)
+
+                if (!operation.date.match(/^\d{2}\.\d{2}\.\d{4}$/)) {
+                    continue;
+                }
+
+                operationModel.add(operation);
+                importedCount++;
+            } catch (e) {
+                continue;
             }
         }
 
-        importStatus = "Импорт завершен\n
-                       Успешно: ${importedCount}\n
-                       Ошибок: ${errors.length}"
+        importStatus = "Импорт завершен\nУспешно: " + importedCount;
 
-        if (errors.length > 0) {
-            pageStack.push(Qt.resolvedUrl("ImportErrorsDialog.qml"), {
-                errors: errors
-            })
-        }
-
-        importInProgress = false
+        importInProgress = false;
     }
 
     function parseCsvLine(line) {
-        var fields = []
-        var current = ""
-        var inQuotes = false
+        var fields = [];
+        var current = "";
+        var inQuotes = false;
 
         for (var i = 0; i < line.length; i++) {
-            var c = line[i]
+            var c = line[i];
             if (c === '"') {
-                inQuotes = !inQuotes
+                inQuotes = !inQuotes;
             } else if (c === ',' && !inQuotes) {
-                fields.push(current.trim())
-                current = ""
+                fields.push(current.trim());
+                current = "";
             } else {
-                current += c
+                current += c;
             }
         }
-        fields.push(current.trim())
+        fields.push(current.trim());
 
-        return fields
+        return fields;
     }
 }

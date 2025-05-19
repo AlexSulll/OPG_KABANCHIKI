@@ -12,10 +12,27 @@ Page {
     property var categoryModel: Models.CategoryModel {}
     property var operationService: Services.OperationService {}
     property int selectedCategoryId: -1
-    property int action: 0 // 0 - расход, 1 - доход
+    property int action: 0
+
+    Components.HeaderCategoryComponent {
+        id: header
+        fontSize: Theme.fontSizeExtraLarge * 1.2
+        color: "transparent"
+        headerText: "Регулярные платежи"
+        anchors {
+            top: parent.top
+            left: parent.left
+            right: parent.right
+        }
+    }
 
     SilicaFlickable {
-        anchors.fill: parent
+        anchors {
+            top: header.bottom
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+        }
         contentHeight: column.height
 
         Column {
@@ -23,21 +40,21 @@ Page {
             width: parent.width
             spacing: Theme.paddingLarge
 
-            PageHeader {
-                title: "Регулярные платежи"
-            }
-
             ComboBox {
                 id: actionCombo
                 width: parent.width
                 label: "Тип операции"
                 currentIndex: action
                 menu: ContextMenu {
-                    MenuItem { text: "Расход" }
-                    MenuItem { text: "Доход" }
+                    MenuItem {
+                        text: "Расход"
+                    }
+                    MenuItem {
+                        text: "Доход"
+                    }
                 }
                 onCurrentIndexChanged: {
-                    action = currentIndex
+                    action = currentIndex;
                     categoryModel.loadCategoriesByType(action);
                     categorySelector.resetSelection();
                     action = currentIndex;
@@ -50,7 +67,9 @@ Page {
                 label: "Сумма"
                 placeholderText: "Введите сумму"
                 inputMethodHints: Qt.ImhDigitsOnly
-                validator: DoubleValidator { bottom: 0.01 }
+                validator: DoubleValidator {
+                    bottom: 0.01
+                }
             }
 
             Components.CategorySelector {
@@ -59,7 +78,7 @@ Page {
                 categoryModel: regularOperationPage.categoryModel
                 currentCategoryType: action
                 onSelectedCategoryIdChanged: {
-                    regularOperationPage.selectedCategoryId = selectedCategoryId
+                    regularOperationPage.selectedCategoryId = selectedCategoryId;
                 }
             }
 
@@ -69,14 +88,30 @@ Page {
                 label: "Периодичность"
                 currentIndex: 3
                 menu: ContextMenu {
-                    MenuItem { text: "Каждый день" }
-                    MenuItem { text: "Каждую неделю" }
-                    MenuItem { text: "Каждые 2 недели" }
-                    MenuItem { text: "Каждый месяц" }
-                    MenuItem { text: "Каждые 2 месяца" }
-                    MenuItem { text: "Каждый квартал" }
-                    MenuItem { text: "Каждые полгода" }
-                    MenuItem { text: "Каждый год" }
+                    MenuItem {
+                        text: "Каждый день"
+                    }
+                    MenuItem {
+                        text: "Каждую неделю"
+                    }
+                    MenuItem {
+                        text: "Каждые 2 недели"
+                    }
+                    MenuItem {
+                        text: "Каждый месяц"
+                    }
+                    MenuItem {
+                        text: "Каждые 2 месяца"
+                    }
+                    MenuItem {
+                        text: "Каждый квартал"
+                    }
+                    MenuItem {
+                        text: "Каждые полгода"
+                    }
+                    MenuItem {
+                        text: "Каждый год"
+                    }
                 }
             }
 
@@ -122,27 +157,43 @@ Page {
         };
 
         if (regularPaymentsModel.addPayment(payment)) {
-            amountField.text = ""
-            descriptionField.text = ""
-            selectedCategoryId = -1
-            categorySelector.selectedCategoryId = -1
+            amountField.text = "";
+            descriptionField.text = "";
+            selectedCategoryId = -1;
+            categorySelector.selectedCategoryId = -1;
         }
     }
 
     function calculateNextPaymentDate(frequency) {
-        var date = new Date()
-        switch(frequency) {
-            case 0: date.setDate(date.getDate() + 1); break
-            case 1: date.setDate(date.getDate() + 7); break
-            case 2: date.setDate(date.getDate() + 14); break
-            case 3: date.setMonth(date.getMonth() + 1); break
-            case 4: date.setMonth(date.getMonth() + 2); break
-            case 5: date.setMonth(date.getMonth() + 3); break
-            case 6: date.setMonth(date.getMonth() + 6); break
-            case 7: date.setFullYear(date.getFullYear() + 1); break
+        var date = new Date();
+        switch (frequency) {
+        case 0:
+            date.setDate(date.getDate() + 1);
+            break;
+        case 1:
+            date.setDate(date.getDate() + 7);
+            break;
+        case 2:
+            date.setDate(date.getDate() + 14);
+            break;
+        case 3:
+            date.setMonth(date.getMonth() + 1);
+            break;
+        case 4:
+            date.setMonth(date.getMonth() + 2);
+            break;
+        case 5:
+            date.setMonth(date.getMonth() + 3);
+            break;
+        case 6:
+            date.setMonth(date.getMonth() + 6);
+            break;
+        case 7:
+            date.setFullYear(date.getFullYear() + 1);
+            break;
         }
 
-        return date.toISOString()
+        return date.toISOString();
     }
 
     Component.onCompleted: {

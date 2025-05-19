@@ -3,11 +3,10 @@ import Sailfish.Silica 1.0
 import Sailfish.Pickers 1.0
 
 Page {
-    
     id: addCategoryPage
 
     property var categoryModel
-    
+
     property int categoryType: 0
     property string categoryName: ""
     property string iconPath: ""
@@ -21,7 +20,9 @@ Page {
             width: parent.width
             spacing: Theme.paddingLarge
 
-            PageHeader { title: "Добавление новой категории" }
+            PageHeader {
+                title: "Добавление новой категории"
+            }
 
             TextField {
                 width: parent.width
@@ -35,9 +36,9 @@ Page {
                 width: parent.width
                 label: "Иконка категории"
                 value: iconPath ? iconPath.split("/").pop() : "Не выбрана"
-                
+
                 onClicked: {
-                    pageStack.push(filePicker)
+                    pageStack.push(filePicker);
                 }
             }
 
@@ -46,12 +47,16 @@ Page {
                 label: "Тип категории"
                 currentIndex: categoryType
                 menu: ContextMenu {
-                    MenuItem { text: "Расход" }
-                    MenuItem { text: "Доход" }
+                    MenuItem {
+                        text: "Расход"
+                    }
+                    MenuItem {
+                        text: "Доход"
+                    }
                 }
-                
+
                 onCurrentIndexChanged: {
-                    categoryType = currentIndex
+                    categoryType = currentIndex;
                 }
             }
 
@@ -59,15 +64,15 @@ Page {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: "Сохранить"
                 enabled: categoryName.length > 0 && iconPath.length > 0
-                
+
                 onClicked: {
                     var newCategory = {
                         nameCategory: categoryName,
                         typeCategory: categoryType,
                         pathToIcon: iconPath
-                    }
-                    categoryModel.addCategory(newCategory)
-                    pageStack.pop()
+                    };
+                    categoryModel.addCategory(newCategory);
+                    pageStack.pop();
                 }
             }
         }
@@ -78,11 +83,11 @@ Page {
 
         FilePickerPage {
             title: qsTr("Выберите иконку категории")
-            nameFilters: [ '*.svg' ]
+            nameFilters: ['*.svg']
 
             onSelectedContentPropertiesChanged: {
                 if (selectedContentProperties !== null) {
-                    iconPath = selectedContentProperties.filePath
+                    iconPath = selectedContentProperties.filePath;
                 }
             }
         }

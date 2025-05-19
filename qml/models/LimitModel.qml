@@ -2,7 +2,6 @@ import QtQuick 2.0
 import "../services" as Services
 
 QtObject {
-    
     id: limitModel
 
     property var categoryService: Services.CategoryService {

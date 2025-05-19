@@ -2,7 +2,6 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 Item {
-
     id: graphic
 
     width: parent.width
@@ -12,7 +11,6 @@ Item {
 
     property real pulseSize: 1.0
     property real pulseOpacity: 0.3
-    property var availableYears: []
     property int selectedYear: new Date().getFullYear()
 
     onVisibleChanged: {
@@ -23,7 +21,6 @@ Item {
 
     Component.onCompleted: {
         chartCanvas.requestPaint();
-        availableYears = [2020, 2021, 2022, 2023, 2024];
     }
 
     Rectangle {
@@ -59,40 +56,7 @@ Item {
                 });
             }
         }
-
-        ComboBox {
-            id: yearSelector
-            width: parent.width * 0.25
-            anchors.leftMargin: Theme.paddingLarge*3
-            currentIndex: availableYears.indexOf(selectedYear)
-            highlightedColor: "#24224f"
-
-            value: selectedYear.toString()
-
-            menu: ContextMenu {
-                Repeater {
-                    model: availableYears
-                    MenuItem {
-                        text: modelData
-                        onClicked: {
-                            selectedYear = modelData;
-                            chartCanvas.requestPaint();
-                        }
-                    }
-                }
-            }
-
-            Rectangle {
-                anchors.fill: parent
-                color: "transparent"
-                border.color: Theme.rgba("#24224f", 0.4)
-                border.width: 1
-                radius: Theme.paddingSmall
-                z: -1
-            }
-        }
     }
-
     SilicaFlickable {
         id: chartFlickable
         anchors {
@@ -119,17 +83,15 @@ Item {
 
                 onPaint: {
                     var ctx = getContext("2d");
-                    ctx.clearRect(0, 0, width, height)
+                    ctx.clearRect(0, 0, width, height);
                     ctx.reset();
 
-                    if (!timeSeriesData || timeSeriesData.length === 0) return;
+                    if (!timeSeriesData || timeSeriesData.length === 0)
+                        return;
 
-                    var maxValue = Math.max(
-                        10000,
-                        Math.max.apply(null, timeSeriesData.map(function(d) {
-                            return Math.max(d.value, d.target || 0);
-                        })
-                    ));
+                    var maxValue = Math.max(10000, Math.max.apply(null, timeSeriesData.map(function (d) {
+                        return Math.max(d.value, d.target || 0);
+                    })));
 
                     var availableWidth = width - 80;
                     var xStep = timeSeriesData.length > 1 ? availableWidth / (timeSeriesData.length - 1) : 0;
@@ -141,7 +103,10 @@ Item {
                     for (var i = 0; i < timeSeriesData.length; i++) {
                         var x = timeSeriesData.length > 1 ? 40 + i * xStep : width / 2;
                         var y = chartBottom - ((timeSeriesData[i].value || 0.0001) / maxValue * (height * 0.6));
-                        points.push({x: x, y: y});
+                        points.push({
+                            x: x,
+                            y: y
+                        });
                     }
 
                     if (timeSeriesData.length > 1) {
@@ -229,11 +194,11 @@ Item {
                         ctx.fill();
 
                         ctx.fillStyle = Theme.rgba("#24224f", 0.8);
-                        ctx.font = "bold " + Theme.fontSizeSmall*0.6 + "px sans-serif";
+                        ctx.font = "bold " + Theme.fontSizeSmall * 0.6 + "px sans-serif";
                         ctx.textAlign = "center";
-                        ctx.fillText(timeSeriesData[k].month+","+timeSeriesData[k].year, x, height - 20);
+                        ctx.fillText(timeSeriesData[k].month + "," + timeSeriesData[k].year, x, height - 20);
 
-                        var valueText = (timeSeriesData[k].value/1000).toFixed(1) + "k";
+                        var valueText = (timeSeriesData[k].value / 1000).toFixed(1) + "k";
                         if (k === highlightedPoint || highlightedPoint === -1) {
                             ctx.beginPath();
                             ctx.arc(x, y - 30, 20 * (k === highlightedPoint ? pulseSize * 1.1 : 1), 0, Math.PI * 2);
@@ -278,7 +243,7 @@ Item {
                             var area = chartCanvas.clickAreas[i];
                             var dx = mouse.x - area.x;
                             var dy = mouse.y - area.y;
-                            if (Math.sqrt(dx*dx + dy*dy) <= area.radius) {
+                            if (Math.sqrt(dx * dx + dy * dy) <= area.radius) {
                                 if (chartCanvas.highlightedPoint != i) {
                                     chartCanvas.highlightedPoint = i;
                                     chartCanvas.requestPaint();
@@ -299,7 +264,7 @@ Item {
                             var dx = mouse.x - area.x;
                             var dy = mouse.y - area.y;
 
-                            if (Math.sqrt(dx*dx + dy*dy) <= area.radius) {
+                            if (Math.sqrt(dx * dx + dy * dy) <= area.radius) {
                                 selectedMonthData = area.data;
                                 showMonthPopup = true;
                                 break;

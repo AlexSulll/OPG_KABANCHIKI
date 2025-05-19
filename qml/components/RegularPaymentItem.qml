@@ -9,16 +9,15 @@ ListItem {
     property var paymentData
     property var categoryModel // Добавляем модель категорий
     signal deleteRequested(int id)
-
-    // Получаем название категории
     property string categoryName: {
-        if (!paymentData || !categoryModel) return "Без категории"
-        var cat = categoryModel.getCategoryById(paymentData.categoryId)
-        return cat ? cat.nameCategory : "Без категории"
+        if (!paymentData || !categoryModel)
+            return "Без категории";
+        var cat = categoryModel.getCategoryById(paymentData.categoryId);
+        return cat ? cat.nameCategory : "Без категории";
     }
 
     Row {
-        width: parent.width - 2*Theme.horizontalPageMargin
+        width: parent.width - 2 * Theme.horizontalPageMargin
         anchors.centerIn: parent
         spacing: Theme.paddingMedium
 
@@ -53,20 +52,28 @@ ListItem {
             onClicked: deleteRequested(paymentData.id)
         }
     }
-
-    // Текст периодичности с правильными значениями
     property string frequencyText: {
-        if (!paymentData) return ""
-        switch(paymentData.frequency) {
-            case 0: return "Ежедневно"
-            case 1: return "Еженедельно"
-            case 2: return "Каждые 2 недели"
-            case 3: return "Ежемесячно"
-            case 4: return "Каждые 2 месяца"
-            case 5: return "Ежеквартально"
-            case 6: return "Каждые полгода"
-            case 7: return "Ежегодно"
-            default: return ""
+        if (!paymentData)
+            return "";
+        switch (paymentData.frequency) {
+        case 0:
+            return "Ежедневно";
+        case 1:
+            return "Еженедельно";
+        case 2:
+            return "Каждые 2 недели";
+        case 3:
+            return "Ежемесячно";
+        case 4:
+            return "Каждые 2 месяца";
+        case 5:
+            return "Ежеквартально";
+        case 6:
+            return "Каждые полгода";
+        case 7:
+            return "Ежегодно";
+        default:
+            return "";
         }
     }
 }

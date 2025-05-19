@@ -4,9 +4,8 @@ import "../models" as Models
 import "../components" as Components
 
 Page {
-
     id: limitPage
-    
+
     allowedOrientations: Orientation.All
 
     property var limitModel: Models.LimitModel {}
@@ -20,7 +19,7 @@ Page {
 
     Components.HeaderCategoryComponent {
         id: header
-        fontSize: Theme.fontSizeExtraLarge*1.2
+        fontSize: Theme.fontSizeExtraLarge * 1.2
         color: "transparent"
         headerText: "Лимиты расходов"
         anchors {
@@ -54,7 +53,7 @@ Page {
 
                 model: {
                     var filtered = [];
-                    
+
                     for (var i = 0; i < categoryModel.count; i++) {
                         var item = categoryModel.get(i);
                         if (item.categoryId !== 8) {
@@ -65,7 +64,7 @@ Page {
                             });
                         }
                     }
-                    
+
                     return filtered;
                 }
 
@@ -94,7 +93,9 @@ Page {
                 label: qsTr("Лимит (руб)")
                 placeholderText: qsTr("Введите сумму лимита")
                 inputMethodHints: Qt.ImhDigitsOnly
-                validator: IntValidator { bottom: 1 }
+                validator: IntValidator {
+                    bottom: 1
+                }
                 onTextChanged: {
                     if (text.charAt(0) === '-' || text.charAt(0) === '0') {
                         text = text.substring(1);
@@ -138,7 +139,8 @@ Page {
     }
 
     function updateLimitDisplay() {
-        if (!isCategorySelected) return;
+        if (!isCategorySelected)
+            return;
 
         var currentLimit = limitModel.getLimit(selectedCategory.categoryId);
 
@@ -152,20 +154,23 @@ Page {
     }
 
     function setCategoryLimit() {
-        if (!isCategorySelected || limitInput.text === "") return;
+        if (!isCategorySelected || limitInput.text === "")
+            return;
 
         var limitAmount = parseInt(limitInput.text);
-        
-        if (isNaN(limitAmount)) return;
+
+        if (isNaN(limitAmount))
+            return;
 
         limitModel.setLimit(selectedCategory.categoryId, limitAmount);
         updateLimitDisplay();
     }
 
     function resetCategoryLimit() {
-        if (!isCategorySelected) return;
+        if (!isCategorySelected)
+            return;
 
         limitModel.removeLimit(selectedCategory.categoryId);
         updateLimitDisplay();
     }
- }
+}

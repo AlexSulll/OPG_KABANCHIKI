@@ -22,7 +22,7 @@ Dialog {
 
         Label {
             x: Theme.horizontalPageMargin
-            width: parent.width - 2*x
+            width: parent.width - 2 * x
             wrapMode: Text.Wrap
             color: Theme.highlightColor
             text: "Файл: " + fileName
@@ -30,7 +30,7 @@ Dialog {
 
         Label {
             x: Theme.horizontalPageMargin
-            width: parent.width - 2*x
+            width: parent.width - 2 * x
             wrapMode: Text.Wrap
             color: Theme.highlightColor
             text: "Операций экспортировано: " + operationsCount
@@ -38,7 +38,7 @@ Dialog {
 
         Label {
             x: Theme.horizontalPageMargin
-            width: parent.width - 2*x
+            width: parent.width - 2 * x
             wrapMode: Text.Wrap
             color: Theme.highlightColor
             text: "Размер данных: " + dataSize + " байт"
@@ -50,7 +50,7 @@ Dialog {
 
         TextArea {
             width: parent.width
-            height: Math.min(implicitHeight, Screen.height/3)
+            height: Math.min(implicitHeight, Screen.height / 3)
             readOnly: true
             text: sampleData
             font.pixelSize: Theme.fontSizeExtraSmall

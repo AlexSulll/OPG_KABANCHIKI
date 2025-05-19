@@ -4,7 +4,7 @@
 <context>
     <name>AddCategoryPage</name>
     <message>
-        <location filename="../qml/pages/AddCategoryPage.qml" line="80"/>
+        <location filename="../qml/pages/AddCategoryPage.qml" line="85"/>
         <source>Выберите иконку категории</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12,29 +12,29 @@
 <context>
     <name>AnalyticsPage</name>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="139"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="144"/>
         <source>За время использования
 приложения потрачено</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="170"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="175"/>
         <source>В среднем вы
 тратили в месяц</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="215"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="222"/>
         <source>Количество операций: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="235"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="242"/>
         <source>Самая популярная категория: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="255"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="262"/>
         <source>Целей достигнуто: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -50,32 +50,32 @@
 <context>
     <name>EditCategoryPage</name>
     <message>
-        <location filename="../qml/pages/EditCategoryPage.qml" line="92"/>
+        <location filename="../qml/pages/EditCategoryPage.qml" line="97"/>
         <source>Выберите иконку категории</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/EditCategoryPage.qml" line="112"/>
+        <location filename="../qml/pages/EditCategoryPage.qml" line="117"/>
         <source>Подтверждение удаления</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/EditCategoryPage.qml" line="113"/>
+        <location filename="../qml/pages/EditCategoryPage.qml" line="118"/>
         <source>Удалить</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/EditCategoryPage.qml" line="114"/>
+        <location filename="../qml/pages/EditCategoryPage.qml" line="119"/>
         <source>Отмена</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/EditCategoryPage.qml" line="121"/>
+        <location filename="../qml/pages/EditCategoryPage.qml" line="126"/>
         <source>Вы уверены, что хотите удалить категорию &apos;%1&apos;?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/EditCategoryPage.qml" line="130"/>
+        <location filename="../qml/pages/EditCategoryPage.qml" line="135"/>
         <source>Все связанные операции будут сохранены, но потеряют привязку к категории.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -83,12 +83,12 @@
 <context>
     <name>FullscreenGraphic</name>
     <message>
-        <location filename="../qml/components/FullscreenGraphic.qml" line="90"/>
+        <location filename="../qml/components/FullscreenGraphic.qml" line="95"/>
         <source>No data available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/components/FullscreenGraphic.qml" line="90"/>
+        <location filename="../qml/components/FullscreenGraphic.qml" line="95"/>
         <source>Loading...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -96,48 +96,48 @@
 <context>
     <name>GoalItemDelegate</name>
     <message>
-        <location filename="../qml/components/GoalItemDelegate.qml" line="182"/>
+        <location filename="../qml/components/GoalItemDelegate.qml" line="181"/>
         <source>день</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/components/GoalItemDelegate.qml" line="182"/>
+        <location filename="../qml/components/GoalItemDelegate.qml" line="181"/>
         <source>дня</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/components/GoalItemDelegate.qml" line="182"/>
+        <location filename="../qml/components/GoalItemDelegate.qml" line="181"/>
         <source>дней</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/components/GoalItemDelegate.qml" line="160"/>
-        <location filename="../qml/components/GoalItemDelegate.qml" line="182"/>
+        <location filename="../qml/components/GoalItemDelegate.qml" line="159"/>
+        <location filename="../qml/components/GoalItemDelegate.qml" line="181"/>
         <source>Срок истёк</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/components/GoalItemDelegate.qml" line="99"/>
+        <location filename="../qml/components/GoalItemDelegate.qml" line="98"/>
         <source>Цель:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/components/GoalItemDelegate.qml" line="113"/>
+        <location filename="../qml/components/GoalItemDelegate.qml" line="112"/>
         <source>Накоплено:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/components/GoalItemDelegate.qml" line="126"/>
+        <location filename="../qml/components/GoalItemDelegate.qml" line="125"/>
         <source>Осталось:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/components/GoalItemDelegate.qml" line="139"/>
+        <location filename="../qml/components/GoalItemDelegate.qml" line="138"/>
         <source>Ежемесячно:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/components/GoalItemDelegate.qml" line="152"/>
+        <location filename="../qml/components/GoalItemDelegate.qml" line="151"/>
         <source>Дней:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -145,7 +145,7 @@
 <context>
     <name>ImportPage</name>
     <message>
-        <location filename="../qml/pages/ImportPage.qml" line="55"/>
+        <location filename="../qml/pages/ImportPage.qml" line="78"/>
         <source>Выберите файл CSV</source>
         <translation type="unfinished"></translation>
     </message>
@@ -153,37 +153,37 @@
 <context>
     <name>LimitCategoryPage</name>
     <message>
-        <location filename="../qml/pages/LimitCategoryPage.qml" line="94"/>
+        <location filename="../qml/pages/LimitCategoryPage.qml" line="93"/>
         <source>Лимит (руб)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/LimitCategoryPage.qml" line="95"/>
+        <location filename="../qml/pages/LimitCategoryPage.qml" line="94"/>
         <source>Введите сумму лимита</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/LimitCategoryPage.qml" line="115"/>
+        <location filename="../qml/pages/LimitCategoryPage.qml" line="116"/>
         <source>Установить лимит</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/LimitCategoryPage.qml" line="123"/>
+        <location filename="../qml/pages/LimitCategoryPage.qml" line="124"/>
         <source>Сбросить лимит</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/LimitCategoryPage.qml" line="133"/>
+        <location filename="../qml/pages/LimitCategoryPage.qml" line="134"/>
         <source>Выберите категорию для установки лимита</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/LimitCategoryPage.qml" line="146"/>
+        <location filename="../qml/pages/LimitCategoryPage.qml" line="148"/>
         <source>Текущий лимит: %1 руб</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/LimitCategoryPage.qml" line="149"/>
+        <location filename="../qml/pages/LimitCategoryPage.qml" line="151"/>
         <source>Лимит не установлен</source>
         <translation type="unfinished"></translation>
     </message>
@@ -191,42 +191,42 @@
 <context>
     <name>OperationPage</name>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="99"/>
+        <location filename="../qml/pages/OperationPage.qml" line="100"/>
         <source>Комментарий</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="235"/>
+        <location filename="../qml/pages/OperationPage.qml" line="240"/>
         <source>Превышение лимита</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="236"/>
+        <location filename="../qml/pages/OperationPage.qml" line="241"/>
         <source>Все равно сохранить</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="237"/>
+        <location filename="../qml/pages/OperationPage.qml" line="242"/>
         <source>Отменить</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="244"/>
+        <location filename="../qml/pages/OperationPage.qml" line="249"/>
         <source>Вы превысите лимит на %1 руб.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="253"/>
+        <location filename="../qml/pages/OperationPage.qml" line="258"/>
         <source>Лимит: %1 руб.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="260"/>
+        <location filename="../qml/pages/OperationPage.qml" line="265"/>
         <source>Уже потрачено: %1 руб.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/OperationPage.qml" line="267"/>
+        <location filename="../qml/pages/OperationPage.qml" line="272"/>
         <source>Новая операция: %1 руб.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -234,12 +234,12 @@
 <context>
     <name>TimeSeriesGraph</name>
     <message>
-        <location filename="../qml/components/TimeSeriesGraph.qml" line="97"/>
+        <location filename="../qml/components/TimeSeriesGraph.qml" line="98"/>
         <source>Expenses</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/components/TimeSeriesGraph.qml" line="97"/>
+        <location filename="../qml/components/TimeSeriesGraph.qml" line="98"/>
         <source>Income</source>
         <translation type="unfinished"></translation>
     </message>

@@ -3,7 +3,6 @@ import Sailfish.Silica 1.0
 import "../services" as Services
 
 ListModel {
-    
     id: categoryModel
     objectName: "CategoryModel"
 
@@ -55,15 +54,15 @@ ListModel {
                     nameCategory: categories[i].nameCategory,
                     pathToIcon: categories[i].pathToIcon,
                     typeCategory: categories[i].typeCategory
-                }
+                };
             }
         }
-        return null
+        return null;
     }
 
     function filteredCategories(action) {
         loadAllCategories();
-        var filtered = categories.filter(function(cat) {
+        var filtered = categories.filter(function (cat) {
             return cat.categoryId !== 8 && cat.categoryId !== 13 && cat.typeCategory === action;
         });
 
@@ -72,19 +71,20 @@ ListModel {
 
     function getIndexById(categoryId) {
         for (var i = 0; i < count; i++) {
-            if (get(i).categoryId === categoryId) return i
+            if (get(i).categoryId === categoryId)
+                return i;
         }
-        return -1
+        return -1;
     }
 
     function getCategoryName(categoryId) {
-        var category = getCategoryById(categoryId)
-        return category ? category.nameCategory : "Не выбрана"
+        var category = getCategoryById(categoryId);
+        return category ? category.nameCategory : "Не выбрана";
     }
 
     function getCategoryIcon(categoryId) {
-        var category = getCategoryById(categoryId)
-        return category ? category.pathToIcon : "Не выбрана"
+        var category = getCategoryById(categoryId);
+        return category ? category.pathToIcon : "Не выбрана";
     }
 
     function loadCategoriesByCategoryId(selectedCategoryId) {
@@ -92,25 +92,18 @@ ListModel {
     }
 
     function updateCategory(updatedCategory) {
-        service.updateCategory(updatedCategory)
+        service.updateCategory(updatedCategory);
     }
 
     function removeCategory(categoryId) {
-        service.removeCategory(categoryId)
+        service.removeCategory(categoryId);
     }
 
-    function getCategoryIdByName(categoryName) {
-        for (var i = 0; i < count; i++) {
-            if (get(i).nameCategory === categoryName) {
-                return get(i).categoryId
-            }
+    function getCategoryIdByName(name) {
+        for (var i = 0; i < categories.length; i++) {
+            if (categories[i].nameCategory === name)
+                return categories[i].categoryId;
         }
-        // Если категория не найдена, создаем новую
-        var newCategory = {
-            nameCategory: categoryName,
-            typeCategory: 0 // По умолчанию как расход
-        }
-        addCategory(newCategory)
-        return newCategory.categoryId
+        return -1;
     }
 }

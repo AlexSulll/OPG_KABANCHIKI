@@ -3,7 +3,6 @@ import Sailfish.Silica 1.0
 import Sailfish.Pickers 1.0
 
 Page {
-
     id: editCategoryPage
 
     property int categoryType: categoryData ? categoryData.typeCategory : 0
@@ -22,7 +21,9 @@ Page {
             width: parent.width
             spacing: Theme.paddingLarge
 
-            PageHeader { title: "Редактирование категории" }
+            PageHeader {
+                title: "Редактирование категории"
+            }
 
             TextField {
                 width: parent.width
@@ -39,7 +40,7 @@ Page {
                 value: iconPath ? iconPath.split("/").pop() : "Не выбрана"
 
                 onClicked: {
-                    pageStack.push(filePicker)
+                    pageStack.push(filePicker);
                 }
             }
 
@@ -48,12 +49,16 @@ Page {
                 label: "Тип категории"
                 currentIndex: categoryType
                 menu: ContextMenu {
-                    MenuItem { text: "Расход" }
-                    MenuItem { text: "Доход" }
+                    MenuItem {
+                        text: "Расход"
+                    }
+                    MenuItem {
+                        text: "Доход"
+                    }
                 }
 
                 onCurrentIndexChanged: {
-                    categoryType = currentIndex
+                    categoryType = currentIndex;
                 }
             }
 
@@ -68,9 +73,9 @@ Page {
                         nameCategory: categoryName,
                         typeCategory: categoryType,
                         pathToIcon: iconPath
-                    }
-                    categoryModel.updateCategory(updatedCategory)
-                    pageStack.pop()
+                    };
+                    categoryModel.updateCategory(updatedCategory);
+                    pageStack.pop();
                 }
             }
 
@@ -80,7 +85,7 @@ Page {
                 color: Theme.errorColor
 
                 onClicked: {
-                    confirmDeleteDialog.open()
+                    confirmDeleteDialog.open();
                 }
             }
         }
@@ -90,11 +95,11 @@ Page {
         id: filePicker
         FilePickerPage {
             title: qsTr("Выберите иконку категории")
-            nameFilters: [ '*.svg' ]
+            nameFilters: ['*.svg']
 
             onSelectedContentPropertiesChanged: {
                 if (selectedContentProperties !== null) {
-                    iconPath = selectedContentProperties.filePath
+                    iconPath = selectedContentProperties.filePath;
                 }
             }
         }

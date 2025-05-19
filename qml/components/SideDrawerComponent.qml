@@ -3,9 +3,8 @@ import Sailfish.Silica 1.0
 import "../models"
 
 Item {
-
     id: sideDrawer
-    
+
     anchors.fill: parent
     visible: false
 
@@ -27,7 +26,9 @@ Item {
         }
 
         Behavior on opacity {
-            NumberAnimation { duration: 200 }
+            NumberAnimation {
+                duration: 200
+            }
         }
     }
 
@@ -75,8 +76,8 @@ Item {
                     onClicked: {
                         sideDrawer.close();
 
-                        if (page==="../pages/MainPage.qml") {
-                            pageStack.replaceAbove(null, Qt.resolvedUrl(page))
+                        if (page === "../pages/MainPage.qml") {
+                            pageStack.replaceAbove(null, Qt.resolvedUrl(page));
                         }
 
                         if (page === "../pages/OperationPage.qml") {
@@ -85,25 +86,25 @@ Item {
 
                         if (page === "../pages/CategoryPage.qml") {
                             pageStack.push(Qt.resolvedUrl("../pages/CategoryPage.qml"), {
-                                    categoryModel: categoryModel,
-                                    action: 0,
-                                    fromMainButton: false
+                                categoryModel: categoryModel,
+                                action: 0,
+                                fromMainButton: false
                             });
                         }
 
                         if (page === "../pages/GoalsPage.qml") {
                             pageStack.push(Qt.resolvedUrl("../pages/GoalsPage.qml"), {
-                                    goalModel: goalModel
+                                goalModel: goalModel
                             });
                         }
-                        
+
                         if (page === "../pages/LimitCategoryPage.qml") {
                             pageStack.push(Qt.resolvedUrl("../pages/LimitCategoryPage.qml"));
                         }
 
                         if (page === "../pages/RegularOperationPage.qml") {
                             pageStack.push(Qt.resolvedUrl("../pages/RegularOperationPage.qml"), {
-                                    categoryModel: categoryModel
+                                categoryModel: categoryModel
                             });
                         }
                     }

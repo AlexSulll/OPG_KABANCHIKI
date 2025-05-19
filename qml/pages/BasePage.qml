@@ -4,7 +4,6 @@ import "../models" as Models
 import "../components"
 
 Page {
-
     id: root
 
     allowedOrientations: Orientation.All
@@ -60,8 +59,14 @@ Page {
         Rectangle {
             anchors.fill: parent
             gradient: Gradient {
-                GradientStop { position: 0.0; color: "#24224f" }
-                GradientStop { position: 1.0; color: "#1a1a3a" }
+                GradientStop {
+                    position: 0.0
+                    color: "#24224f"
+                }
+                GradientStop {
+                    position: 1.0
+                    color: "#1a1a3a"
+                }
             }
 
             Rectangle {
@@ -69,8 +74,14 @@ Page {
                 width: Theme.itemSizeLarge
                 height: Theme.itemSizeExtraLarge
                 gradient: Gradient {
-                    GradientStop { position: 0.0; color: "#24224f" }
-                    GradientStop { position: 1.0; color: "#1a1a3a" }
+                    GradientStop {
+                        position: 0.0
+                        color: "#24224f"
+                    }
+                    GradientStop {
+                        position: 1.0
+                        color: "#1a1a3a"
+                    }
                 }
                 anchors {
                     left: parent.left
@@ -90,8 +101,14 @@ Page {
                 width: Theme.itemSizeExtraLarge
                 height: Theme.itemSizeExtraLarge
                 gradient: Gradient {
-                    GradientStop { position: 0.0; color: "#24224f" }
-                    GradientStop { position: 1.0; color: "#1a1a3a" }
+                    GradientStop {
+                        position: 0.0
+                        color: "#24224f"
+                    }
+                    GradientStop {
+                        position: 1.0
+                        color: "#1a1a3a"
+                    }
                 }
                 anchors {
                     left: burger.right
@@ -106,7 +123,7 @@ Page {
                             operationModel: operationModel,
                             categoryModel: categoryModel,
                             sectorModel: sectorModel
-                        })
+                        });
                     }
                 }
             }
@@ -135,13 +152,13 @@ Page {
                         id: mouseArea
                         anchors.fill: parent
                         onClicked: {
-                            sideDrawer.close()
+                            sideDrawer.close();
                             pageStack.push(Qt.resolvedUrl("CategoryPage.qml"), {
                                 categoryModel: categoryModel,
                                 operationModel: operationModel,
                                 sectorModel: sectorModel,
                                 action: root.selectedAction
-                            })
+                            });
                         }
                     }
                 }
@@ -152,8 +169,14 @@ Page {
                 width: Theme.itemSizeExtraLarge
                 height: Theme.itemSizeExtraLarge
                 gradient: Gradient {
-                    GradientStop { position: 0.0; color: "#24224f" }
-                    GradientStop { position: 1.0; color: "#1a1a3a" }
+                    GradientStop {
+                        position: 0.0
+                        color: "#24224f"
+                    }
+                    GradientStop {
+                        position: 1.0
+                        color: "#1a1a3a"
+                    }
                 }
                 anchors {
                     right: others.left
@@ -166,18 +189,24 @@ Page {
                     onClicked: {
                         pageStack.push(Qt.resolvedUrl("GoalsPage.qml"), {
                             goalModel: goalModel
-                        })
+                        });
                     }
                 }
             }
-            
+
             Rectangle {
                 id: others
                 width: Theme.itemSizeExtraLarge
                 height: Theme.itemSizeExtraLarge
                 gradient: Gradient {
-                    GradientStop { position: 0.0; color: "#24224f" }
-                    GradientStop { position: 1.0; color: "#1a1a3a" }
+                    GradientStop {
+                        position: 0.0
+                        color: "#24224f"
+                    }
+                    GradientStop {
+                        position: 1.0
+                        color: "#1a1a3a"
+                    }
                 }
                 anchors {
                     right: parent.right
@@ -188,7 +217,7 @@ Page {
                     icon.source: "image://theme/icon-l-device-upload"
                     anchors.centerIn: parent
                     onClicked: {
-                        pageStack.push(Qt.resolvedUrl("../pages/ExportPage.qml"))
+                        pageStack.push(Qt.resolvedUrl("ActionsFilePage.qml"));
                     }
                 }
             }

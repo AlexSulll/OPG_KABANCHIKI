@@ -32,7 +32,9 @@ Dialog {
             width: parent.width
             label: "Целевая сумма"
             inputMethodHints: Qt.ImhDigitsOnly
-            validator: DoubleValidator { bottom: 1 }
+            validator: DoubleValidator {
+                bottom: 1
+            }
         }
 
         TextField {
@@ -43,7 +45,7 @@ Dialog {
             readOnly: true
 
             onClicked: {
-                 dateDialog.open()
+                dateDialog.open();
             }
         }
     }
@@ -55,8 +57,8 @@ Dialog {
             currentAmount: 0,
             startDate: new Date().toISOString(),
             endDate: datePicker.date.toISOString()
-        }
-        goalModel.addGoal(newGoal)
+        };
+        goalModel.addGoal(newGoal);
     }
 
     Dialog {
@@ -77,14 +79,14 @@ Dialog {
                 horizontalAlignment: Text.AlignHCenter
                 text: {
                     if (datePicker.date) {
-                        var locale = Qt.locale("ru_RU")
-                        var monthName = locale.standaloneMonthName(datePicker.date.getMonth())
-                        monthName = monthName.charAt(0).toUpperCase() + monthName.slice(1)
-                        
-                        return monthName + " " + datePicker.date.getFullYear()
+                        var locale = Qt.locale("ru_RU");
+                        var monthName = locale.standaloneMonthName(datePicker.date.getMonth());
+                        monthName = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+
+                        return monthName + " " + datePicker.date.getFullYear();
                     }
-                    
-                    return ""
+
+                    return "";
                 }
                 font.pixelSize: Theme.fontSizeLarge
             }
@@ -100,7 +102,7 @@ Dialog {
         }
 
         onOpened: {
-            datePicker.date = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+            datePicker.date = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
         }
     }
 }

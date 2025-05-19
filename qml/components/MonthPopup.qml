@@ -3,15 +3,20 @@ import Sailfish.Silica 1.0
 import "../models" as Models
 
 Rectangle {
-    
     id: monthPopup
-    
+
     visible: showMonthPopup
     width: parent.width * 0.8
     height: parent.height * 0.6
     gradient: Gradient {
-        GradientStop { position: 0.0; color: "#24224f" }
-        GradientStop { position: 1.0; color: "#1a1a3a" }
+        GradientStop {
+            position: 0.0
+            color: "#24224f"
+        }
+        GradientStop {
+            position: 1.0
+            color: "#1a1a3a"
+        }
     }
     radius: Theme.paddingLarge
     x: (parent.width - width) / 2
@@ -26,7 +31,7 @@ Rectangle {
         id: closeButton
         width: Theme.itemSizeSmall
         height: width
-        radius: width/2
+        radius: width / 2
         color: Theme.rgba(Theme.highlightBackgroundColor, 0.1)
         anchors {
             top: parent.top
@@ -49,7 +54,7 @@ Rectangle {
 
     Column {
         id: column
-        width: parent.width - 2*Theme.paddingLarge
+        width: parent.width - 2 * Theme.paddingLarge
         height: parent.height
         anchors {
             top: parent.top
@@ -66,7 +71,7 @@ Rectangle {
         }
 
         Label {
-            text: (monthData.value/1000).toFixed(1) + "k ₽"
+            text: (monthData.value / 1000).toFixed(1) + "k ₽"
             color: Theme.primaryColor
             font {
                 pixelSize: Theme.fontSizeHuge
@@ -74,7 +79,7 @@ Rectangle {
             }
             anchors.horizontalCenter: parent.horizontalCenter
         }
-        
+
         Repeater {
             model: monthCategories
 
@@ -97,7 +102,7 @@ Rectangle {
                     border.width: 1
 
                     Rectangle {
-                        width: parent.width * (modelData.value/monthData.value)
+                        width: parent.width * (modelData.value / monthData.value)
                         height: parent.height
                         radius: 5
                         color: {
@@ -113,7 +118,7 @@ Rectangle {
                             spacing: Theme.paddingMedium
 
                             Label {
-                                text: Math.round((modelData.value/monthData.value*100)) + "%"
+                                text: Math.round((modelData.value / monthData.value * 100)) + "%"
                                 color: Theme.primaryColor
                                 font {
                                     pixelSize: Theme.fontSizeSmall
@@ -131,7 +136,7 @@ Rectangle {
                         }
                     }
                 }
-                
+
                 VerticalScrollDecorator {}
             }
         }

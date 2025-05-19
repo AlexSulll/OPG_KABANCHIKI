@@ -16,7 +16,7 @@ Item {
     }
 
     Rectangle {
-        width: parent.width - 2*Theme.horizontalPageMargin
+        width: parent.width - 2 * Theme.horizontalPageMargin
         height: parent.height
         radius: Theme.paddingSmall
         color: Theme.rgba(Theme.highlightColor, 0.1)
@@ -38,7 +38,7 @@ Item {
             Label {
                 text: categoryData ? categoryData.nameCategory : "Нажми, чтобы выбрать категорию"
                 color: Theme.primaryColor
-                width: parent.width - Theme.iconSizeMedium - Theme.paddingMedium*2
+                width: parent.width - Theme.iconSizeMedium - Theme.paddingMedium * 2
                 anchors.verticalCenter: parent.verticalCenter
                 truncationMode: TruncationMode.Fade
             }

@@ -41,6 +41,6 @@ ListModel {
     ListElement {
         text: "О программе"
         icon: "icon-m-about"
-        page: "MainPage.qml"     // заглушка - не указан точный путь
+        page: "../pages/AboutPage.qml"     // заглушка - не указан точный путь
     }
 }

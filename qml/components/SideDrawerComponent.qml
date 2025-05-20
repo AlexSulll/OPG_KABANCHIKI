@@ -107,6 +107,11 @@ Item {
                                 categoryModel: categoryModel
                             });
                         }
+
+                        if (page === "../pages/AboutPage.qml") {
+                            pageStack.push(Qt.resolvedUrl("../pages/AboutPage.qml"), {
+                            });
+                        }
                     }
                 }
             }

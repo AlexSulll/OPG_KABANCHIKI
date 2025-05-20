@@ -2,6 +2,41 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="ru">
 <context>
+    <name>AboutPage</name>
+    <message>
+        <location filename="../qml/pages/AboutPage.qml" line="21"/>
+        <source>О приложении</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AboutPage.qml" line="31"/>
+        <source>WebBudget — это приложение для учёта личных финансов.
+
+Возможности:
+• Ведение расходов и доходов по категориям
+• Просмотр баланса и аналитики
+• Добавление, редактирование и удаление операций
+• Установка лимитов на категории
+• Импорт и экспорт операций в CSV
+• Ведение финансовых целей
+• Регулярные платежи
+• Графики и статистика
+• Поддержка нескольких типов операций
+• Удобный и современный интерфейс</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AboutPage.qml" line="49"/>
+        <source>Лицензия</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AboutPage.qml" line="59"/>
+        <source>Приложение распространяется по лицензии 3-Clause BSD License.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>AddCategoryPage</name>
     <message>
         <location filename="../qml/pages/AddCategoryPage.qml" line="85"/>
@@ -12,29 +47,29 @@
 <context>
     <name>AnalyticsPage</name>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="144"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="141"/>
         <source>За время использования
 приложения потрачено</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="175"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="172"/>
         <source>В среднем вы
 тратили в месяц</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="222"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="217"/>
         <source>Количество операций: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="242"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="237"/>
         <source>Самая популярная категория: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/AnalyticsPage.qml" line="262"/>
+        <location filename="../qml/pages/AnalyticsPage.qml" line="257"/>
         <source>Целей достигнуто: </source>
         <translation type="unfinished"></translation>
     </message>

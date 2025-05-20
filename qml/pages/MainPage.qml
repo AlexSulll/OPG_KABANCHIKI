@@ -46,7 +46,13 @@ BasePage {
         dateFilterModel: dateFilter
     }
 
-    onVisibleChanged: regularPaymentsModel.loadPayments()
+    onVisibleChanged: {
+        regularPaymentsModel.loadPayments();
+        categoryModel.loadAllCategories();
+        operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1);
+        operationModel.calculateTotalBalance();
+        sectorModel.calculateChartData(operationModel, 0);
+    }
 
     Component.onCompleted: {
         categoryModel.loadAllCategories();

@@ -12,27 +12,82 @@
         <location filename="../qml/pages/AboutPage.qml" line="31"/>
         <source>WebBudget — это приложение для учёта личных финансов.
 
-Возможности:
-• Ведение расходов и доходов по категориям
-• Просмотр баланса и аналитики
-• Добавление, редактирование и удаление операций
-• Установка лимитов на категории
-• Импорт и экспорт операций в CSV
-• Ведение финансовых целей
-• Регулярные платежи
-• Графики и статистика
-• Поддержка нескольких типов операций
-• Удобный и современный интерфейс</source>
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AboutPage.qml" line="34"/>
+        <source>Возможности:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AboutPage.qml" line="35"/>
+        <source>• Ведение расходов и доходов по категориям
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AboutPage.qml" line="36"/>
+        <source>• Просмотр баланса и аналитики
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AboutPage.qml" line="37"/>
+        <source>• Добавление, редактирование и удаление операций
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AboutPage.qml" line="38"/>
+        <source>• Установка лимитов на категории
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AboutPage.qml" line="39"/>
+        <source>• Импорт и экспорт операций в CSV
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AboutPage.qml" line="40"/>
+        <source>• Ведение финансовых целей
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AboutPage.qml" line="41"/>
+        <source>• Регулярные платежи
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AboutPage.qml" line="42"/>
+        <source>• Графики и статистика
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AboutPage.qml" line="43"/>
+        <source>• Поддержка нескольких типов операций
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/AboutPage.qml" line="44"/>
+        <source>• Удобный и современный интерфейс</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qml/pages/AboutPage.qml" line="49"/>
-        <source>Лицензия</source>
+        <source>Разработчики</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qml/pages/AboutPage.qml" line="59"/>
-        <source>Приложение распространяется по лицензии 3-Clause BSD License.</source>
+        <source>Данное приложение разработали студенты группы КС-22-03 Сулимов Александр и Паршинцева Анна</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -77,7 +132,7 @@
 <context>
     <name>DefaultCoverPage</name>
     <message>
-        <location filename="../qml/cover/DefaultCoverPage.qml" line="10"/>
+        <location filename="../qml/cover/DefaultCoverPage.qml" line="20"/>
         <source>WebBudget</source>
         <translation>Финансы</translation>
     </message>

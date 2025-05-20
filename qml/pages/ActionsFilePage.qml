@@ -16,10 +16,14 @@ Page {
     property real totalExpense: 0
     property real balance: 0
 
-    function updateStats() {
-        totalIncome = operationModel.service.getTotalIncome();
-        totalExpense = operationModel.service.getTotalExpenses();
-        balance = operationModel.calculateTotalBalance();
+    Component.onCompleted: {
+        operationModel.refresh();
+        updateStats();
+    }
+
+    onVisibleChanged: {
+        operationModel.refresh();
+        updateStats();
     }
 
     Components.HeaderCategoryComponent {
@@ -141,8 +145,9 @@ Page {
         }
     }
 
-    Component.onCompleted: {
-        operationModel.refresh();
-        updateStats();
+    function updateStats() {
+        totalIncome = operationModel.service.getTotalIncome();
+        totalExpense = operationModel.service.getTotalExpenses();
+        balance = operationModel.calculateTotalBalance();
     }
 }

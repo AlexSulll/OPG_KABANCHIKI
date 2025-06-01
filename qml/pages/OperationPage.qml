@@ -19,11 +19,20 @@ Page {
     property var operationModel
     property var categoryModel
     property var limitModel: Models.LimitModel {}
+    property var regularPaymentsModel: Models.RegularPaymentsModel {}
     property bool fromMainButton: true
 
     property real categoryLimit: 0
     property real currentSpent: 0
     property real operationAmount: 0
+
+    property bool isRegular: false
+    property string regularPurpose: ""
+    property int regularFrequency: 0
+
+    Models.OperationModel {
+        id: operationModel
+    }
 
     onActionChanged: {
         if (categoryModel) {
@@ -44,7 +53,7 @@ Page {
         id: header
         fontSize: Theme.fontSizeExtraLarge * 2
         color: "transparent"
-        headerText: fromMainButton ? "Добавление" : "Категории"
+        headerText: qsTr(fromMainButton ? "Добавление" : "Категории")
         anchors {
             top: parent.top
             left: parent.left
@@ -66,8 +75,8 @@ Page {
             TextField {
                 id: sumInput
                 width: parent.width
-                label: "Сумма операции"
-                placeholderText: "Сумма (руб)"
+                label: qsTr("Сумма операции")
+                placeholderText: qsTr("Сумма (руб)")
                 inputMethodHints: Qt.ImhDigitsOnly
                 validator: IntValidator {
                     bottom: 1
@@ -80,6 +89,13 @@ Page {
                 }
             }
 
+            TextSwitch {
+                id: regularCheck
+                text: qsTr("Сделать операцию регулярной")
+                checked: isRegular
+                onCheckedChanged: isRegular = checked
+            }
+
             Components.CategoryDisplay {
                 width: parent.width
                 categoryData: selectedCategory
@@ -87,8 +103,8 @@ Page {
 
             TextField {
                 width: parent.width
-                placeholderText: "Дата"
-                label: "Дата операции"
+                placeholderText: qsTr("Дата")
+                label: qsTr("Дата операции")
                 readOnly: true
                 text: date
                 onClicked: dateDialog.open()
@@ -96,10 +112,56 @@ Page {
 
             TextArea {
                 width: parent.width
-                height: Theme.itemSizeLarge
+                height: Theme.itemSizeLarge * 2
                 placeholderText: qsTr("Комментарий")
                 inputMethodHints: Qt.ImhNoPredictiveText
                 onTextChanged: operationPage.desc = text
+            }
+
+            ComboBox {
+                visible: isRegular
+                id: frequencyCombo
+                width: parent.width
+                height: Theme.itemSizeSmall
+                label: "Периодичность"
+                currentIndex: regularFrequency
+                menu: ContextMenu {
+                    MenuItem {
+                        text: qsTr("Каждый день")
+                    }
+                    MenuItem {
+                        text: qsTr("Каждую неделю")
+                    }
+                    MenuItem {
+                        text: qsTr("Каждые 2 недели")
+                    }
+                    MenuItem {
+                        text: qsTr("Каждый месяц")
+                    }
+                    MenuItem {
+                        text: qsTr("Каждые 2 месяца")
+                    }
+                    MenuItem {
+                        text: qsTr("Каждый квартал")
+                    }
+                    MenuItem {
+                        text: qsTr("Каждые полгода")
+                    }
+                    MenuItem {
+                        text: qsTr("Каждый год")
+                    }
+                }
+                onCurrentIndexChanged: regularFrequency = currentIndex
+            }
+
+            TextField {
+                visible: isRegular
+                id: purposeField
+                width: parent.width
+                label: qsTr("Назначение платежа")
+                placeholderText: qsTr("Например, аренда, подписка...")
+                text: regularPurpose
+                onTextChanged: regularPurpose = text
             }
 
             Row {
@@ -108,14 +170,14 @@ Page {
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 Button {
-                    text: "Отмена"
+                    text: qsTr("Отмена")
                     width: (parent.width - parent.spacing) / 2
                     color: "red"
                     onClicked: pageStack.pop()
                 }
 
                 Button {
-                    text: "Сохранить"
+                    text: qsTr("Сохранить")
                     width: (parent.width - parent.spacing) / 2
                     enabled: amount !== "" && selectedCategoryId !== -1
                     onClicked: checkAndSaveOperation()
@@ -133,9 +195,9 @@ Page {
             spacing: Theme.paddingLarge
 
             DialogHeader {
-                title: "Выберите дату"
-                acceptText: "ОК"
-                cancelText: "Отмена"
+                title: qsTr("Выберите дату")
+                acceptText: qsTr("ОК")
+                cancelText: qsTr("Отмена")
             }
 
             Row {
@@ -296,13 +358,58 @@ Page {
     }
 
     function saveOperation() {
-        operationModel.add({
-            amount: operationAmount,
-            action: action,
-            categoryId: selectedCategoryId,
-            date: date,
-            desc: desc
-        });
-        pageStack.replaceAbove(null, Qt.resolvedUrl("MainPage.qml"));
+        if (isRegular) {
+            var payment = {
+                amount: parseFloat(amount),
+                categoryId: selectedCategoryId,
+                frequency: regularFrequency,
+                description: purposeField.text,
+                isIncome: action,
+                nextPaymentDate: calculateNextPaymentDate(frequencyCombo.currentIndex)
+            };
+            regularPaymentsModel.addPayment(payment);
+            pageStack.replaceAbove(null, Qt.resolvedUrl("MainPage.qml"));
+        } else {
+            operationModel.add({
+                amount: operationAmount,
+                action: action,
+                categoryId: selectedCategoryId,
+                date: date,
+                desc: desc
+            });
+            pageStack.replaceAbove(null, Qt.resolvedUrl("MainPage.qml"));
+        }
+    }
+
+    function calculateNextPaymentDate(frequency) {
+        var date = new Date();
+        switch (frequency) {
+        case 0:
+            date.setDate(date.getDate() + 1);
+            break;
+        case 1:
+            date.setDate(date.getDate() + 7);
+            break;
+        case 2:
+            date.setDate(date.getDate() + 14);
+            break;
+        case 3:
+            date.setMonth(date.getMonth() + 1);
+            break;
+        case 4:
+            date.setMonth(date.getMonth() + 2);
+            break;
+        case 5:
+            date.setMonth(date.getMonth() + 3);
+            break;
+        case 6:
+            date.setMonth(date.getMonth() + 6);
+            break;
+        case 7:
+            date.setFullYear(date.getFullYear() + 1);
+            break;
+        }
+
+        return date.toISOString();
     }
 }

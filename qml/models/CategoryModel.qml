@@ -61,12 +61,11 @@ ListModel {
     }
 
     function filteredCategories(action) {
-        loadAllCategories();
-        var filtered = categories.filter(function (cat) {
+        loadAllCategoriesForFilter();
+        categories = categories.filter(function (cat) {
             return cat.categoryId !== 8 && cat.categoryId !== 13 && cat.typeCategory === action;
         });
-
-        return filtered;
+        updateModel();
     }
 
     function getIndexById(categoryId) {
@@ -105,5 +104,11 @@ ListModel {
                 return categories[i].categoryId;
         }
         return -1;
+    }
+
+    function loadAllCategoriesForFilter() {
+        var expenses = service.loadCategoriesWithGoals(0);
+        var revenues = service.loadCategoriesWithGoals(1);
+        categories = expenses.concat(revenues);
     }
 }

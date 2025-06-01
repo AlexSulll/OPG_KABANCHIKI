@@ -23,7 +23,7 @@ Page {
         id: header
         fontSize: Theme.fontSizeExtraLarge * 1.2
         color: "transparent"
-        headerText: "Импорт операций"
+        headerText: qsTr("Импорт операций")
         anchors {
             top: parent.top
             left: parent.left
@@ -46,7 +46,7 @@ Page {
             spacing: Theme.paddingLarge
 
             Button {
-                text: "Выбрать CSV файл"
+                text: qsTr("Выбрать CSV файл")
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClicked: pageStack.push(csvFilePicker)
             }
@@ -63,7 +63,7 @@ Page {
 
             Button {
                 id: okButton
-                text: "Ок"
+                text: qsTr("Ок")
                 anchors.horizontalCenter: parent.horizontalCenter
                 visible: importStatus.indexOf("Импорт завершен") === 0
                 onClicked: pageStack.replaceAbove(null, Qt.resolvedUrl("MainPage.qml"))
@@ -134,11 +134,24 @@ Page {
                 continue;
             }
 
+            var categoryName = fields[1];
+            var categoryId = categoryModel.getCategoryIdByName(categoryName);
+            if (categoryId === -1) {
+                var typeCategory = fields[3] === "Доход" ? 1 : 0;
+                var newCategory = {
+                    nameCategory: categoryName,
+                    typeCategory: typeCategory,
+                    pathToIcon: "../icons/money.png"
+                };
+                categoryModel.addCategory(newCategory);
+                categoryModel.loadAllCategories();
+                categoryId = categoryModel.getCategoryIdByName(categoryName);
+            }
+
             try {
                 var operation = {
-                    date: fields[0] // формат dd.MM.yyyy
-                    ,
-                    categoryId: categoryModel.getCategoryIdByName(fields[1]),
+                    date: fields[0],
+                    categoryId: categoryId,
                     amount: parseFloat(fields[2]),
                     action: fields[3] === "Доход" ? 1 : 0,
                     desc: fields[4]

@@ -40,7 +40,7 @@ Rectangle {
         }
 
         Label {
-            text: headerRoot.headerText
+            text: qsTr(headerRoot.headerText)
             color: Theme.highlightColor
             font.pixelSize: headerRoot.fontSize
             anchors.verticalCenter: parent.verticalCenter
@@ -57,7 +57,7 @@ Rectangle {
         spacing: Theme.paddingLarge * 8
 
         Label {
-            text: "Расходы"
+            text: qsTr("Расходы")
             color: headerRoot.selectedTab === "expenses" ? Theme.highlightColor : Theme.primaryColor
             font.pixelSize: Theme.fontSizeLarge * 1.45
             font.bold: headerRoot.selectedTab === "expenses"
@@ -72,7 +72,7 @@ Rectangle {
         }
 
         Label {
-            text: "Доходы"
+            text: qsTr("Доходы")
             color: headerRoot.selectedTab === "revenue" ? Theme.highlightColor : Theme.primaryColor
             font.pixelSize: Theme.fontSizeLarge * 1.45
             font.bold: headerRoot.selectedTab === "revenue"

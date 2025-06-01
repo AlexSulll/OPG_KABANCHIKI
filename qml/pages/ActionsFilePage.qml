@@ -30,7 +30,7 @@ Page {
         id: header
         fontSize: Theme.fontSizeExtraLarge * 1.5
         color: "transparent"
-        headerText: "Импорт/экспорт"
+        headerText: qsTr("Импорт/экспорт")
         anchors {
             top: parent.top
             left: parent.left
@@ -60,7 +60,7 @@ Page {
                 width: parent.width
                 spacing: Theme.paddingMedium
                 Label {
-                    text: "Основные показатели"
+                    text: qsTr("Основные показатели")
                     horizontalAlignment: Text.AlignLeft
                     width: parent.width * 0.6
                 }
@@ -70,12 +70,12 @@ Page {
                 width: parent.width
                 spacing: Theme.paddingMedium
                 Label {
-                    text: "Всего операций"
+                    text: qsTr("Всего операций")
                     horizontalAlignment: Text.AlignLeft
                     width: parent.width * 0.6
                 }
                 Label {
-                    text: operationModel.count
+                    text: qsTr(operationModel.count)
                     horizontalAlignment: Text.AlignLeft
                     width: parent.width * 0.4
                 }
@@ -85,7 +85,7 @@ Page {
                 width: parent.width
                 spacing: Theme.paddingMedium
                 Label {
-                    text: "Общий доход"
+                    text: qsTr("Общий доход")
                     horizontalAlignment: Text.AlignLeft
                     width: parent.width * 0.6
                 }
@@ -100,7 +100,7 @@ Page {
                 width: parent.width
                 spacing: Theme.paddingMedium
                 Label {
-                    text: "Общий расход"
+                    text: qsTr("Общий расход")
                     horizontalAlignment: Text.AlignLeft
                     width: parent.width * 0.6
                 }
@@ -115,7 +115,7 @@ Page {
                 width: parent.width
                 spacing: Theme.paddingMedium
                 Label {
-                    text: "Баланс"
+                    text: qsTr("Баланс")
                     horizontalAlignment: Text.AlignLeft
                     width: parent.width * 0.6
                 }
@@ -132,13 +132,13 @@ Page {
 
                 Button {
                     width: (parent.width - parent.spacing) / 2
-                    text: "Экспорт"
+                    text: qsTr("Экспорт")
                     onClicked: pageStack.push(Qt.resolvedUrl("ExportPage.qml"))
                 }
 
                 Button {
                     width: (parent.width - parent.spacing) / 2
-                    text: "Импорт"
+                    text: qsTr("Импорт")
                     onClicked: pageStack.push(Qt.resolvedUrl("ImportPage.qml"))
                 }
             }

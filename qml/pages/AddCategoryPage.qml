@@ -21,20 +21,20 @@ Page {
             spacing: Theme.paddingLarge
 
             PageHeader {
-                title: "Добавление новой категории"
+                title: qsTr("Добавление новой категории")
             }
 
             TextField {
                 width: parent.width
-                label: "Название категории"
-                placeholderText: "Продукты, Транспорт..."
+                label: qsTr("Название категории")
+                placeholderText: qsTr(categoryType ? "Стипендия, пенсия..." : "Продукты, Транспорт...")
                 onTextChanged: categoryName = text
             }
 
             ValueButton {
                 id: iconButton
                 width: parent.width
-                label: "Иконка категории"
+                label: qsTr("Иконка категории")
                 value: iconPath ? iconPath.split("/").pop() : "Не выбрана"
 
                 onClicked: {
@@ -48,10 +48,10 @@ Page {
                 currentIndex: categoryType
                 menu: ContextMenu {
                     MenuItem {
-                        text: "Расход"
+                        text: qsTr("Расход")
                     }
                     MenuItem {
-                        text: "Доход"
+                        text: qsTr("Доход")
                     }
                 }
 
@@ -62,7 +62,7 @@ Page {
 
             Button {
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: "Сохранить"
+                text: qsTr("Сохранить")
                 enabled: categoryName.length > 0 && iconPath.length > 0
 
                 onClicked: {

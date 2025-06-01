@@ -51,7 +51,7 @@ BasePage {
         categoryModel.loadAllCategories();
         operationModel.loadByTypeOperation(selectedTab === "expenses" ? 0 : 1);
         operationModel.calculateTotalBalance();
-        sectorModel.calculateChartData(operationModel, 0);
+        sectorModel.calculateChartData(operationModel, mainpage.action);
     }
 
     Component.onCompleted: {
@@ -154,7 +154,7 @@ BasePage {
 
                     Label {
                         width: parent.width
-                        text: categoryData ? categoryData.nameCategory : "Без категории"
+                        text: qsTr(categoryData ? categoryData.nameCategory : "Без категории")
                         color: Theme.primaryColor
                         anchors {
                             verticalCenter: itemContainer.verticalCenter

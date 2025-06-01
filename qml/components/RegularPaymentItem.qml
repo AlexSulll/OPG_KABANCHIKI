@@ -7,7 +7,7 @@ ListItem {
     contentHeight: Theme.itemSizeMedium
 
     property var paymentData
-    property var categoryModel // Добавляем модель категорий
+    property var categoryModel
     signal deleteRequested(int id)
     property string categoryName: {
         if (!paymentData || !categoryModel)

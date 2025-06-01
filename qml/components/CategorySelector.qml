@@ -26,7 +26,7 @@ ComboBox {
 
     menu: ContextMenu {
         MenuItem {
-            text: "Выберите категорию"
+            text: qsTr("Выберите категорию")
             onClicked: {
                 selectedCategoryId = -1;
                 currentIndex = 0;
@@ -37,7 +37,7 @@ ComboBox {
             model: filteredCategories
 
             delegate: MenuItem {
-                text: modelData.nameCategory
+                text: qsTr(modelData.nameCategory)
                 onClicked: {
                     selectedCategoryId = modelData.categoryId;
                 }

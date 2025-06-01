@@ -18,7 +18,7 @@ Page {
         id: header
         fontSize: Theme.fontSizeExtraLarge * 1.2
         color: "transparent"
-        headerText: "Регулярные платежи"
+        headerText: qsTr("Регулярные платежи")
         anchors {
             top: parent.top
             left: parent.left
@@ -47,10 +47,10 @@ Page {
                 currentIndex: action
                 menu: ContextMenu {
                     MenuItem {
-                        text: "Расход"
+                        text: qsTr("Расход")
                     }
                     MenuItem {
-                        text: "Доход"
+                        text: qsTr("Доход")
                     }
                 }
                 onCurrentIndexChanged: {
@@ -64,8 +64,8 @@ Page {
             TextField {
                 id: amountField
                 width: parent.width
-                label: "Сумма"
-                placeholderText: "Введите сумму"
+                label: qsTr("Сумма")
+                placeholderText: qsTr("Введите сумму")
                 inputMethodHints: Qt.ImhDigitsOnly
                 validator: DoubleValidator {
                     bottom: 0.01
@@ -85,32 +85,32 @@ Page {
             ComboBox {
                 id: frequencyCombo
                 width: parent.width
-                label: "Периодичность"
+                label: qsTr("Периодичность")
                 currentIndex: 3
                 menu: ContextMenu {
                     MenuItem {
-                        text: "Каждый день"
+                        text: qsTr("Каждый день")
                     }
                     MenuItem {
-                        text: "Каждую неделю"
+                        text: qsTr("Каждую неделю")
                     }
                     MenuItem {
-                        text: "Каждые 2 недели"
+                        text: qsTr("Каждые 2 недели")
                     }
                     MenuItem {
-                        text: "Каждый месяц"
+                        text: qsTr("Каждый месяц")
                     }
                     MenuItem {
-                        text: "Каждые 2 месяца"
+                        text: qsTr("Каждые 2 месяца")
                     }
                     MenuItem {
-                        text: "Каждый квартал"
+                        text: qsTr("Каждый квартал")
                     }
                     MenuItem {
-                        text: "Каждые полгода"
+                        text: qsTr("Каждые полгода")
                     }
                     MenuItem {
-                        text: "Каждый год"
+                        text: qsTr("Каждый год")
                     }
                 }
             }
@@ -118,19 +118,19 @@ Page {
             TextField {
                 id: descriptionField
                 width: parent.width
-                label: "Описание"
-                placeholderText: "Назначение платежа"
+                label: qsTr("Описание")
+                placeholderText: qsTr("Назначение платежа")
             }
 
             Button {
-                text: "Добавить платеж"
+                text: qsTr("Добавить платеж")
                 anchors.horizontalCenter: parent.horizontalCenter
                 enabled: amountField.text && selectedCategoryId > 0
                 onClicked: addRegularPayment()
             }
 
             SectionHeader {
-                text: "Активные платежи"
+                text: qsTr("Активные платежи")
                 visible: regularPaymentsModel.count > 0
             }
 

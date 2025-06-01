@@ -36,7 +36,7 @@ Page {
         id: header
         fontSize: Theme.fontSizeExtraLarge * 1.2
         color: "transparent"
-        headerText: "Экспорт операций"
+        headerText: qsTr("Экспорт операций")
         anchors {
             top: parent.top
             left: parent.left
@@ -61,17 +61,17 @@ Page {
             ComboBox {
                 id: periodCombo
                 width: parent.width
-                label: "Период экспорта"
+                label: qsTr("Период экспорта")
                 currentIndex: selectedPeriod
                 menu: ContextMenu {
                     MenuItem {
-                        text: "За последний месяц"
+                        text: qsTr("За последний месяц")
                     }
                     MenuItem {
-                        text: "За последние 3 месяца"
+                        text: qsTr("За последние 3 месяца")
                     }
                     MenuItem {
-                        text: "За все время"
+                        text: qsTr("За все время")
                     }
                 }
                 onCurrentIndexChanged: {
@@ -83,17 +83,17 @@ Page {
             ComboBox {
                 id: typeCombo
                 width: parent.width
-                label: "Тип операций"
+                label: qsTr("Тип операций")
                 currentIndex: selectedType
                 menu: ContextMenu {
                     MenuItem {
-                        text: "Все операции"
+                        text: qsTr("Все операции")
                     }
                     MenuItem {
-                        text: "Только доходы"
+                        text: qsTr("Только доходы")
                     }
                     MenuItem {
-                        text: "Только расходы"
+                        text: qsTr("Только расходы")
                     }
                 }
                 onCurrentIndexChanged: {
@@ -105,13 +105,13 @@ Page {
             TextField {
                 id: fileNameField
                 width: parent.width
-                label: "Имя файла"
-                placeholderText: "Введите имя файла"
+                label: qsTr("Имя файла")
+                placeholderText: qsTr("Введите имя файла")
                 text: suggestedFileName
             }
 
             Button {
-                text: "Экспортировать в файл"
+                text: qsTr("Экспортировать в файл")
                 anchors.horizontalCenter: parent.horizontalCenter
                 enabled: !exportInProgress && fileNameField.text.length > 0
                 onClicked: {
@@ -119,7 +119,7 @@ Page {
                     if (ops && ops.length > 0) {
                         prepareExportData();
                     } else {
-                        exportStatus = "Нет операций для экспорта";
+                        exportStatus = qsTr("Нет операций для экспорта");
                     }
                 }
             }

@@ -35,13 +35,13 @@ Page {
             spacing: Theme.paddingLarge
 
             PageHeader {
-                title: "Просмотр и редактирование операции"
+                title: qsTr("Просмотр и редактирование операции")
             }
 
             TextField {
                 width: parent.width
-                label: "Сумма"
-                placeholderText: "Введите сумму"
+                label: qsTr("Сумма")
+                placeholderText: qsTr("Введите сумму")
                 inputMethodHints: Qt.ImhDigitsOnly
                 text: amount
                 onTextChanged: amount = text
@@ -102,7 +102,7 @@ Page {
                                     }
 
                                     Label {
-                                        text: modelData.nameCategory
+                                        text: qsTr(modelData.nameCategory)
                                         width: parent.width - x - Theme.paddingMedium
                                         anchors.verticalCenter: parent.verticalCenter
                                         color: pressed ? Theme.highlightColor : Theme.primaryColor
@@ -116,7 +116,7 @@ Page {
 
             TextField {
                 width: parent.width
-                label: "Дата"
+                label: qsTr("Дата")
                 text: date
                 onClicked: dateDialog2.open()
             }
@@ -124,7 +124,7 @@ Page {
             TextArea {
                 width: parent.width
                 height: Theme.itemSizeLarge
-                label: "Комментарий"
+                label: qsTr("Комментарий")
                 text: desc
                 onTextChanged: desc = text
             }
@@ -135,7 +135,7 @@ Page {
 
                 Button {
                     width: parent.width / 2 - Theme.paddingMedium
-                    text: "Удалить"
+                    text: qsTr("Удалить")
                     color: Theme.errorColor
                     onClicked: {
                         operationModel.deleteOperation(operationId);
@@ -145,7 +145,7 @@ Page {
 
                 Button {
                     width: parent.width / 2 - Theme.paddingMedium
-                    text: "Сохранить"
+                    text: qsTr("Сохранить")
                     enabled: isValid
                     onClicked: {
                         operationModel.updateOperation({
@@ -171,9 +171,9 @@ Page {
             spacing: Theme.paddingLarge
 
             DialogHeader {
-                title: "Выберите дату"
-                acceptText: "ОК"
-                cancelText: "Отмена"
+                title: qsTr("Выберите дату")
+                acceptText: qsTr("ОК")
+                cancelText: qsTr("Отмена")
             }
 
             Label {

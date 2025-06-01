@@ -57,7 +57,7 @@ Item {
                     Label {
                         id: periodLabel
                         anchors.centerIn: parent
-                        text: dateLabel
+                        text: qsTr(dateLabel)
                         color: selectedPeriod === dateId ? Theme.highlightColor : Theme.secondaryColor
                         font.pixelSize: Theme.fontSizeExtraLarge
                         font.underline: selectedPeriod === dateId
@@ -240,7 +240,7 @@ Item {
                 Label {
                     width: parent.width
                     horizontalAlignment: Text.AlignHCenter
-                    text: isExpense ? "Расходы" : "Доходы"
+                    text: qsTr(isExpense ? "Расходы" : "Доходы")
                     color: Theme.primaryColor
                     font.pixelSize: Theme.fontSizeSmall
                 }

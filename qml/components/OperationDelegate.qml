@@ -50,7 +50,7 @@ BackgroundItem {
 
     ContextMenu {
         MenuItem {
-            text: "Удалить"
+            text: qsTr("Удалить")
             onClicked: deleteRequested(operationData.id)
         }
     }

@@ -3,7 +3,7 @@ import Sailfish.Silica 1.0
 import "../components"
 import "../models" as Models
 
-BasePage {
+Page {
     id: analyticsPage
     allowedOrientations: Orientation.All
     readonly property color expenseColor: Theme.errorColor

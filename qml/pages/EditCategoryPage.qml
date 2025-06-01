@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import Sailfish.Pickers 1.0
+import "../services" as Services
 
 Page {
     id: editCategoryPage
@@ -12,6 +13,10 @@ Page {
     property var categoryModel
     property var categoryData
 
+    Services.OperationService {
+        id: operationService
+    }
+
     SilicaFlickable {
         anchors.fill: parent
         contentHeight: column.height
@@ -22,13 +27,13 @@ Page {
             spacing: Theme.paddingLarge
 
             PageHeader {
-                title: "Редактирование категории"
+                title: qsTr("Редактирование категории")
             }
 
             TextField {
                 width: parent.width
-                label: "Название категории"
-                placeholderText: "Продукты, Транспорт..."
+                label: qsTr("Название категории")
+                placeholderText: qsTr("Продукты, Транспорт...")
                 text: categoryName
                 onTextChanged: categoryName = text
             }
@@ -36,7 +41,7 @@ Page {
             ValueButton {
                 id: iconButton
                 width: parent.width
-                label: "Иконка категории"
+                label: qsTr("Иконка категории")
                 value: iconPath ? iconPath.split("/").pop() : "Не выбрана"
 
                 onClicked: {
@@ -46,14 +51,14 @@ Page {
 
             ComboBox {
                 width: parent.width
-                label: "Тип категории"
+                label: qsTr("Тип категории")
                 currentIndex: categoryType
                 menu: ContextMenu {
                     MenuItem {
-                        text: "Расход"
+                        text: qsTr("Расход")
                     }
                     MenuItem {
-                        text: "Доход"
+                        text: qsTr("Доход")
                     }
                 }
 
@@ -64,7 +69,7 @@ Page {
 
             Button {
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: "Сохранить"
+                text: qsTr("Сохранить")
                 enabled: categoryName.length > 0 && iconPath.length > 0
 
                 onClicked: {
@@ -81,7 +86,7 @@ Page {
 
             Button {
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: "Удалить категорию"
+                text: qsTr("Удалить категорию")
                 color: Theme.errorColor
 
                 onClicked: {
@@ -144,6 +149,7 @@ Page {
     }
 
     function deleteCategory() {
+        operationService.deleteOperationByCategoryId(categoryData.categoryId);
         categoryModel.removeCategory(categoryData.categoryId);
         pageStack.replaceAbove(null, Qt.resolvedUrl("MainPage.qml"));
     }

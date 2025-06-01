@@ -22,14 +22,28 @@ Page {
     }
 
     onActionChanged: {
-        categoryModel.loadCategoriesByType(action);
+        if (fromMainButton === true) {
+            categoryModel.loadCategoriesByType(action);
+        } else {
+            categoryModel.filteredCategories(action);
+        }
     }
 
     Component.onCompleted: {
-        categoryModel.loadCategoriesByType(action);
+        if (fromMainButton === true) {
+            categoryModel.loadCategoriesByType(action);
+        } else {
+            categoryModel.filteredCategories(action);
+        }
     }
 
-    onVisibleChanged: categoryModel.loadCategoriesByType(action)
+    onVisibleChanged: {
+        if (fromMainButton === true) {
+            categoryModel.loadCategoriesByType(action);
+        } else {
+            categoryModel.filteredCategories(action);
+        }
+    }
 
     SilicaFlickable {
         anchors.fill: parent
@@ -41,7 +55,7 @@ Page {
 
             Components.HeaderComponent {
                 id: header
-                headerText: fromMainButton ? "Добавление" : "Категории"
+                headerText: qsTr(fromMainButton ? "Добавление" : "Категории")
                 fontSize: Theme.fontSizeExtraLarge * 2
                 color: "transparent"
                 showIcon: true

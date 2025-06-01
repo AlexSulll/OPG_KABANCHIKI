@@ -15,22 +15,22 @@ Dialog {
         width: parent.width
 
         DialogHeader {
-            title: "Новая цель"
-            acceptText: "Сохранить"
-            cancelText: "Отмена"
+            title: qsTr("Новая цель")
+            acceptText: qsTr("Сохранить")
+            cancelText: qsTr("Отмена")
         }
 
         TextField {
             id: titleField
             width: parent.width
-            label: "Название цели"
-            placeholderText: "Например: Новая машина"
+            label: qsTr("Название цели")
+            placeholderText: qsTr("Например: Новая машина")
         }
 
         TextField {
             id: amountField
             width: parent.width
-            label: "Целевая сумма"
+            label: qsTr("Целевая сумма")
             inputMethodHints: Qt.ImhDigitsOnly
             validator: DoubleValidator {
                 bottom: 1
@@ -40,7 +40,7 @@ Dialog {
         TextField {
             id: dateField
             width: parent.width
-            label: "Дата завершения"
+            label: qsTr("Дата завершения")
             text: date
             readOnly: true
 
@@ -69,9 +69,9 @@ Dialog {
             spacing: Theme.paddingLarge
 
             DialogHeader {
-                title: "Выберите дату"
-                acceptText: "ОК"
-                cancelText: "Отмена"
+                title: qsTr("Выберите дату")
+                acceptText: qsTr("ОК")
+                cancelText: qsTr("Отмена")
             }
 
             Label {

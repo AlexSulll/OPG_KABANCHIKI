@@ -34,7 +34,7 @@ ListItem {
 
                 Label {
                     width: parent.width - dateLabel.width - parent.spacing
-                    text: title
+                    text: qsTr(title)
                     font {
                         pixelSize: Theme.fontSizeMedium
                         bold: true

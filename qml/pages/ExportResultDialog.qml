@@ -16,8 +16,8 @@ Dialog {
         spacing: Theme.paddingLarge
 
         DialogHeader {
-            title: "Экспорт завершен"
-            acceptText: "OK"
+            title: qsTr("Экспорт завершен")
+            acceptText: qsTr("OK")
         }
 
         Label {
@@ -25,7 +25,7 @@ Dialog {
             width: parent.width - 2 * x
             wrapMode: Text.Wrap
             color: Theme.highlightColor
-            text: "Файл: " + fileName
+            text: qsTr("Файл: " + fileName)
         }
 
         Label {
@@ -33,7 +33,7 @@ Dialog {
             width: parent.width - 2 * x
             wrapMode: Text.Wrap
             color: Theme.highlightColor
-            text: "Операций экспортировано: " + operationsCount
+            text: qsTr("Операций экспортировано: " + operationsCount)
         }
 
         Label {
@@ -41,11 +41,11 @@ Dialog {
             width: parent.width - 2 * x
             wrapMode: Text.Wrap
             color: Theme.highlightColor
-            text: "Размер данных: " + dataSize + " байт"
+            text: qsTr("Размер данных: " + dataSize + " байт")
         }
 
         SectionHeader {
-            text: "Пример данных:"
+            text: qsTr("Пример данных:")
         }
 
         TextArea {

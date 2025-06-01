@@ -15,7 +15,7 @@ Page {
         id: header
         fontSize: Theme.fontSizeExtraLarge * 1.2
         color: "transparent"
-        headerText: "Финансовые цели"
+        headerText: qsTr("Финансовые цели")
         anchors {
             top: parent.top
             left: parent.left
@@ -43,7 +43,7 @@ Page {
             }
 
             Button {
-                text: "Добавить цель"
+                text: qsTr("Добавить цель")
                 color: "white"
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClicked: pageStack.push(addGoalComponent)

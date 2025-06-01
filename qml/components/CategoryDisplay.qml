@@ -36,7 +36,7 @@ Item {
             }
 
             Label {
-                text: categoryData ? categoryData.nameCategory : "Нажми, чтобы выбрать категорию"
+                text: qsTr(categoryData ? categoryData.nameCategory : "Нажми, чтобы выбрать категорию")
                 color: Theme.primaryColor
                 width: parent.width - Theme.iconSizeMedium - Theme.paddingMedium * 2
                 anchors.verticalCenter: parent.verticalCenter

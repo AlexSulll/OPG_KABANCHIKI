@@ -300,8 +300,8 @@ QtObject {
             fromDate.setFullYear(now.getFullYear() - 1);
             break;
         default:
-            fromDate = new Date(0); // Начало эпохи Unix
-            toDate = new Date(8640000000000000); // Максимальная дата
+            fromDate = new Date(0);
+            toDate = new Date(8640000000000000);
             break;
         }
 
@@ -394,5 +394,12 @@ QtObject {
         });
 
         return operations;
+    }
+
+    function deleteOperationByCategoryId(categoryId) {
+        var db = getDatabase();
+        db.transaction(function (tx) {
+            tx.executeSql("DELETE FROM operations WHERE categoryId = ?", [categoryId]);
+        });
     }
 }

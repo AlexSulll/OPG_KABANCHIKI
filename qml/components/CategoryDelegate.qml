@@ -35,7 +35,7 @@ BackgroundItem {
         }
 
         Label {
-            text: nameCategory
+            text: qsTr(nameCategory)
             anchors.horizontalCenter: iconContainer.horizontalCenter
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.Wrap

@@ -21,7 +21,7 @@ Page {
         id: header
         fontSize: Theme.fontSizeExtraLarge * 1.2
         color: "transparent"
-        headerText: "Лимиты расходов"
+        headerText: qsTr("Лимиты расходов")
         anchors {
             top: parent.top
             left: parent.left

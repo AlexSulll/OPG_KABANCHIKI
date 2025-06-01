@@ -29,7 +29,7 @@ Rectangle {
         }
 
         Label {
-            text: headerRoot.headerText
+            text: qsTr(headerRoot.headerText)
             color: Theme.highlightColor
             font.pixelSize: headerRoot.fontSize
             anchors.verticalCenter: parent.verticalCenter

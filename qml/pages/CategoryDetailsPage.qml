@@ -108,7 +108,7 @@ Page {
                                 spacing: Theme.paddingSmall
 
                                 Label {
-                                    text: categoryData ? categoryData.nameCategory : "Без категории"
+                                    text: qsTr(categoryData ? categoryData.nameCategory : "Без категории")
                                     color: Theme.primaryColor
                                     font.pixelSize: Theme.fontSizeLarge
                                     truncationMode: TruncationMode.Fade

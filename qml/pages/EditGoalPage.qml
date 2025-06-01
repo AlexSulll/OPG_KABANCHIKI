@@ -40,14 +40,14 @@ Page {
             TextField {
                 id: titleField
                 width: parent.width
-                label: "Название цели"
-                placeholderText: "Введите название"
+                label: qsTr("Название цели")
+                placeholderText: qsTr("Введите название")
             }
 
             TextField {
                 id: targetAmountField
                 width: parent.width
-                label: "Целевая сумма (₽)"
+                label: qsTr("Целевая сумма (₽)")
                 inputMethodHints: Qt.ImhDigitsOnly
                 validator: DoubleValidator {
                     bottom: 1
@@ -56,31 +56,31 @@ Page {
 
             TextField {
                 width: parent.width
-                placeholderText: "Дата"
-                label: "Дата завершения цели"
+                placeholderText: qsTr("Дата")
+                label: qsTr("Дата завершения цели")
                 readOnly: true
                 text: date
                 onClicked: dateDialog.open()
             }
 
             DetailItem {
-                label: "Текущий баланс"
+                label: qsTr("Текущий баланс")
                 value: goal ? (goal.currentAmount.toFixed(2) + " ₽") : "0 ₽"
             }
 
             DetailItem {
-                label: "Ежемесячный взнос"
+                label: qsTr("Ежемесячный взнос")
                 value: monthlyPayment + " ₽"
             }
 
             Button {
-                text: "Сохранить изменения"
+                text: qsTr("Сохранить изменения")
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClicked: saveChanges()
             }
 
             Button {
-                text: "Удалить цель"
+                text: qsTr("Удалить цель")
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: Theme.errorColor
                 onClicked: deleteGoal()
@@ -97,9 +97,9 @@ Page {
             spacing: Theme.paddingLarge
 
             DialogHeader {
-                title: "Выберите дату"
-                acceptText: "ОК"
-                cancelText: "Отмена"
+                title: qsTr("Выберите дату")
+                acceptText: qsTr("ОК")
+                cancelText: qsTr("Отмена")
             }
 
             Row {

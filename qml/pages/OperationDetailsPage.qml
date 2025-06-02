@@ -76,7 +76,7 @@ Page {
 
                 menu: ContextMenu {
                     Repeater {
-                        model: categoryModel.filteredCategories(action)
+                        model: categoryModel.filteredCategories2(action)
                         delegate: Component {
                             Item {
                                 width: parent.width

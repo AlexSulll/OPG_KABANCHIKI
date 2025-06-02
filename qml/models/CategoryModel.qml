@@ -68,6 +68,13 @@ ListModel {
         updateModel();
     }
 
+    function filteredCategories2(action) {
+        loadAllCategoriesForFilter();
+        return categories.filter(function (cat) {
+            return cat.categoryId !== 8 && cat.categoryId !== 13 && cat.typeCategory === action;
+        });
+    }
+
     function getIndexById(categoryId) {
         for (var i = 0; i < count; i++) {
             if (get(i).categoryId === categoryId)

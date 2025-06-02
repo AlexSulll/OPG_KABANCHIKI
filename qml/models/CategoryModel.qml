@@ -63,7 +63,7 @@ ListModel {
     function filteredCategories(action) {
         loadAllCategoriesForFilter();
         categories = categories.filter(function (cat) {
-            return cat.categoryId !== 8 && cat.categoryId !== 13 && cat.typeCategory === action;
+            return cat.categoryId !== 8 && cat.categoryId !== 13 && cat.typeCategory === action && cat.isActive === 1;
         });
         updateModel();
     }

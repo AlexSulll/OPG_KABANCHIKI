@@ -47,14 +47,28 @@ QtObject {
         var db = getDatabase();
 
         db.transaction(function (tx) {
-            tx.executeSql("UPDATE goals SET
-                    title = ?,
-                    targetAmount = ?,
-                    endDate = ?,
-                    isCompleted = CASE
-                        WHEN currentAmount < ? THEN 0
-                        ELSE isCompleted
-                    END
+            // Получаем старую цель для сравнения targetAmount
+            var oldGoal = null;
+            var rs = tx.executeSql("SELECT * FROM goals WHERE id = ?", [goal.id]);
+            if (rs.rows.length > 0) {
+                oldGoal = rs.rows.item(0);
+            }
+
+            // Если цель найдена и новая целевая сумма больше старой — делаем цель и категорию активными
+            if (oldGoal && goal.targetAmount > oldGoal.targetAmount) {
+                tx.executeSql("UPDATE goals SET isCompleted = 0 WHERE id = ?", [goal.id]);
+                tx.executeSql("UPDATE categories SET isActive = 1 WHERE categoryId = ?", [oldGoal.categoryId]);
+            }
+
+            // Обновляем остальные поля цели
+            tx.executeSql("UPDATE goals SET \
+                    title = ?, \
+                    targetAmount = ?, \
+                    endDate = ?, \
+                    isCompleted = CASE \
+                        WHEN currentAmount < ? THEN 0 \
+                        ELSE isCompleted \
+                    END \
                  WHERE id = ?", [goal.title, goal.targetAmount, goal.endDate, goal.targetAmount, goal.id]);
         });
     }
